@@ -1,6 +1,6 @@
 # trabajo-final-POO-2026
 
-# Proyecto: Fighting game 
+# Proyecto: the ultimate last punch 
 
 ## 1. Integrantes del Equipo 
 
