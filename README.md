@@ -50,6 +50,17 @@ El diseño buscará mantener una estructura organizada y modular que permita agr
 ![alt text](image.png)
 
 
+## 3. Arquitectura y diseño
+
+### Patron de diseño adicional: 
+
+### Diagramas de diseños:
+
+![alt text](Personajes.png)
+
+![alt text](Escenario.png)
+
+
 ## 4. Stack Tecnológico 
 
 - **Lenguaje:** Java 17
