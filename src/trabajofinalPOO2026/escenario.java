@@ -5,7 +5,9 @@ public class escenario {
     protected int tiempo;
 
     public int suelosolido () {
-        
+        if (condition) {
+            
+        }
         //esto se va a usar para comprobar que el suelo donde este el personaje es solido
     }
 

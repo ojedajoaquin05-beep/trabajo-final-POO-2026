@@ -3,6 +3,7 @@ package trabajofinalPOO2026;
 public class Jugador extends Personaje { //extends, jugador es herencia de personaje
 	
 	private int puntaje;
+	protected int respawn;
 	
 	public Jugador(String nombre, int vidaMaxima, int velocidad) {
 		super(nombre,vidaMaxima, velocidad);

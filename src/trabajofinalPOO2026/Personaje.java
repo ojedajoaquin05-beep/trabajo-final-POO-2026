@@ -7,6 +7,15 @@ public abstract class Personaje {
 	protected int posicionX;
 	protected int posicionY;
 	protected int velocidad;
+	protected int ataqueneutro;
+	protected int ataquelateral;
+	protected int ataquearriba;
+	protected int ataquebajo;
+	protected int especialneutro;
+	protected int especiallateral;
+	protected int especialarriba;
+	protected int especialbajo;
+
 	//protected; accesible desde el mismo paquete y desde
 	// las subclases
 	
@@ -28,11 +37,11 @@ public abstract class Personaje {
 		//al ejecutar un valor a X o Y, se movera el pj
 	}
 		
-	public void recibirDanio(int danio) {
-		vida -= danio;
+	/*public void recibirDanio(int danio) {
+		vida -= danio;							joaluna: Let me cook about this
 		//usando colaboracion entre objetos, se recibiria un
 		//valor de daño X, restandole a la vida
-	}
+	} */
 	
 	public boolean estaVivo() {
 		return vida > 0;
@@ -42,4 +51,52 @@ public abstract class Personaje {
 	public abstract void atacar();
 	//todo personaje tiene que poder atacar, pero cada tipo
 	//de personaje va a definir como lo hace (@Override)
+
+	public void DanioAtkBase(int danio) {
+		vida -= danio;							
+		//usando colaboracion entre objetos, se recibiria un
+		//valor de daño del ataque base X, restandole a la vida
+	}
+
+	public void DanioAtkLateral(int danio) {
+		vida -= danio;							
+		//usando colaboracion entre objetos, se recibiria un
+		//valor de daño del ataque lateral X, restandole a la vida
+	}
+
+	public void DanioAtkUp(int danio) {
+		vida -= danio;		 /* up solo porque es mas corto que arriba */					
+		//usando colaboracion entre objetos, se recibiria un
+		//valor de daño del ataque arriba X, restandole a la vida
+	}
+
+	public void DanioAtkBajo(int danio) {
+		vida -= danio;							
+		//usando colaboracion entre objetos, se recibiria un
+		//valor de daño del ataque bajo X, restandole a la vida
+	}
+
+	public void DanioEspBase(int danio) {
+		vida -= danio;							
+		//usando colaboracion entre objetos, se recibiria un
+		//valor de especial del ataque base X, restandole a la vida
+	}
+
+		public void DanioEspLateral(int danio) {
+		vida -= danio;							
+		//usando colaboracion entre objetos, se recibiria un
+		//valor de especial del ataque lateral X, restandole a la vida
+	}
+
+	public void DanioEspUp(int danio) {
+		vida -= danio;							
+		//usando colaboracion entre objetos, se recibiria un
+		//valor de especial del ataque arriba X, restandole a la vida
+	}
+
+		public void DanioEspBajo(int danio) {
+		vida -= danio;							
+		//usando colaboracion entre objetos, se recibiria un
+		//valor de especial del ataque bajo X, restandole a la vida
+	}
 }
