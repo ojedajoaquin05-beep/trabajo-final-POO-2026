@@ -20,4 +20,35 @@ public class Jugador extends Personaje { //extends, jugador es herencia de perso
 	public void controlarMovimiento(int x, int y) {
         mover(x * velocidad, y * velocidad);
     }
+
+		public void moverIzquierda (int x) {
+		x = x+1;
+	}
+
+	public void moverderecha (int x) {
+		x = x-1 ;
+	}
+
+	public void saltar (int y) {
+		y = y+1;
+	}
+
+	public void caer (int y) {
+		y = y+1;
+	}
+
+	public void respawnear(int respawn, int vida, int vidaMaxima) {
+		while (respawn > 0) {
+			if (vida <= 0) {
+				vida = vidaMaxima;
+			}
+			respawn--;
+		}
+	}
+	
+	public void morir(int respawn, int vida) {
+		if (vida <= 0 && respawn == 0) {
+			// lógica de muerte
+		}
+	}
 }

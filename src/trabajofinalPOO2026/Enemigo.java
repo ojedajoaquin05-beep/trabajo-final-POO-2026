@@ -13,4 +13,10 @@ public class Enemigo extends Personaje {
         //ataque del enemigo
     }
 
+        public void decidiraccion ()
+    {
+            
+    }
+
+
 }
