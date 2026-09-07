@@ -56,9 +56,9 @@ El diseño buscará mantener una estructura organizada y modular que permita agr
 
 ### Diagramas de diseños:
 
-![alt text](Personajes.png)
+![alt text](PersonajeHer-1.png)
 
-![alt text](Escenario.png)
+![alt text](EscenarioHer-1.png)
 
 
 ## 4. Stack Tecnológico 
