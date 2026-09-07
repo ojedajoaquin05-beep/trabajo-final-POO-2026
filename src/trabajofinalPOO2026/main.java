@@ -5,20 +5,16 @@ import java.awt.Canvas;
 import java.awt.Dimension;
 import javax.swing.JFrame;
 
-public class main extends Canvas {
+public class main extends Canvas implements Runnable{
+	
 	private static final long serialVersionUID = 7950439569607000893L;
-	//final; definimos ahora el valor y no va a 
-	//cambiar por el resto de la ejecucion 
-	//del programa = un poco mas rapido la ejec.
+	//final; definimos ahora el valor y no va a cambiar por el resto de la ejecucion del programa = un poco mas rapido la ejec.
 	private static final int ANCHO =  800;
 	private static final int ALTO = 600;
-	//constante; siempre se escribe con MAYUS
-	private static final String NOMBREJUEGO = "The Last Pounch";
+	private static final String NOMBREJUEGO = "The Last Pounch"; //constante; siempre se escribe con MAYUS
 	
 	private static JFrame ventana;
-	//static, se puede usar sin hacer instancias
-	//de la clase, solo hay 1 en toda la clase
-	//(una ventada)
+	//static, se puede usar sin hacer instancias de la clase, solo hay 1 en toda la clase(una ventada)
 	private main() {
 		
 		setPreferredSize(new Dimension(ANCHO,ALTO));
@@ -34,10 +30,26 @@ public class main extends Canvas {
 	}
 
 	public static void main(String[] args) {
-		// el main, sin main no hay nada
-				main app = new main();
+				main main = new main();
 		
-
+				main.iniciar(); //con esto tenemos preparado el 2do Thread
+	}
+	
+	private static Thread thread; //Thread
+	
+	private void iniciar() { //para iniciar el juego
+		thread = new Thread(this, "Graficos"); //para iniciar el 2do THread, ejemplo...
+		//encargada para indentificar el Thread y usarlo para los graficos
+		thread.start();
+		//a partir de aca, todo lo q' este en run, se ejecutara secuencialmente
+	}
+	private void detener() {
+	}
+	
+	public void run() {
+		//aca adentro iria el 2do Thread....
+		System.out.println("el thread 2 se esta ejecutando...");
+		
 	}
 
 }

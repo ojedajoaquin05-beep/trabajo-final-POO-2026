@@ -8,7 +8,8 @@ public class Enemigo extends Personaje {
     }
 
     @Override
-    public void atacar() {
+    public void atacar(Personaje jugador) {
+    	//Personaje objetivo; estoy haciendo objetivo a un hijo de Personaje
         //ataque del enemigo
     }
 

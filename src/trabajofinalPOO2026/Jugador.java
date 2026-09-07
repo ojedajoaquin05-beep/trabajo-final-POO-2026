@@ -8,11 +8,12 @@ public class Jugador extends Personaje { //extends, jugador es herencia de perso
 	public Jugador(String nombre, int vidaMaxima, int velocidad) {
 		super(nombre,vidaMaxima, velocidad);
 		this.puntaje = 0;
+		this.respawn = 1;
 	}
 	
 	@Override // override, sobreescritura
-			  //estoy modificando un metodo que ya existe en clase padre(personaje)
-	public void atacar() {
+	public void atacar(Personaje objetivo) {
+		//Personaje objetivo; estoy haciendo objetivo a un hijo de Personaje
         //ataque del jugador
     }
 	

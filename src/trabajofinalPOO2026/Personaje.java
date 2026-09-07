@@ -22,9 +22,20 @@ public abstract class Personaje {
 	//constructor de personaje
 	//accesible para las clases hijas
 	public Personaje(String nombre, int vida, int velocidad) {
+		if (nombre == null || nombre == "") {
+			throw new IllegalArgumentException("NOMBRE INVALIDO");
+		}
+		if ( vida > 100 || vida < 0) {
+			throw new IllegalArgumentException("VALOR DE VIDA ERROEA");
+		}
+		/*
+		  if ( velocidad > 100 || vida < 0) {
+		 
+			throw new IllegalArgumentException("MUCHA/BAJA VELOCIDAD");
+		}
+		*/
 		this.nombre = nombre;
-		//this.vidaMaxima = vidaMaxima;
-		this.vida = vidaMaxima;
+		this.vida = vidaMaxima; //this.vidaMaxima = vidaMaxima;
 		this.velocidad = velocidad;
 		this.posicionX = 0;
 		this.posicionY = 0;
@@ -48,7 +59,7 @@ public abstract class Personaje {
 		//mientras que vida mayor a 0, estas vivo
 	}
 	
-	public abstract void atacar();
+	public abstract void atacar(Personaje objetivo);
 	//todo personaje tiene que poder atacar, pero cada tipo
 	//de personaje va a definir como lo hace (@Override)
 
