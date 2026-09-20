@@ -1,4 +1,5 @@
-package trabajofinalPOO2026;
+package Controlador;
+
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;

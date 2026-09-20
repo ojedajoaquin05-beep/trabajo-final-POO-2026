@@ -1,4 +1,4 @@
-package trabajofinalPOO2026;
+package Modelo;
 
 public abstract class Escenario {
     protected int solido;

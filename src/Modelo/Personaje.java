@@ -1,4 +1,4 @@
-package trabajofinalPOO2026;
+package Modelo;
 //abstract porque es el molde/base para otros pj's
 public abstract class Personaje {
 	protected String nombre;

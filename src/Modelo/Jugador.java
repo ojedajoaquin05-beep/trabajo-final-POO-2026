@@ -1,4 +1,4 @@
-package trabajofinalPOO2026;
+package Modelo;
 
 public class Jugador extends Personaje { //extends, jugador es herencia de personaje
 	

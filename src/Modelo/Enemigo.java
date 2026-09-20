@@ -1,4 +1,4 @@
-package trabajofinalPOO2026;
+package Modelo;
 
 public class Enemigo extends Personaje {
 	
