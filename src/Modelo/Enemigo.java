@@ -1,6 +1,6 @@
 package Modelo;
 
-public class Enemigo extends Personaje {
+public class Enemigo extends Entidad {
 	
 	public Enemigo(String nombre, int vidaMaxima, int velocidad, int dificultad) {
         super(nombre, vidaMaxima, velocidad);
@@ -8,7 +8,7 @@ public class Enemigo extends Personaje {
     }
 
     @Override
-    public void atacar(Personaje jugador) {
+    public void atacar(Entidad jugador) {
     	//Personaje objetivo; estoy haciendo objetivo a un hijo de Personaje
         //ataque del enemigo
     }
