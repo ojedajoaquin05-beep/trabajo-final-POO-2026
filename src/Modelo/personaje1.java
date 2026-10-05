@@ -1,18 +1,18 @@
 package Modelo;
 
-public class Personaje extends Entidad { //extends, jugador es herencia de personaje
+public class personaje1 extends entidad { //extends, jugador es herencia de personaje
 	
 	private int puntaje;
 	protected int respawn;
 	
-	public Personaje(String nombre, int vidaMaxima, int velocidad) {
+	public personaje1(String nombre, int vidaMaxima, int velocidad) {
 		super(nombre,vidaMaxima, velocidad);
 		this.puntaje = 0;
 		this.respawn = 1;
 	}
 	
 	@Override // override, sobreescritura
-	public void atacar(Entidad objetivo) {
+	public void atacar(entidad objetivo) {
 		//Personaje objetivo; estoy haciendo objetivo a un hijo de Personaje
         //ataque del jugador
     }

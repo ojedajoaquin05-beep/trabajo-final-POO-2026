@@ -1,17 +1,10 @@
 package Modelo;
 
-public class Combate extends Escenario{
+import java.util.ArrayList;
+import java.util.List;
 
-	private boolean terminado;
-	private int comparador;
-	
-	//constructor
-	public Combate(int solido, int tiempo) {
-		super(solido, tiempo);
-		this.comparador = comparador;
-		this.terminado = terminado;
-		// TODO Auto-generated constructor stub
-	}
-	
-	
+public class Combate {
+	private final personaje1 personaje1;
+	private final personaje2 personaje2;
+	private final List<> ;
 }
