@@ -1,6 +1,6 @@
 package Modelo;
 //abstract porque es el molde/base para otros pj's
-public class entidad {
+public class entidad extends colision {
 	private String nombre;
 	private int posicionX;
 	private int posicionY;
@@ -9,17 +9,6 @@ public class entidad {
 	private int vidaMaxima;
 	private int ataque;
 	private boolean personaje1; 
-	
-	/** private int velocidad;
-	protected int ataqueneutro;
-	protected int ataquelateral;
-	protected int ataquearriba;
-	protected int ataquebajo;
-	protected int especialneutro;
-	protected int especiallateral;
-	protected int especialarriba;
-	protected int especialbajo; **/
-
 
 	public entidad(String nombre, int posicionX, int posicionY, int vida, int ataque, boolean personage1) {
 		this.nombre = nombre;
