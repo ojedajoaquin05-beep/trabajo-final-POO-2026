@@ -24,6 +24,10 @@ public class VentanaJuego extends JFrame {
     private final JPanel panelContenedor; //lo utilizo para distribuir los botones
     private JPanel pantallaJugar;
     private SeleccionPersonaje pantallaSeleccionPersonaje;
+
+    private int tiempoRestante = 10;
+    private String mensajeGanador = "";
+
     
     private BufferedImage spriteQuieto; // Acá guardamos solo 1 sprite recortado
     private final Image imagenFondoJuego = new ImageIcon("assets/Backgrounds/City4.png").getImage();
@@ -128,6 +132,25 @@ public class VentanaJuego extends JFrame {
                     g.fillRect(0, 0, getWidth(), getHeight());
                 }
 
+                // dibujar contador de tiempo
+                g.setFont(new Font("arial", Font.BOLD, 48));
+                g.setColor(tiempoRestante <= 10 ? Color.RED : Color.YELLOW); // cambia a rojo si quedan 10 segundos o menos
+                String textoTiempo = String.valueOf(tiempoRestante);
+                int anchoTexto = g.getFontMetrics().stringWidth(textoTiempo);
+                g.drawString(textoTiempo, (getWidth() / 2 - anchoTexto / 2), 60);
+
+                // dibujar mensaje de ganador si existe
+                if (!mensajeGanador.isEmpty()) {
+                    g.setFont(new Font("arial", Font.BOLD, 60));
+                    g.setColor(new Color(0, 0, 0, 100));
+                    g.fillRect(0, (getHeight() / 2) - 80, getWidth(), 120); // fondo semitransparente
+                   g.setColor(Color. YELLOW);
+                   
+                    int anchoMensaje = g.getFontMetrics().stringWidth(mensajeGanador);
+                    g.drawString(mensajeGanador, (getWidth() / 2 - anchoMensaje / 2), getHeight() / 2);
+                }
+
+
                 // Aquí dibujaremos al luchador cuando conectemos el modelo
                 
                 java.awt.Toolkit.getDefaultToolkit().sync();
@@ -175,6 +198,17 @@ public class VentanaJuego extends JFrame {
     public JPanel getPanelContenedor() { return panelContenedor; }
     public JPanel getPantallaJugar() { return pantallaJugar; } 
     public SeleccionPersonaje getPantallaSeleccionPersonaje() { return pantallaSeleccionPersonaje; }
+
+    public int getTiempoRestante() { return tiempoRestante; }
+    public void setTiempoRestante(int tiempoRestante) { this.tiempoRestante = tiempoRestante; }
+
+    public String getMensajeGanador() { return mensajeGanador; }
+    public void setMensajeGanador(String mensajeGanador) { this.mensajeGanador = mensajeGanador; }
+
+    public void reiniciarTiempo() {
+        this.tiempoRestante = 10;
+        this.mensajeGanador = "";
+    }
 
     public void mostrarVentana() {
         setVisible(true);

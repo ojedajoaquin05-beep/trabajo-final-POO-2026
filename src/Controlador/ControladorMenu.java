@@ -65,6 +65,9 @@ public class ControladorMenu {
     public void iniciarCombate(){
         CardLayout botones = vista.getGestorBotones(); 
         JPanel contenedor = vista.getPanelContenedor();
+
+        vista.reiniciarTiempo(); // <--- reiniciamos el reloj a 99 
+        contadorTicks = 0; // Reiniciar el contador de ticks al iniciar un nuevo combate    
         
         botones.show(contenedor, "BOTON_JUEGO");
 
@@ -73,11 +76,38 @@ public class ControladorMenu {
         gameLoop.start(); // inicializo el motor del juego a 60 FPS
     }
 
+    private int contadorTicks = 0; // Contador de ticks del juego
+
     private void configurarGameLoop() {
         gameLoop = new Timer(16, e -> {
+
+            if (vista.getTiempoRestante() > 0) {
+                contadorTicks++;
+                if (contadorTicks >= 60) {
+                    vista.setTiempoRestante(vista.getTiempoRestante() - 1);
+                    contadorTicks = 0;
+                }
+            }
+
+            if (vista.getTiempoRestante() == 0) {
+                evaluarGanadorPorTiempo();
+            }
             // aca va ir la fisica del juego
 
             vista.getPantallaJugar().repaint(); // se redibuja la pantalla
         });
+    }
+
+    private void evaluarGanadorPorTiempo() {
+        int vidaP1 = 100;
+        int vidaP2 = 80;
+
+        if (vidaP1 > vidaP2) {
+            vista.setMensajeGanador("Jugador 1 gana por tiempo");
+        } else if (vidaP2 > vidaP1) {
+            vista.setMensajeGanador("Jugador 2 gana por tiempo");
+        } else {
+            vista.setMensajeGanador("Empate por tiempo");
+        }
     }
 }
