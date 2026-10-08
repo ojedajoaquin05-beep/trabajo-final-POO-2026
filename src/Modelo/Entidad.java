@@ -1,79 +1,85 @@
 package Modelo;
-//abstract porque es el molde/base para otros pj's
-public class entidad extends colision {
-	private String nombre;
-	private int posicionX;
-	private int posicionY;
-	private boolean seleccionado;
-	private int vida;
-	private int vidaMaxima;
-	private int ataque;
-	private boolean personaje1; 
 
-	public entidad(String nombre, int posicionX, int posicionY, int vida, int ataque, boolean personage1) {
-		this.nombre = nombre;
-		this.posicionX = posicionX;
-		this.posicionY = posicionY;
-		this.vidaMaxima = vida;
-		this.vida = vida;
-		this.ataque = ataque;
-		this.personaje1 = personaje1;
-		this.seleccionado = false;
-	}
+import java.awt.Rectangle;
 
-	public void recibirdanio(int cantidad) {
-		this.vida -= cantidad;
-		if (this.vida < 0) {
-			this.vida = 0;
-		}
-	}
+// abstract porque es el molde/base para otros pj's
+public abstract class Entidad implements Colision {
+    
+    // Usamos protected para que la clase hija (Luchador) pueda acceder y modificarlos
+    protected String nombre;
+    protected float posicionX; // Lo pasamos a float para que el movimiento sea más fluido
+    protected float posicionY;
+    protected boolean seleccionado;
+    protected int vida;
+    protected int vidaMaxima;
+    protected int ataque;
+    
+    // Atributos de colisión (hitbox)
+    protected int ancho = 40;
+    protected int alto = 80;
 
-	public boolean estaVivo() {
-		return this.vida > 0;	
-	}
+    public Entidad(String nombre, float posicionX, float posicionY, int vida, int ataque) {
+        this.nombre = nombre;
+        this.posicionX = posicionX;
+        this.posicionY = posicionY;
+        this.vidaMaxima = vida;
+        this.vida = vida;
+        this.ataque = ataque;
+        this.seleccionado = false;
+    }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public void recibirdanio(int cantidad) {
+        this.vida -= cantidad;
+        if (this.vida < 0) {
+            this.vida = 0;
+        }
+    }
 
-	public int getPosicionX() {
-		return posicionX;	
-	}
+    public boolean estaVivo() {
+        return this.vida > 0;   
+    }
 
-	public void setPosicionX(int posicionX) {
-		this.posicionX = posicionX;
-	}
+    // estos metodos se reescriben porque cada personaje tiene su propia altura y ancho. por eso se reescribe 
+    @Override
+    public int x() { return Math.round(posicionX); }
 
-	public int getPosicionY() {
-		return posicionY;
-	}
+    @Override
+    public int y() { return Math.round(posicionY); }
 
-	public void setPosicionY(int posicionY) {
-		this.posicionY = posicionY;
-	}
+    @Override
+    public int ancho() { return ancho; }
 
-	public boolean isSeleccionado() {
-		return seleccionado;
-	}
+    @Override
+    public int alto() { return alto; }
 
-	public void setSeleccionado(boolean seleccionado) {
-		this.seleccionado = seleccionado;
-	}
+    @Override
+    public Rectangle getLimites() {
+        return new Rectangle(Math.round(posicionX), Math.round(posicionY), ancho, alto);
+    }
 
-	public int getVida() {
-		return vida;
-	}
+    @Override
+    public boolean colisionaCon(Colision otro) {
+        return getLimites().intersects(otro.getLimites());
+    }
 
-	public int getVidaMaxima() {
-		return vidaMaxima;
-	}
+    // getters y setters
+    public String getNombre() { return nombre; }
+    
+    public float getPosicionX() { return posicionX; }
+    public void setPosicionX(float posicionX) { this.posicionX = posicionX; }
+    
+    public float getPosicionY() { return posicionY; }
+    public void setPosicionY(float posicionY) { this.posicionY = posicionY; }
+    
+    public boolean isSeleccionado() { return seleccionado; }
+    public void setSeleccionado(boolean seleccionado) { this.seleccionado = seleccionado; }
+    
+    public int getVida() { return vida; }
+    public int getVidaMaxima() { return vidaMaxima; }
+    public int getAtaque() { return ataque; }
 
-	public int getAtaque() {
-		return ataque;
-	}
-
-	public boolean isPersonaje1() {
-		return personaje1;
-	}
-
+    public void mover(float dX, float dY){
+        this.posicionX += dX;
+        this.posicionY += dY;
+    }
 }

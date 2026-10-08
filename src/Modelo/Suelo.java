@@ -2,7 +2,7 @@ package Modelo;
 
 import java.awt.Rectangle;
 
-public class Suelo implements Colision {
+public abstract class Suelo implements Colision {
     private final int x;
     private final int y;
     private final int ancho;
@@ -36,13 +36,13 @@ public class Suelo implements Colision {
     }
 
     @Override
-    public Rectangle limites() {
+    public Rectangle getLimites() {
         return new Rectangle(x, y, ancho, alto);
     }
 
     @Override
     public boolean colisionaCon(Colision otro) {
-        return limites().intersects(otro.limites());
+        return getLimites().intersects(otro.getLimites());
     }
     
 }

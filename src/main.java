@@ -1,25 +1,22 @@
-import controlador.ControladorJuego;
-import vista.VentanaJuego;
-
+import Controlador.ControladorMenu;
+import Controlador.ControladorTeclado;
+import Modelo.Juego;
+import Vista.VentanaJuego;
 import javax.swing.SwingUtilities;
 
-public class Main {
+public class main {
 	public static VentanaJuego ventana;
-	public static ControladorJuego controlador;
+	public static ControladorMenu controlador;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            try {
-                Class<?> ventanaClass = Class.forName("vista.VentanaJuego");
-                ventana = ventanaClass.getDeclaredConstructor().newInstance();
+            VentanaJuego vista = new VentanaJuego();
+            Juego modeloJuego = new Juego();
+            ControladorTeclado teclado = new ControladorTeclado();
+            ControladorMenu controlador = new ControladorMenu(vista,modeloJuego, teclado);
+            vista.mostrarVentana();
 
-                Class<?> controladorClass = Class.forName("controlador.ControladorJuego");
-                controlador = controladorClass.getDeclaredConstructor().newInstance();
-
-                ventanaClass.getMethod("mostrarVentana").invoke(ventana);
-            } catch (Exception e) {
-                throw new RuntimeException("No se pudo inicializar la ventana o el controlador.", e);
-            }
         });
     }
-}
+    }
+
