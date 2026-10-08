@@ -170,7 +170,10 @@ public class SeleccionPersonaje extends JPanel {
         personajeP1 = null;
         personajeP2 = null;
         escenarioSeleccionado = null;
-        lblTituloPersonajes.setText("Selecciona tu personaje");
+
+        if (lblTituloPersonajes != null) {
+            lblTituloPersonajes.setText("Selecciona tu personaje");
+        }
         subGestorVistas.show(subContenedor, "PANEL_PERSONAJES");
     }
 

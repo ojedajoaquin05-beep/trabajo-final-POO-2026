@@ -28,15 +28,17 @@ public class ControladorMenu {
 
         configurarGameLoop();
 
-        vista.getBtnJugar().addActionListener(evento -> {botones.show(contenedor, "PANTALLA_SELECCION"); 
-            
-    });
+        vista.getBtnJugar().addActionListener(evento -> {
+            vista.getPantallaSeleccionPersonaje().reiniciarSeleccion();
+            botones.show(contenedor, "PANTALLA_SELECCION");     
+        });
 
         vista.getPantallaSeleccionPersonaje().setAlFinalizarSeleccion(() -> {
             iniciarCombate();
         });
 
         vista.getPantallaSeleccionPersonaje().getBtnVolver().addActionListener(evento -> {
+            vista.getPantallaSeleccionPersonaje().reiniciarSeleccion();
             botones.show(contenedor, "BOTON_MENU");
         });
 
