@@ -28,13 +28,16 @@ public class ControladorMenu {
 
         configurarGameLoop();
 
-        vista.getBtnJugar().addActionListener(evento -> {botones.show(contenedor, "BOTON_JUEGO"); 
+        vista.getBtnJugar().addActionListener(evento -> {botones.show(contenedor, "PANTALLA_SELECCION"); 
             
-            this.teclado.configurarTeclas(vista.getPantallaJugar());
-            
-            vista.getPantallaJugar().requestFocusInWindow(); 
-            
-            gameLoop.start(); // inicializo el motor del juego a 60 FPS
+    });
+
+        vista.getPantallaSeleccionPersonaje().setAlFinalizarSeleccion(() -> {
+            iniciarCombate();
+        });
+
+        vista.getPantallaSeleccionPersonaje().getBtnVolver().addActionListener(evento -> {
+            botones.show(contenedor, "BOTON_MENU");
         });
 
         vista.getBtnOpciones().addActionListener(evento -> {
@@ -55,6 +58,17 @@ public class ControladorMenu {
         vista.getBtnVolverOpciones().addActionListener(evento -> {
             botones.show(contenedor, "BOTON_MENU");
         });
+    }
+
+    public void iniciarCombate(){
+        CardLayout botones = vista.getGestorBotones(); 
+        JPanel contenedor = vista.getPanelContenedor();
+        
+        botones.show(contenedor, "BOTON_JUEGO");
+
+        this.teclado.configurarTeclas(vista.getPantallaJugar());
+        vista.getPantallaJugar().requestFocusInWindow();
+        gameLoop.start(); // inicializo el motor del juego a 60 FPS
     }
 
     private void configurarGameLoop() {

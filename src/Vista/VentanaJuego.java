@@ -23,6 +23,7 @@ public class VentanaJuego extends JFrame {
     private final CardLayout gestorBotones;
     private final JPanel panelContenedor; //lo utilizo para distribuir los botones
     private JPanel pantallaJugar;
+    private SeleccionPersonaje pantallaSeleccionPersonaje;
     
     private BufferedImage spriteQuieto; // Acá guardamos solo 1 sprite recortado
     private final Image imagenFondoJuego = new ImageIcon("assets/Backgrounds/City4.png").getImage();
@@ -51,9 +52,11 @@ public class VentanaJuego extends JFrame {
  
         JPanel menuPrincipal = crearPanelMenu();
         crearPanelJugar(); //inicializo el panel de juego
+        pantallaSeleccionPersonaje = new SeleccionPersonaje(); //inicializo el panel de seleccion de personaje
         JPanel pantallaOpciones = crearPanelOpciones();
 
         panelContenedor.add(menuPrincipal, "BOTON_MENU");
+        panelContenedor.add(pantallaSeleccionPersonaje, "PANTALLA_SELECCION");
         panelContenedor.add(pantallaJugar,"BOTON_JUEGO");
         panelContenedor.add(pantallaOpciones, "BOTON_OPCIONES");
 
@@ -171,6 +174,7 @@ public class VentanaJuego extends JFrame {
     public CardLayout getGestorBotones() { return gestorBotones; }
     public JPanel getPanelContenedor() { return panelContenedor; }
     public JPanel getPantallaJugar() { return pantallaJugar; } 
+    public SeleccionPersonaje getPantallaSeleccionPersonaje() { return pantallaSeleccionPersonaje; }
 
     public void mostrarVentana() {
         setVisible(true);
