@@ -7,8 +7,8 @@ public abstract class Entidad implements Colision {
     
     // Usamos protected para que la clase hija (Luchador) pueda acceder y modificarlos
     protected String nombre;
-    protected float posicionX; // Lo pasamos a float para que el movimiento sea más fluido
-    protected float posicionY;
+    protected int  posicionX; // Lo pasamos a float para que el movimiento sea más fluido
+    protected int posicionY;
     protected boolean seleccionado;
     protected int vida;
     protected int vidaMaxima;
@@ -18,7 +18,7 @@ public abstract class Entidad implements Colision {
     protected int ancho = 40;
     protected int alto = 80;
 
-    public Entidad(String nombre, float posicionX, float posicionY, int vida, int ataque) {
+    public Entidad(String nombre, int posicionX, int posicionY, int vida, int ataque) {
         this.nombre = nombre;
         this.posicionX = posicionX;
         this.posicionY = posicionY;
@@ -65,11 +65,11 @@ public abstract class Entidad implements Colision {
     // getters y setters
     public String getNombre() { return nombre; }
     
-    public float getPosicionX() { return posicionX; }
-    public void setPosicionX(float posicionX) { this.posicionX = posicionX; }
+    public int getPosicionX() { return posicionX; }
+    public void setPosicionX(int posicionX) { this.posicionX = posicionX; }
     
-    public float getPosicionY() { return posicionY; }
-    public void setPosicionY(float posicionY) { this.posicionY = posicionY; }
+    public int getPosicionY() { return posicionY; }
+    public void setPosicionY(int posicionY) { this.posicionY = posicionY; }
     
     public boolean isSeleccionado() { return seleccionado; }
     public void setSeleccionado(boolean seleccionado) { this.seleccionado = seleccionado; }
