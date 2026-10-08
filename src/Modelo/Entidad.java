@@ -7,7 +7,7 @@ public abstract class Entidad implements Colision {
     
     // Usamos protected para que la clase hija (Luchador) pueda acceder y modificarlos
     protected String nombre;
-    protected int  posicionX; // Lo pasamos a float para que el movimiento sea más fluido
+    protected int  posicionX; 
     protected int posicionY;
     protected boolean seleccionado;
     protected int vida;
