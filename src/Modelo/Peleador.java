@@ -78,8 +78,18 @@ public class Peleador extends Entidad {
     public void setMirandoDerecha(boolean mirandoDerecha) { this.MirandoDerecha = mirandoDerecha; }
 
 
-    @Override
+       @Override
     public Rectangle getLimites(){
-        return new Rectangle(posicionX,posicionY, 64, 64); // hitbox de 64x64 para los peleadores
+        return new Rectangle(posicionX,posicionY, 300, 300); // hitbox de 64x64 para los peleadores
+    }
+
+    @Override 
+    public int ancho(){
+        return 300;
+    }
+
+    @Override 
+    public int alto(){
+        return 300;
     }
 }
