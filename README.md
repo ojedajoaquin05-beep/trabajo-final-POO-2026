@@ -6,38 +6,34 @@
 
 - Luna  Joaquin 
 - Ojeda Joaquin  
-- Gonzalez Leylen
-- Peralta Gustavo
+- Luz Clara Gustavo
+- Liñeiro Federico
 
 ## 2. Dominio y Alcance del Sistema 
 
 ### Descripción del Problema
-Se busca desarrollar una aplicación de escritorio correspondiente al género plataform fighting, basada en un torneo o "Torre de Poder", en el que el jugador deberá seleccionar un personaje y avanzar a través de una serie de combates hasta llegar al enfrentamiento final.
-El juego contará inicialmente con 3 personajes jugables, cada uno con características y habilidades diferentes. El jugador deberá superar distintos oponentes y minijefes a medida que avance en el torneo, hasta enfrentarse al jefe final.
+Se busca desarrollar una aplicación de escritorio correspondiente al género plataform fighting, cosistiendo en batallas cortas entre jugadores. Cada jugador podra elegir entre 2 personajes para jugar.
+El juego contará inicialmente con 2 personajes jugables, cada uno con características y habilidades diferentes.
 
 ### Objetivo del Sistema
 El sistema será un juego funcional y extensible que permitirá al jugador experimentar las mecánicas básicas de un juego de peleas 2D.
-El diseño buscará mantener una estructura organizada y modular que permita agregar posteriormente nuevos personajes, oponentes, habilidades, eventos o combates, aplicando los conceptos del paradigma orientado a objetos vistos durante la materia.
+El diseño buscará mantener una estructura organizada y modular que permita agregar posteriormente nuevos personajes, habilidades, eventos o combates, aplicando los conceptos del paradigma orientado a objetos vistos durante la materia.
 
 ### Funcionalidades Principales (Features)
 **Selección de Personaje:
-    El jugador podrá seleccionar uno de los personajes disponibles.
+    Los jugadores podrán seleccionar uno de los personajes disponibles.
     Cada personaje contará con características y habilidades diferentes.
 **Sistema de Combates:
-    El jugador se enfrentará a diferentes oponentes controlados por el sistema.
+    Los jugadores controlaran a sus personajes para pelear entre si.
     Los personajes contarán con ataques básicos y habilidades especiales.
-    Los combates tendrán una dificultad progresiva.
-    El jugador podrá ganar o perder cada combate según el resultado de la pelea.
-**Sistema de Progresión:
-    El jugador avanzará a través de una serie de combates.
-    La progresión inicial será:
-    Combate → Minijefe → Combate → Minijefe → Jefe Final
-    Los minijefes podrán presentar desafíos o condiciones diferentes.
-**El objetivo final será derrotar al jefe y completar el torneo.
-    Personajes y Oponentes:
-    Existirán diferentes personajes y oponentes.
-    Cada uno podrá contar con características, ataques y habilidades propias.
-    Los oponentes serán controlados por el sistema mediante comportamientos simples adecuados al alcance del proyecto.
+    Los combates seran cortos y tendran una cuenta regresiva.
+    El primer jugador en reducir la vida de su openente a 0 sera el victorioso. O En caso de que se termine el timpo cronometrado, el jugador con mayor cantidad de vida.
+    Durante el combate, ambos jugadores podran generar puntaje por condiciones diferente.
+**El objetivo final sera llegar al mayor puntaje posible en los combates para medirse entre los jugadores.
+    Puntaje en combate:
+    Al dañar al oponente y segun la vida restante al finalizar el combate, los jugadores ganaran puntos.
+    El puntaje de cada combate se guardara una base de datos junto a 3 letras como identificativo.
+    Cada combate tiene un puntaje individual.
 **Interfaz Gráfica (IGU):
     Pantalla de inicio y selección de personaje.
     Visualización del combate, personajes y estado de los jugadores.
@@ -65,6 +61,6 @@ El diseño buscará mantener una estructura organizada y modular que permita agr
 
 - **Lenguaje:** Java 17
 - **IDE:** Visual Studio Code
-- **Base de Datos:** MySQL 8.0 (para persistencia de High Scores)
+- **Base de Datos:** SQLite (para persistencia de High Scores)
 - **Framework de IGU:** Java Swing
 - **Control de Versiones:** Git y GitHub Classroom
