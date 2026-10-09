@@ -27,7 +27,7 @@ public class VentanaJuego extends JFrame {
     private JPanel pantallaJugar;
     private SeleccionPersonaje pantallaSeleccionPersonaje;
 
-    private int tiempoRestante = 10;
+    private long tiempoRestante = 10000000000L;
     private String mensajeGanador = "";
     private BufferedImage[] spritesP1; // Arreglos de sprites para los personajes y fondo dinámico
     private BufferedImage[] spritesP2;
@@ -178,8 +178,8 @@ public class VentanaJuego extends JFrame {
 
                 // dibujar contador de tiempo
                 g.setFont(new Font("arial", Font.BOLD, 48));
-                g.setColor(tiempoRestante <= 10 ? Color.RED : Color.YELLOW); // cambia a rojo si quedan 10 segundos o menos
-                String textoTiempo = String.valueOf(tiempoRestante);
+                g.setColor(tiempoRestante <= 10000000000L ? Color.RED : Color.YELLOW); // cambia a rojo si quedan 10 segundos o menos
+                String textoTiempo = String.format("%02.0f", Math.ceil(tiempoRestante / 1000000000));
                 int anchoTexto = g.getFontMetrics().stringWidth(textoTiempo);
                 g.drawString(textoTiempo, (getWidth() / 2 - anchoTexto / 2), 60);
 
@@ -260,8 +260,8 @@ public class VentanaJuego extends JFrame {
     public JPanel getPantallaJugar() { return pantallaJugar; } 
     public SeleccionPersonaje getPantallaSeleccionPersonaje() { return pantallaSeleccionPersonaje; }
 
-    public int getTiempoRestante() { return tiempoRestante; }
-    public void setTiempoRestante(int tiempoRestante) { this.tiempoRestante = tiempoRestante; }
+    public long getTiempoRestante() { return tiempoRestante; }
+    public void setTiempoRestante(long tiempoRestante) { this.tiempoRestante = tiempoRestante; }
 
     public String getMensajeGanador() { return mensajeGanador; }
     public void setMensajeGanador(String mensajeGanador) { this.mensajeGanador = mensajeGanador; }
@@ -269,7 +269,7 @@ public class VentanaJuego extends JFrame {
     public BufferedImage[] getSpritesP2() { return spritesP2; }
     public void setModeloJuego(Juego modeloJuego) {this.modeloJuego = modeloJuego;}
     public void reiniciarTiempo() {
-        this.tiempoRestante = 10;
+        this.tiempoRestante = 10000000000L;
         this.mensajeGanador = "";
     }
 

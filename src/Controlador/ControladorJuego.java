@@ -12,7 +12,7 @@ public class ControladorJuego {
     private final ControladorTeclado teclado;
 
     private Timer gameLoop;
-    private int contadorTicks = 0; // Contador de ticks del juego
+    private long timestampUltimoFrame = 0;
 
     public ControladorJuego(VentanaJuego vista, Juego modeloJuego, ControladorTeclado teclado) {
         if (vista == null || modeloJuego == null || teclado == null) {
@@ -27,8 +27,7 @@ public class ControladorJuego {
 
     public void iniciarPartida() {
         vista.reiniciarTiempo(); // Reiniciamos el reloj de la partida
-        contadorTicks = 0;
-
+        this.timestampUltimoFrame = System.nanoTime();
         this.teclado.configurarTeclas(vista.getPantallaJugar());
         vista.getPantallaJugar().requestFocusInWindow();
 
@@ -58,15 +57,14 @@ public class ControladorJuego {
             }
 
             //Control del temporizador de combate
-            if (vista.getTiempoRestante() > 0) {
-                contadorTicks++;
-                if (contadorTicks >= 60) {
-                    vista.setTiempoRestante(vista.getTiempoRestante() - 1);
-                    contadorTicks = 0;
-                }
+            if (timestampUltimoFrame > 0 && vista.getTiempoRestante() > 0) {
+            	// Calcula el tiempo transcurrido exacto entre frames para evitar que el contador corra más lento en caso de no poder sostener 60 fps constantes
+            	long timestamp = System.nanoTime();
+            	vista.setTiempoRestante(vista.getTiempoRestante() - (timestamp - timestampUltimoFrame));
+            	timestampUltimoFrame = System.nanoTime();
             }
 
-            if (vista.getTiempoRestante() == 0) {
+            if (vista.getTiempoRestante() <= 0) {
                 evaluarGanadorPorTiempo();
             }
 
