@@ -1,6 +1,5 @@
 package Modelo;
 
-import java.awt.Rectangle;
 
 public class Peleador extends Entidad { 
     
@@ -32,6 +31,8 @@ public class Peleador extends Entidad {
         this.frameActual = 0;
         this.contadorTicksAnimacion = 0;
         this.MirandoDerecha = true;
+        this.ancho = 400;
+        this.alto = 400;
     }
        
     public void cambiarEstado(EstadoPeleador nuevoEstado) {
@@ -112,18 +113,4 @@ public class Peleador extends Entidad {
         return velocidadY;
     }
 
-    @Override
-    public Rectangle getLimites(){
-        return new Rectangle(posicionX,posicionY, 300, 300); // hitbox de 64x64 para los peleadores
-    }
-
-    @Override 
-    public int ancho(){
-        return 300;
-    }
-
-    @Override 
-    public int alto(){
-        return 300;
-    }
 }

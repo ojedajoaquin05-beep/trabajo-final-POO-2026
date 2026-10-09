@@ -1,5 +1,6 @@
 package Controlador;
 
+import Modelo.Escenario;
 import Modelo.Juego;
 import Modelo.Peleador;
 import Vista.VentanaJuego;
@@ -26,7 +27,6 @@ public class ControladorJuego {
     }
 
     public void iniciarPartida() {
-        vista.reiniciarTiempo(); // Reiniciamos el reloj de la partida
         this.timestampUltimoFrame = System.nanoTime();
         this.teclado.configurarTeclas(vista.getPantallaJugar());
         vista.getPantallaJugar().requestFocusInWindow();
@@ -53,34 +53,36 @@ public class ControladorJuego {
             if(p2 != null) p2.aplicarFisica();
 
             //Fisicas y límites del escenario
-            if (modeloJuego.getEscenarioActual() != null) {
-                if (modeloJuego.getJugador1() != null) {
+            Escenario escenario = modeloJuego.getEscenarioActual();
+            if (escenario != null) {
+                if (p1 != null) {
 
                     //verifica si toca el suelo 
-                    boolean sobreSueloP1 = modeloJuego.getEscenarioActual().estaSobreSuelo(p1);
+                    boolean sobreSueloP1 = escenario.estaSobreSuelo(p1);
                     p1.setEnElSuelo(sobreSueloP1);
-                    
-                    modeloJuego.getEscenarioActual().delimitarMovimiento(modeloJuego.getJugador1());
+
+                    escenario.delimitarMovimiento(p1);
                 }
-                if (modeloJuego.getJugador2() != null) {
+                if (p2 != null) {
 
                     //verifica si toca el suelo 
-                    boolean sobreSueloP2 = modeloJuego.getEscenarioActual().estaSobreSuelo(p2);
-                    
-                    modeloJuego.getEscenarioActual().delimitarMovimiento(modeloJuego.getJugador2());
+                    boolean sobreSueloP2 = escenario.estaSobreSuelo(p2);
+                    p2.setEnElSuelo(sobreSueloP2);
+
+                    escenario.delimitarMovimiento(p2);
                 }
             }
 
             //Control del temporizador de combate
-            if (timestampUltimoFrame > 0 && vista.getTiempoRestante() > 0) {
+            if (!modeloJuego.hayGanador()) {
             	// Calcula el tiempo transcurrido exacto entre frames para evitar que el contador corra más lento en caso de no poder sostener 60 fps constantes
             	long timestamp = System.nanoTime();
-            	vista.setTiempoRestante(vista.getTiempoRestante() - (timestamp - timestampUltimoFrame));
-            	timestampUltimoFrame = System.nanoTime();
-            }
+            	modeloJuego.descontarTiempo(timestamp - timestampUltimoFrame);
+            	timestampUltimoFrame = timestamp;
 
-            if (vista.getTiempoRestante() <= 0) {
-                evaluarGanadorPorTiempo();
+            	if (modeloJuego.tiempoAgotado()) {
+            	    modeloJuego.definirGanadorPorTiempo();
+            	}
             }
 
             //  Redibujar la pantalla
@@ -142,19 +144,6 @@ public class ControladorJuego {
             if (seMueveP2 && p2.isEnElSuelo()) {
                 p2.actualizarAnimacion(4);
             }
-        }
-    }
-
-    private void evaluarGanadorPorTiempo() {
-        int vidaP1 = (modeloJuego.getJugador1() != null) ? modeloJuego.getJugador1().getVida() : 100;
-        int vidaP2 = (modeloJuego.getJugador2() != null) ? modeloJuego.getJugador2().getVida() : 80;
-
-        if (vidaP1 > vidaP2) {
-            vista.setMensajeGanador("Jugador 1 gana por tiempo");
-        } else if (vidaP2 > vidaP1) {
-            vista.setMensajeGanador("Jugador 2 gana por tiempo");
-        } else {
-            vista.setMensajeGanador("Empate por tiempo");
         }
     }
 }
