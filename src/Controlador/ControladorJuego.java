@@ -43,15 +43,30 @@ public class ControladorJuego {
     private void configurarGameLoop() {
         gameLoop = new Timer(16, e -> {
 
+            Peleador p1 = modeloJuego.getJugador1();
+            Peleador p2 = modeloJuego.getJugador2();
+
             //Procesar movimiento horizontal únicamente (A/D y Flechas)
             procesarMovimiento();
+
+            if(p1 != null) p1.aplicarFisica();
+            if(p2 != null) p2.aplicarFisica();
 
             //Fisicas y límites del escenario
             if (modeloJuego.getEscenarioActual() != null) {
                 if (modeloJuego.getJugador1() != null) {
+
+                    //verifica si toca el suelo 
+                    boolean sobreSueloP1 = modeloJuego.getEscenarioActual().estaSobreSuelo(p1);
+                    p1.setEnElSuelo(sobreSueloP1);
+                    
                     modeloJuego.getEscenarioActual().delimitarMovimiento(modeloJuego.getJugador1());
                 }
                 if (modeloJuego.getJugador2() != null) {
+
+                    //verifica si toca el suelo 
+                    boolean sobreSueloP2 = modeloJuego.getEscenarioActual().estaSobreSuelo(p2);
+                    
                     modeloJuego.getEscenarioActual().delimitarMovimiento(modeloJuego.getJugador2());
                 }
             }
@@ -80,6 +95,11 @@ public class ControladorJuego {
             float vel = p1.getVelocidad();
             boolean seMueveP1 = false;
 
+            //salto
+            if(teclado.isP1Arriba()){
+                p1.saltar();
+            }
+
             if (teclado.isP1Derecha()) {
                 p1.mover(vel, 0);
                 p1.setMirandoDerecha(true);
@@ -92,7 +112,7 @@ public class ControladorJuego {
             }
 
             // Animar únicamente si se está moviendo
-            if (seMueveP1) {
+            if (seMueveP1 && p1.isEnElSuelo()) {
                 p1.actualizarAnimacion(4); // 2x2 = 4 frames
             }
         }
@@ -102,6 +122,11 @@ public class ControladorJuego {
         if (p2 != null) {
             float vel = p2.getVelocidad();
             boolean seMueveP2 = false;
+
+             //salto
+            if(teclado.isP2Arriba()){
+                p2.saltar();
+            }
 
             if (teclado.isP2Derecha()) {
                 p2.mover(vel, 0);
@@ -114,7 +139,7 @@ public class ControladorJuego {
                 seMueveP2 = true;
             }
 
-            if (seMueveP2) {
+            if (seMueveP2 && p2.isEnElSuelo()) {
                 p2.actualizarAnimacion(4);
             }
         }
