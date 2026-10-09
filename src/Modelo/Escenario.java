@@ -1,6 +1,5 @@
 package Modelo;
 
-import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public abstract class Escenario {
     if (anchoVentana <= 0 || altoVentana <= 0){
     throw new IllegalArgumentException("las dimensiones de las ventanas deben ser mayores a cero");
     }
-    if (limitePisoY <= 0 || altoVentana <= 0){
+    if (limitePisoY <= 0 || limitePisoY >= altoVentana){
         throw new IllegalArgumentException("El límite del piso debe estar dentro del rango de la ventana.");   
     }
 

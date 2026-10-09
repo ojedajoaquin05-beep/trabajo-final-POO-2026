@@ -1,18 +1,16 @@
 package Controlador;
 
 import Modelo.Juego; 
+import Vista.SeleccionPersonaje;
 import Vista.VentanaJuego;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
-import javax.swing.Timer;
 
 public class ControladorMenu {
     
     private final VentanaJuego vista;
     private final Juego modeloJuego; 
-    private final ControladorTeclado teclado; 
-    
-    private Timer gameLoop;
+    private final ControladorJuego controladorJuego; 
 
     public ControladorMenu(VentanaJuego vista, Juego modeloJuego, ControladorTeclado teclado) {
         if (vista == null) {
@@ -21,12 +19,11 @@ public class ControladorMenu {
         
         this.vista = vista;
         this.modeloJuego = modeloJuego;
-        this.teclado = teclado; 
+        // Instanciamos el controlador del juego pasándole teclado y vista
+        this.controladorJuego = new ControladorJuego(vista, modeloJuego, teclado);
 
         CardLayout botones = vista.getGestorBotones(); 
         JPanel contenedor = vista.getPanelContenedor();
-
-        configurarGameLoop();
 
         vista.getBtnJugar().addActionListener(evento -> {
             vista.getPantallaSeleccionPersonaje().reiniciarSeleccion();
@@ -53,7 +50,7 @@ public class ControladorMenu {
 
         // BOTONES DE RETORNOS
         vista.getBtnVolverJugar().addActionListener(evento -> {
-            gameLoop.stop(); 
+            controladorJuego.detenerPartida(); 
             botones.show(contenedor, "BOTON_MENU");
         }); 
         
@@ -63,51 +60,26 @@ public class ControladorMenu {
     }
 
     public void iniciarCombate(){
+        System.out.println("inicia combate");
+        SeleccionPersonaje seleccionPanel = vista.getPantallaSeleccionPersonaje();
+        String personajeP1 = seleccionPanel.getPersonajeP1();
+        String personajeP2 = seleccionPanel.getPersonajeP2();
+        String escenarioSeleccionado = seleccionPanel.getEscenarioSeleccionado();
+
+        System.out.println("Personaje P1: " + personajeP1 + ", Personaje P2: " + personajeP2 + ", Escenario: " + escenarioSeleccionado);
+
+        int anchoVentana = vista.getWidth();
+        int altoVentana = vista.getHeight();
+
+        modeloJuego.inicializarJuego(personajeP1, personajeP2, escenarioSeleccionado, anchoVentana, altoVentana); 
+        System.out.println("Juego inicializado con personajes y escenario seleccionados.");
+        vista.prepararGraficosCombate(personajeP1, personajeP2, escenarioSeleccionado); 
+        System.out.println("graficos cargados");
+        
         CardLayout botones = vista.getGestorBotones(); 
         JPanel contenedor = vista.getPanelContenedor();
-
-        vista.reiniciarTiempo(); // <--- reiniciamos el reloj a 99 
-        contadorTicks = 0; // Reiniciar el contador de ticks al iniciar un nuevo combate    
-        
         botones.show(contenedor, "BOTON_JUEGO");
 
-        this.teclado.configurarTeclas(vista.getPantallaJugar());
-        vista.getPantallaJugar().requestFocusInWindow();
-        gameLoop.start(); // inicializo el motor del juego a 60 FPS
-    }
-
-    private int contadorTicks = 0; // Contador de ticks del juego
-
-    private void configurarGameLoop() {
-        gameLoop = new Timer(16, e -> {
-
-            if (vista.getTiempoRestante() > 0) {
-                contadorTicks++;
-                if (contadorTicks >= 60) {
-                    vista.setTiempoRestante(vista.getTiempoRestante() - 1);
-                    contadorTicks = 0;
-                }
-            }
-
-            if (vista.getTiempoRestante() == 0) {
-                evaluarGanadorPorTiempo();
-            }
-            // aca va ir la fisica del juego
-
-            vista.getPantallaJugar().repaint(); // se redibuja la pantalla
-        });
-    }
-
-    private void evaluarGanadorPorTiempo() {
-        int vidaP1 = 100;
-        int vidaP2 = 80;
-
-        if (vidaP1 > vidaP2) {
-            vista.setMensajeGanador("Jugador 1 gana por tiempo");
-        } else if (vidaP2 > vidaP1) {
-            vista.setMensajeGanador("Jugador 2 gana por tiempo");
-        } else {
-            vista.setMensajeGanador("Empate por tiempo");
-        }
+        controladorJuego.iniciarPartida(); 
     }
 }

@@ -1,5 +1,7 @@
 package Vista;
 
+import Modelo.Juego;
+import Modelo.Peleador;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -27,8 +29,11 @@ public class VentanaJuego extends JFrame {
 
     private int tiempoRestante = 10;
     private String mensajeGanador = "";
+    private BufferedImage[] spritesP1; // Arreglos de sprites para los personajes y fondo dinámico
+    private BufferedImage[] spritesP2;
+    private Image imagenFondoDinamico;
+    private Juego modeloJuego; // Referencia al modelo del juego
 
-    
     private BufferedImage spriteQuieto; // Acá guardamos solo 1 sprite recortado
     private final Image imagenFondoJuego = new ImageIcon("assets/Backgrounds/City4.png").getImage();
 
@@ -125,11 +130,50 @@ public class VentanaJuego extends JFrame {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g); 
-                if (imagenFondoJuego != null) {
+                if (imagenFondoDinamico != null){
+                  g.drawImage(imagenFondoDinamico, 0, 0, getWidth(), getHeight(), this);
+                } else if (imagenFondoJuego != null) {
                     g.drawImage(imagenFondoJuego, 0, 0, getWidth(), getHeight(), this);
                 } else {
                     g.setColor(Color.BLACK); //se agrega solamente por si no aparece mi increible imagen de escenario
                     g.fillRect(0, 0, getWidth(), getHeight());
+                }
+
+                if (modeloJuego != null) {
+                    Peleador personaje1 = modeloJuego.getJugador1();
+                    Peleador personaje2 = modeloJuego.getJugador2();
+
+                    //aca dibujamos a los personajes en sus posiciones actuales
+                    if (personaje1 != null && spritesP1 != null && spritesP1.length > 0) {
+                        BufferedImage spriteActualP1 = spritesP1[personaje1.getFrameActual() % spritesP1.length];
+                        int posX1 = personaje1.getPosicionX();
+                        int posY1 = personaje1.getPosicionY();
+                        int ancho1 = spriteActualP1.getWidth();
+                        int alto1 = spriteActualP1.getHeight();
+
+                        if (personaje1.isMirandoDerecha()){
+                            g.drawImage(spriteActualP1, posX1, posY1, ancho1, alto1, null); // Dibuja el sprite normalmente
+                        } else {
+                            // Dibuja el sprite volteado horizontalmente
+                            g.drawImage(spriteActualP1, posX1 + ancho1, posY1, -ancho1, alto1, null);
+                        }
+                    }
+
+                    // Dibujar al personaje 2
+                    if (personaje2 != null && spritesP2 != null && spritesP2.length > 0) {
+                        BufferedImage spriteActualP2 = spritesP2[personaje2.getFrameActual() % spritesP2.length];
+                        int posX2 = personaje2.getPosicionX();
+                        int posY2 = personaje2.getPosicionY();
+                        int ancho2 = spriteActualP2.getWidth();
+                        int alto2 = spriteActualP2.getHeight();
+
+                        if (personaje2.isMirandoDerecha()){
+                            g.drawImage(spriteActualP2, posX2, posY2, ancho2, alto2, null); // Dibuja el sprite normalmente
+                        } else {
+                            // Dibuja el sprite volteado horizontalmente
+                            g.drawImage(spriteActualP2, posX2 + ancho2/2, posY2, -ancho2, alto2, null);
+                        }
+                    }
                 }
 
                 // dibujar contador de tiempo
@@ -188,6 +232,23 @@ public class VentanaJuego extends JFrame {
         return panel;
     }
 
+    public void prepararGraficosCombate(String p1, String p2, String escenario) {
+    String rutaP1 = "referencias/" + p1.toLowerCase() + "_movimiento.png";
+    String rutaP2 = "referencias/" + p2.toLowerCase() + "_movimiento.png";
+
+    // 1. Comprobar si el archivo físico existe en el disco
+    java.io.File archivoP1 = new java.io.File(rutaP1);
+    System.out.println(">>> Buscando P1 en: " + archivoP1.getAbsolutePath()); // eliminar. esto de aca era para encontrar un error.
+    System.out.println(">>> ¿Existe el archivo P1?: " + archivoP1.exists());
+
+    // 2. Cargar los sprites
+    this.spritesP1 = GestorSprites.recortarMatriz(rutaP1, 2, 2);
+    this.spritesP2 = GestorSprites.recortarMatriz(rutaP2, 2, 2);
+
+    // 3. Cargar fondo
+    this.imagenFondoDinamico = new ImageIcon("assets/Backgrounds/" + escenario + ".png").getImage();
+}
+
     public JButton getBtnJugar() { return btnJugar; }
     public JButton getBtnOpciones() { return btnOpciones; }
     public JButton getBtnSalir() { return btnSalir; }
@@ -204,7 +265,9 @@ public class VentanaJuego extends JFrame {
 
     public String getMensajeGanador() { return mensajeGanador; }
     public void setMensajeGanador(String mensajeGanador) { this.mensajeGanador = mensajeGanador; }
-
+    public BufferedImage[] getSpritesP1() { return spritesP1; }
+    public BufferedImage[] getSpritesP2() { return spritesP2; }
+    public void setModeloJuego(Juego modeloJuego) {this.modeloJuego = modeloJuego;}
     public void reiniciarTiempo() {
         this.tiempoRestante = 10;
         this.mensajeGanador = "";
