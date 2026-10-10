@@ -63,19 +63,20 @@ public void definirGanadorPorTiempo() {
     }
 }
 
-public void actualizar() {
-  /*   if (jugador1 != null) {
-        jugador1.actualizarAnimacion(10); // Pasa la cantidad de frames directamente
-        if (escenarioActual != null) {
-            escenarioActual.delimitarMovimiento(jugador1);
-        }
+// Si algún peleador se quedó sin vida, el otro gana por KO
+public void verificarKO() {
+    if (hayGanador()) {return;}
+
+    boolean p1Vivo = jugador1.estaVivo();
+    boolean p2Vivo = jugador2.estaVivo();
+
+    if (!p1Vivo && !p2Vivo) {
+        mensajeGanador = "Doble KO: empate";
+    } else if (!p2Vivo) {
+        mensajeGanador = "Jugador 1 gana por KO";
+    } else if (!p1Vivo) {
+        mensajeGanador = "Jugador 2 gana por KO";
     }
-    if (jugador2 != null) {
-        jugador2.actualizarAnimacion(10); // Pasa la cantidad de frames directamente
-        if (escenarioActual != null) {
-            escenarioActual.delimitarMovimiento(jugador2);
-        }
-    } */ //lo comento pq ahora la logica la maneja controladorJuego y no el modelo, asi que no es necesario que el modelo se actualice a si mismo
 }
 
 public Peleador getJugador1() {

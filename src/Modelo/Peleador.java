@@ -16,7 +16,14 @@ public class Peleador extends Entidad {
     private float gravedad = 0.8f;
     private float fuerzaSalto = -25f;
     private  boolean enElSuelo = true; 
-    
+    private static final int ENFRIAMIENTO_ATAQUE = 30; //  aprox 0,5 s a 60 cuadros por segundo
+    private int ticksEnfriamiento = 0;
+    private static final int ALCANCE_ATAQUE = 350; // Distancia máxima para que un ataque sea efectivo
+    private static final int DURACION_ATAQUE = 20; // ticks que dura la animación de ataque
+    private int ticksAtaque = 0;
+
+
+
     public enum EstadoPeleador {
         QUIETO, MOVIENDOSE, SALTO ,ATACANDO, MUERTO
     }
@@ -88,22 +95,35 @@ public class Peleador extends Entidad {
     }
 
     public void ejecutarAtaque (ActionType tipoAtaque, Peleador oponente){
-        if(oponente == null || !oponente.estaVivo()){
+        if(oponente == null || !oponente.estaVivo() || ticksEnfriamiento > 0) {
             return;
         }
-    
-     cambiarEstado(EstadoPeleador.ATACANDO);
+        ticksEnfriamiento = ENFRIAMIENTO_ATAQUE;
+        ticksAtaque = DURACION_ATAQUE; // Inicia la duración del ataque
+        cambiarEstado(EstadoPeleador.ATACANDO);
 
-    if (colisionaCon(oponente) || obtenerDistancia(oponente) < 150) {
-        int danioBase = (tipoAtaque == ActionType.PUNCH) ? ataque : ataque + 5;
-        oponente.recibirdanio(danioBase);
+    if (estaAlAlcance(oponente)) {
+            int danioBase;
+    switch (tipoAtaque) { //el switch determina el daño segun el ataque que se ejecute
+        case PUNCH:   danioBase = ataque;      break;
+        case KICK:    danioBase = ataque + 5;  break;
+        case SPECIAL: danioBase = ataque + 15; break;
+        default:      danioBase = ataque;
+    }
+    oponente.recibirdanio(danioBase);
     }
 }
 
-private double obtenerDistancia(Entidad otra) {
-    int centroX1 = this.posicionX + (this.ancho / 2);
-    int centroX2 = otra.getPosicionX() + (otra.ancho() / 2);
-    return Math.abs(centroX1 - centroX2);
+    // El rival tiene que estar adelante, dentro del alcance y a una altura similar (Dsps vemos si le implementamos hitbox entre ellos para que no se atraviesen.)
+    private boolean estaAlAlcance(Peleador oponente) {
+    int centroPropio = this.posicionX + (this.ancho / 2);
+    int centroOponente = oponente.getPosicionX() + (oponente.ancho() / 2);
+    int distancia = centroOponente - centroPropio; // positivo: el rival está a la derecha
+
+    boolean rivalAdelante = isMirandoDerecha() ? distancia >= 0 : distancia <= 0;
+    boolean alturaSimilar = Math.abs(this.posicionY - oponente.getPosicionY()) < (this.alto / 2);
+
+    return rivalAdelante && Math.abs(distancia) <= ALCANCE_ATAQUE && alturaSimilar;
 }
 
     // Getters y Setters exclusivos del Peleador
@@ -114,7 +134,7 @@ private double obtenerDistancia(Entidad otra) {
     public int getFrameActual() { return frameActual; }
     public boolean isMirandoDerecha() { return MirandoDerecha; }
     public void setMirandoDerecha(boolean mirandoDerecha) { this.MirandoDerecha = mirandoDerecha; }
-
+    public float getProgresoAtaque() {return 1f - ((float) ticksAtaque / DURACION_ATAQUE); } // Devuelve un valor entre 0 y 1 indicando el progreso del ataque
 
     public boolean isEnElSuelo(){
         return enElSuelo;
@@ -131,5 +151,18 @@ private double obtenerDistancia(Entidad otra) {
     public float getVelocidadY(){
         return velocidadY;
     }
+
+    public void actualizarEnfriamiento() {
+    if (ticksEnfriamiento > 0) {
+        ticksEnfriamiento--;
+    }
+    // Cuando termina el ataque vuelve a SALTO si está en el aire, o a QUIETO si está en el suelo
+    if (estadoActual == EstadoPeleador.ATACANDO) {
+        ticksAtaque--;
+        if (ticksAtaque <= 0) {
+            cambiarEstado(enElSuelo ? EstadoPeleador.QUIETO : EstadoPeleador.SALTO);
+        }
+    }
+}
 
 }

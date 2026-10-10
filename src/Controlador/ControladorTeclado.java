@@ -165,5 +165,26 @@ public class ControladorTeclado {
             @Override
             public void actionPerformed(ActionEvent e) { p2Golpe = false; }
         });
+
+        registrarTecla(panel, "G", "P1_G", v -> p1Patada = v);
+        registrarTecla(panel, "H", "P1_H", v -> p1Especial = v); // botones de ataque del jugador 1
+        registrarTecla(panel, "K", "P2_K", v -> p2Patada = v);   // botones de ataque del jugador 2
+        registrarTecla(panel, "L", "P2_L", v -> p2Especial = v);    
     }
+
+    private void registrarTecla(JPanel panel, String tecla, String nombre, java.util.function.Consumer<Boolean> alCambiar) {
+    panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(tecla), nombre + "_press");
+    panel.getActionMap().put(nombre + "_press", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) { alCambiar.accept(true); }
+    });
+    panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("released " + tecla), nombre + "_release");
+    panel.getActionMap().put(nombre + "_release", new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent e) { alCambiar.accept(false); }
+    }); // este metodo es para no repetir tanto codigo. 
+        
+}  
+
+
 }

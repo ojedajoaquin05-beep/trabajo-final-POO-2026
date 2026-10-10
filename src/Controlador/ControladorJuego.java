@@ -1,5 +1,6 @@
 package Controlador;
 
+import Modelo.ActionType;
 import Modelo.Escenario;
 import Modelo.Juego;
 import Modelo.Peleador;
@@ -40,16 +41,23 @@ public class ControladorJuego {
         }
     }
 
-    private void porcesarAtaque(){
+    private void procesarAtaque() {
         Peleador p1 = modeloJuego.getJugador1();
         Peleador p2 = modeloJuego.getJugador2();
-
         if (p1 == null || p2 == null) return;
-        if (teclado.isP1Golpe()){
-        p1.ejecutarAtaque(Modelo.ActionType.PUNCH, p2);
-        }
-        if (teclado.isP2Golpe()){
-        p2.ejecutarAtaque(Modelo.ActionType.PUNCH, p1);
+
+        atacarSegunTeclas(p1, p2, teclado.isP1Golpe(), teclado.isP1Patada(), teclado.isP1Especial());
+        atacarSegunTeclas(p2, p1, teclado.isP2Golpe(), teclado.isP2Patada(), teclado.isP2Especial());
+    }
+
+    // Traduce las teclas apretadas al tipo de ataque
+    private void atacarSegunTeclas(Peleador atacante, Peleador rival, boolean golpe, boolean patada, boolean especial) {
+        if (golpe) {
+            atacante.ejecutarAtaque(ActionType.PUNCH, rival);
+        } else if (patada) {
+            atacante.ejecutarAtaque(ActionType.KICK, rival);
+        } else if (especial) {
+            atacante.ejecutarAtaque(ActionType.SPECIAL, rival);
         }
     }
 
@@ -59,13 +67,17 @@ public class ControladorJuego {
             Peleador p1 = modeloJuego.getJugador1();
             Peleador p2 = modeloJuego.getJugador2();
 
-            //Procesar movimiento horizontal únicamente (A/D y Flechas)
-            procesarMovimiento();
-            porcesarAtaque();
+                        // Solo se acepta movimiento y ataque mientras la partida siga
+            if (!modeloJuego.hayGanador()) {
+                procesarMovimiento();
+                procesarAtaque();
+                modeloJuego.verificarKO();
+            }
 
             if(p1 != null) p1.aplicarFisica();
             if(p2 != null) p2.aplicarFisica();
-
+            if(p1 != null) p1.actualizarEnfriamiento();
+            if(p2 != null) p2.actualizarEnfriamiento();
             //Fisicas y límites del escenario
             Escenario escenario = modeloJuego.getEscenarioActual();
             if (escenario != null) {
