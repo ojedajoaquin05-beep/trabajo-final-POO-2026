@@ -16,6 +16,9 @@ public class ControladorTeclado {
     private boolean p2Arriba, p2Abajo, p2Izquierda, p2Derecha;
     private boolean p2Golpe, p2Patada, p2Especial;
 
+    //control de pausa
+    private boolean juegoPausadoPulsado;
+
     // getters jugador 1
     public boolean isP1Arriba() { return p1Arriba; }
     public boolean isP1Abajo() { return p1Abajo; }
@@ -34,8 +37,23 @@ public class ControladorTeclado {
     public boolean isP2Patada() { return p2Patada; }
     public boolean isP2Especial() { return p2Especial; }
 
+    public boolean isJuegoPausadoPulsado(){
+        boolean estado = juegoPausadoPulsado;
+        juegoPausadoPulsado = false; 
+        return estado;    
+    }
+
     public void configurarTeclas(JPanel panel) {
-        
+
+        //registrar tecla esc
+        panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "Pausa_press");
+        panel.getActionMap().put("Pausa_press", new AbstractAction() {
+            @Override 
+            public void actionPerformed(ActionEvent e){
+                juegoPausadoPulsado = true;
+            }
+        });
+
         // JUGADOR 1: WASD (Movimiento) | F, G, H (Combate)
         
         // movimiento hacia arriba W (el salto pero hay que ver para codificarlo y tambien que no se pueda saltar en el aire)

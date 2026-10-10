@@ -5,6 +5,10 @@ import Modelo.Escenario;
 import Modelo.Juego;
 import Modelo.Peleador;
 import Vista.VentanaJuego;
+
+import java.awt.CardLayout;
+import javax.swing.JPanel;
+
 import javax.swing.Timer;
 
 public class ControladorJuego {
@@ -15,6 +19,8 @@ public class ControladorJuego {
 
     private Timer gameLoop;
     private long timestampUltimoFrame = 0;
+
+    private boolean pausado = false;
 
     public ControladorJuego(VentanaJuego vista, Juego modeloJuego, ControladorTeclado teclado) {
         if (vista == null || modeloJuego == null || teclado == null) {
@@ -28,6 +34,7 @@ public class ControladorJuego {
     }
 
     public void iniciarPartida() {
+        this.pausado = false;
         this.timestampUltimoFrame = System.nanoTime();
         this.teclado.configurarTeclas(vista.getPantallaJugar());
         vista.getPantallaJugar().requestFocusInWindow();
@@ -40,6 +47,26 @@ public class ControladorJuego {
             gameLoop.stop();
         }
     }
+
+    public void alternarPausa() {
+    pausado = !pausado;
+    CardLayout botones = vista.getGestorBotones();
+    JPanel contenedor = vista.getPanelContenedor();
+
+    if (pausado) {
+        // Ordena al CardLayout mostrar el panel de pausa
+        botones.show(contenedor, "PANTALLA_PAUSA");
+    } else {
+        timestampUltimoFrame = System.nanoTime();
+        // Regresa al panel del juego
+        botones.show(contenedor, "BOTON_JUEGO");
+        vista.getPantallaJugar().requestFocusInWindow();
+    }
+    
+    // Forzar redibujado inmediato del contenedor de tarjetas
+    contenedor.revalidate();
+    contenedor.repaint();
+}
 
     private void procesarAtaque() {
         Peleador p1 = modeloJuego.getJugador1();
@@ -63,6 +90,19 @@ public class ControladorJuego {
 
     private void configurarGameLoop() {
         gameLoop = new Timer(16, e -> {
+
+            //detectar si se presiona ESC
+            if(teclado.isJuegoPausadoPulsado()){
+                alternarPausa();;
+            }
+
+            //si esta pausado no se procesa ni fisica ni ataques 
+            if(pausado){
+                if(vista.getPanelPausa().isEscapePresionado()){
+                    alternarPausa();
+                }
+                return;
+            }
 
             Peleador p1 = modeloJuego.getJugador1();
             Peleador p2 = modeloJuego.getJugador2();

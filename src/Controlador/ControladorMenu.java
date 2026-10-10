@@ -57,6 +57,16 @@ public class ControladorMenu {
         vista.getBtnVolverOpciones().addActionListener(evento -> {
             botones.show(contenedor, "BOTON_MENU");
         });
+
+        //gestion de los botones de la pantalla pausa 
+        vista.getPanelPausa().getBtnReanudar().addActionListener(evento -> {
+            controladorJuego.alternarPausa();
+        });
+
+        vista.getPanelPausa().getBtnVolverMenu().addActionListener(evento -> {
+            controladorJuego.detenerPartida();
+            botones.show(contenedor, "BOTON_MENU");
+});
     }
 
     public void iniciarCombate(){

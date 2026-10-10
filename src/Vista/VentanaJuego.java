@@ -14,6 +14,7 @@ public class VentanaJuego extends JFrame {
     private final PanelJuego panelJuego;
     private final SeleccionPersonaje pantallaSeleccionPersonaje;
     private final PanelOpciones panelOpciones;
+    private final PanelPausa panelPausa;
 
     public VentanaJuego() {
         setTitle("Plataformero de Peleas");
@@ -28,11 +29,14 @@ public class VentanaJuego extends JFrame {
         panelJuego = new PanelJuego(); //inicializo el panel de juego
         pantallaSeleccionPersonaje = new SeleccionPersonaje(); //inicializo el panel de seleccion de personaje
         panelOpciones = new PanelOpciones(); //inicializo el panel de opciones
+        panelPausa = new PanelPausa(); //inicializo el panel de pausa
+
 
         panelContenedor.add(panelMenu, "BOTON_MENU");
         panelContenedor.add(pantallaSeleccionPersonaje, "PANTALLA_SELECCION");
         panelContenedor.add(panelJuego, "BOTON_JUEGO");
         panelContenedor.add(panelOpciones, "BOTON_OPCIONES");
+        panelContenedor.add(panelPausa, "PANTALLA_PAUSA");
 
         add(panelContenedor);
     }
@@ -48,12 +52,14 @@ public class VentanaJuego extends JFrame {
     public JButton getBtnVolverJugar() { return panelJuego.getBtnVolver(); }
     public JButton getBtnVolverOpciones() { return panelOpciones.getBtnVolver(); }
 
+    public PanelPausa getPanelPausa(){return panelPausa;}
+
     public CardLayout getGestorBotones() { return gestorBotones; }
     public JPanel getPanelContenedor() { return panelContenedor; }
     public JPanel getPantallaJugar() { return panelJuego; }
     public SeleccionPersonaje getPantallaSeleccionPersonaje() { return pantallaSeleccionPersonaje; }
     public void setModeloJuego(Juego modeloJuego) { panelJuego.setModeloJuego(modeloJuego); }
-    
+
     public void mostrarVentana() {
         setVisible(true);
     }
