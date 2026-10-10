@@ -40,6 +40,19 @@ public class ControladorJuego {
         }
     }
 
+    private void porcesarAtaque(){
+        Peleador p1 = modeloJuego.getJugador1();
+        Peleador p2 = modeloJuego.getJugador2();
+
+        if (p1 == null || p2 == null) return;
+        if (teclado.isP1Golpe()){
+        p1.ejecutarAtaque(Modelo.ActionType.PUNCH, p2);
+        }
+        if (teclado.isP2Golpe()){
+        p2.ejecutarAtaque(Modelo.ActionType.PUNCH, p1);
+        }
+    }
+
     private void configurarGameLoop() {
         gameLoop = new Timer(16, e -> {
 
@@ -48,6 +61,7 @@ public class ControladorJuego {
 
             //Procesar movimiento horizontal únicamente (A/D y Flechas)
             procesarMovimiento();
+            porcesarAtaque();
 
             if(p1 != null) p1.aplicarFisica();
             if(p2 != null) p2.aplicarFisica();

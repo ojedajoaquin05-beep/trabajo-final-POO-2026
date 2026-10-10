@@ -87,6 +87,25 @@ public class Peleador extends Entidad {
         }
     }
 
+    public void ejecutarAtaque (ActionType tipoAtaque, Peleador oponente){
+        if(oponente == null || !oponente.estaVivo()){
+            return;
+        }
+    
+     cambiarEstado(EstadoPeleador.ATACANDO);
+
+    if (colisionaCon(oponente) || obtenerDistancia(oponente) < 150) {
+        int danioBase = (tipoAtaque == ActionType.PUNCH) ? ataque : ataque + 5;
+        oponente.recibirdanio(danioBase);
+    }
+}
+
+private double obtenerDistancia(Entidad otra) {
+    int centroX1 = this.posicionX + (this.ancho / 2);
+    int centroX2 = otra.getPosicionX() + (otra.ancho() / 2);
+    return Math.abs(centroX1 - centroX2);
+}
+
     // Getters y Setters exclusivos del Peleador
     public float getVelocidad() { return velocidad; }
     public int getPuntaje() { return puntaje; }
