@@ -15,6 +15,9 @@ public Juego(){
 } 
 
 public void inicializarJuego(String personajeP1, String personajeP2, String nombreEscenario, int anchoVentana, int altoVentana) {
+
+    this.mensajeGanador = "";
+
     if ("EscenarioCiudad".equalsIgnoreCase(nombreEscenario) || "escenario1".equalsIgnoreCase(nombreEscenario)) {
         this.escenarioActual = new EscenarioCiudad(anchoVentana, altoVentana);
     } else if ("EscenarioItalia".equalsIgnoreCase(nombreEscenario) || "escenario2".equalsIgnoreCase(nombreEscenario)) {

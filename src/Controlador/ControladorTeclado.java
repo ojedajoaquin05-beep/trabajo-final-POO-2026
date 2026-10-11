@@ -43,6 +43,24 @@ public class ControladorTeclado {
         return estado;    
     }
 
+    public void resetearTeclas() {
+        p1Arriba = false; 
+        p1Abajo = false; 
+        p1Izquierda = false;
+        p1Derecha = false;
+        p1Golpe = false;
+        p1Patada = false;
+        p1Especial = false;
+
+        p2Arriba = false;
+        p2Abajo = false;
+        p2Izquierda = false;
+        p2Derecha = false;
+        p2Golpe = false;
+        p2Patada = false;
+        p2Especial = false;
+    }
+
     public void configurarTeclas(JPanel panel) {
 
         //registrar tecla esc
@@ -60,7 +78,8 @@ public class ControladorTeclado {
         panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("W"), "P1_W_press");
         panel.getActionMap().put("P1_W_press", new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent e) { p1Arriba = true; }
+            public void actionPerformed(ActionEvent e) { p1Arriba = true; 
+            }
         });
 
         // basicamente lo que hace el metodo de arriba es que cuando se presiona la tecla W (es lo mismo con A,S y D), 

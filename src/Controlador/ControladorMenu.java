@@ -71,6 +71,9 @@ public class ControladorMenu {
 
     public void iniciarCombate(){
         System.out.println("inicia combate");
+
+        controladorJuego.detenerPartida();
+
         SeleccionPersonaje seleccionPanel = vista.getPantallaSeleccionPersonaje();
         String personajeP1 = seleccionPanel.getPersonajeP1();
         String personajeP2 = seleccionPanel.getPersonajeP2();

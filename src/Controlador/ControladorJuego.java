@@ -20,6 +20,9 @@ public class ControladorJuego {
     private Timer gameLoop;
     private long timestampUltimoFrame = 0;
 
+    private int ticksFinPartida = 0;
+    private static final int TICKS_ESPERA_FIN = 90;
+
     private boolean pausado = false;
 
     public ControladorJuego(VentanaJuego vista, Juego modeloJuego, ControladorTeclado teclado) {
@@ -35,8 +38,13 @@ public class ControladorJuego {
 
     public void iniciarPartida() {
         this.pausado = false;
+        this.ticksFinPartida = 0;
         this.timestampUltimoFrame = System.nanoTime();
         this.teclado.configurarTeclas(vista.getPantallaJugar());
+        vista.getPantallaJugar().requestFocusInWindow();
+
+        vista.getPantallaJugar().revalidate();
+        vista.getPantallaJugar().repaint();
         vista.getPantallaJugar().requestFocusInWindow();
 
         gameLoop.start(); // Inicializo el motor del juego
@@ -46,23 +54,26 @@ public class ControladorJuego {
         if (gameLoop != null && gameLoop.isRunning()) {
             gameLoop.stop();
         }
+        teclado.resetearTeclas();
     }
 
     public void alternarPausa() {
     pausado = !pausado;
-    CardLayout botones = vista.getGestorBotones();
-    JPanel contenedor = vista.getPanelContenedor();
-
+  
     if (pausado) {
+
+        teclado.resetearTeclas();
         // Ordena al CardLayout mostrar el panel de pausa
-        botones.show(contenedor, "PANTALLA_PAUSA");
     } else {
         timestampUltimoFrame = System.nanoTime();
         // Regresa al panel del juego
-        botones.show(contenedor, "BOTON_JUEGO");
         vista.getPantallaJugar().requestFocusInWindow();
     }
     
+    CardLayout botones = vista.getGestorBotones();
+    JPanel contenedor = vista.getPanelContenedor();
+    botones.show(contenedor, pausado ? "PANTALLA_PAUSA" : "BOTON_JUEGO");
+
     // Forzar redibujado inmediato del contenedor de tarjetas
     contenedor.revalidate();
     contenedor.repaint();
@@ -108,7 +119,18 @@ public class ControladorJuego {
             Peleador p2 = modeloJuego.getJugador2();
 
                         // Solo se acepta movimiento y ataque mientras la partida siga
-            if (!modeloJuego.hayGanador()) {
+            if (modeloJuego.hayGanador()) {
+                ticksFinPartida++;
+                if (ticksFinPartida >= TICKS_ESPERA_FIN) {
+                    ticksFinPartida = 0;
+                    detenerPartida();
+                    java.awt.CardLayout botones = vista.getGestorBotones();
+                    javax.swing.JPanel contenedor = vista.getPanelContenedor();
+                    botones.show(contenedor, "BOTON_MENU");
+                    return;
+                }
+            } else {
+                // Si la partida sigue activa, procesamos el movimiento y los ataques con normalidad
                 procesarMovimiento();
                 procesarAtaque();
                 modeloJuego.verificarKO();
