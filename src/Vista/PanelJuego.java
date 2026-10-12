@@ -26,6 +26,7 @@ public class PanelJuego extends JPanel {
     private final JButton btnVolver;
 
     public PanelJuego() {
+    	
         setLayout(null);
         setFocusable(true); // es importante para que el panel pueda recibir eventos de teclado
 

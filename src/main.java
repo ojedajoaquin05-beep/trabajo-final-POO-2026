@@ -1,6 +1,7 @@
 import Controlador.ControladorMenu;
 import Controlador.ControladorTeclado;
 import Modelo.Juego;
+import Modelo.Musica;
 import Vista.VentanaJuego;
 import javax.swing.SwingUtilities;
 

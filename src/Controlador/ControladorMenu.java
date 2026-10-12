@@ -12,7 +12,8 @@ public class ControladorMenu {
     private final VentanaJuego vista;
     private final Juego modeloJuego; 
     private final ControladorJuego controladorJuego;
-    private Musica musicaMenu;
+    private Musica musicaMenu = new Musica("assets/audio/MenuPrincipal.wav");
+    private Musica musicaPelea = new Musica("assets/audio/Pelea1.wav");
 
     public ControladorMenu(VentanaJuego vista, Juego modeloJuego, ControladorTeclado teclado) {
         if (vista == null) {
@@ -69,8 +70,6 @@ public class ControladorMenu {
             controladorJuego.detenerPartida();
             botones.show(contenedor, "BOTON_MENU");
 });
-        
-        musicaMenu = new Musica("assets/audio/MenuPrincipal.wav");
         musicaMenu.reproducirLoop();
     }
 
@@ -98,6 +97,10 @@ public class ControladorMenu {
         JPanel contenedor = vista.getPanelContenedor();
         botones.show(contenedor, "BOTON_JUEGO");
 
-        controladorJuego.iniciarPartida(); 
+        controladorJuego.iniciarPartida();
+        
+        // Detiene la música del menú principal e inicia la de la pelea 
+        musicaMenu.pausar();
+        musicaPelea.reproducirLoop();
     }
 }

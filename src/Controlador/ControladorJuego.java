@@ -61,7 +61,6 @@ public class ControladorJuego {
     pausado = !pausado;
   
     if (pausado) {
-
         teclado.resetearTeclas();
         // Ordena al CardLayout mostrar el panel de pausa
     } else {

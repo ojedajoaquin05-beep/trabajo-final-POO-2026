@@ -57,7 +57,7 @@ public class PanelMenu extends JPanel {
         boton.setOpaque(true);
         boton.setContentAreaFilled(true);
         boton.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(Color.BLACK, 5),
+            BorderFactory.createLineBorder(Color.WHITE, 5),
             BorderFactory.createEmptyBorder(15, 30, 15, 30)
         ));
         return boton;
