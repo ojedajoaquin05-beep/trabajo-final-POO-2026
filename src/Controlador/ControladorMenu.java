@@ -1,6 +1,7 @@
 package Controlador;
 
-import Modelo.Juego; 
+import Modelo.Juego;
+import Modelo.Musica;
 import Vista.SeleccionPersonaje;
 import Vista.VentanaJuego;
 import java.awt.CardLayout;
@@ -10,7 +11,8 @@ public class ControladorMenu {
     
     private final VentanaJuego vista;
     private final Juego modeloJuego; 
-    private final ControladorJuego controladorJuego; 
+    private final ControladorJuego controladorJuego;
+    private Musica musicaMenu;
 
     public ControladorMenu(VentanaJuego vista, Juego modeloJuego, ControladorTeclado teclado) {
         if (vista == null) {
@@ -67,6 +69,9 @@ public class ControladorMenu {
             controladorJuego.detenerPartida();
             botones.show(contenedor, "BOTON_MENU");
 });
+        
+        musicaMenu = new Musica("assets/audio/MenuPrincipal.wav");
+        musicaMenu.reproducirLoop();
     }
 
     public void iniciarCombate(){
