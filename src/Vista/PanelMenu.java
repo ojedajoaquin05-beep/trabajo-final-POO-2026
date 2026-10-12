@@ -26,19 +26,19 @@ public class PanelMenu extends JPanel {
         panelBotones.setOpaque(false);
 
         btnJugar = disenoBoton("JUGAR", new Color(139, 195, 74));
-        btnOpciones = disenoBoton("CONFIGURACIÓN", new Color(255, 193, 7));
+        btnOpciones = disenoBoton("CONFIGURACION", new Color(255, 193, 7));
         btnSalir = disenoBoton("SALIR", new Color(244, 67, 54));
 
         panelBotones.add(btnJugar);
         panelBotones.add(btnOpciones);
         panelBotones.add(btnSalir);
 
-        JPanel panelMargenDerecho = new JPanel(new GridBagLayout());
-        panelMargenDerecho.setOpaque(false);
-        panelMargenDerecho.setBorder(BorderFactory.createEmptyBorder(250, 0, 0, 100));
-        panelMargenDerecho.add(panelBotones);
+        JPanel panelMargenInferior = new JPanel(new GridBagLayout());
+        panelMargenInferior.setOpaque(false);
+        panelMargenInferior.setBorder(BorderFactory.createEmptyBorder(250, 0, 50, 100));
+        panelMargenInferior.add(panelBotones);
 
-        add(panelMargenDerecho, BorderLayout.EAST);
+        add(panelMargenInferior, BorderLayout.SOUTH);
     }
 
     @Override
@@ -49,9 +49,9 @@ public class PanelMenu extends JPanel {
 
     private JButton disenoBoton(String texto, Color colorFondo) {
         JButton boton = new JButton(texto);
-        boton.setFont(new Font("Comic Sans MS", Font.BOLD, 40));
+        boton.setFont(new Font("Determination", Font.PLAIN, 30));
         boton.setBackground(colorFondo);
-        boton.setForeground(Color.WHITE);
+        boton.setForeground(Color.BLACK);
         boton.setFocusPainted(false);
         boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         boton.setOpaque(true);

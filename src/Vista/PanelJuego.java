@@ -119,10 +119,14 @@ public class PanelJuego extends JPanel {
 
         //TEMPORIZADOR (joaco)
         long tiempoRestanteNanos = modeloJuego.getTiempoRestante();
-            g.setFont(new Font("Arial", Font.BOLD, 48));
-            g.setColor(tiempoRestanteNanos <= 10000000000L ? Color.RED : Color.YELLOW);
-            String textoTiempo = String.format("%02.0f", Math.ceil(tiempoRestanteNanos / 1000000000.0));
+            g.setFont(new Font("DSEG7 Modern", Font.BOLD, 48));
+            String textoTiempo = String.format("%02.0f", Math.min(99, Math.ceil(tiempoRestanteNanos / 1000000000.0)));
             int anchoTexto = g.getFontMetrics().stringWidth(textoTiempo);
+            int x = (getWidth() / 2 - anchoTexto / 2);
+            final int margenH = 5, margenV = 7;
+            g.setColor(Color.BLACK);
+            g.fillRect(x - margenH, 0, anchoTexto + margenH * 2, 60 + margenV * 2);
+            g.setColor(tiempoRestanteNanos <= 10000000000L ? Color.RED : Color.YELLOW);
             g.drawString(textoTiempo, (getWidth() / 2 - anchoTexto / 2), 60);
 
             //MSJ GANADOR (joaco)
