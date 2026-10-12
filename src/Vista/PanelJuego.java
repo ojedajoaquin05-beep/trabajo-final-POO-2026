@@ -31,7 +31,7 @@ public class PanelJuego extends JPanel {
 
         btnVolver = new JButton("Volver al Menu");
         btnVolver.setBounds(10, 10, 150, 30);
-        add(btnVolver);
+        //add(btnVolver);
     }
 
     public void prepararGraficos(String p1, String p2, String escenario) {
@@ -61,11 +61,17 @@ public class PanelJuego extends JPanel {
 
             //BARRA DE VIDA (joaco)
             if (personaje1 != null){
+            	int posXMarcoP1 = 50;
                 g.setColor(Color.RED);
                 g.fillRect(50, 40, 300, 25);
                 g.setColor(Color.GREEN);
                 int anchoVidaP1 = (int) (300 * ((double) personaje1.getVida() / personaje1.getVidaMaxima()));
                 g.fillRect(50, 40, Math.max(0, anchoVidaP1), 25);
+
+                g.setColor(Color.BLACK);
+                g.drawRect(posXMarcoP1, 40, 300, 25);
+                g.setFont(new Font("Determination", Font.PLAIN, 24));
+                g.drawString(personaje1.getNombre().toUpperCase() + " : " + personaje1.getVida() + " HP", posXMarcoP1, 35);
             }
 
             if (personaje2 != null) {
@@ -78,10 +84,10 @@ public class PanelJuego extends JPanel {
                 int posXVidaP2 = getWidth() - 50 - Math.max(0, anchoVidaP2);
                 g.fillRect(posXVidaP2, 40, Math.max(0, anchoVidaP2), 25);
                 
-                g.setColor(Color.WHITE);
+                g.setColor(Color.BLACK);
                 g.drawRect(posXMarcoP2, 40, 300, 25);
-                g.setFont(new Font("Arial", Font.BOLD, 14));
-                g.drawString(personaje2.getNombre() + ": " + personaje2.getVida() + " HP", posXMarcoP2, 35);
+                g.setFont(new Font("Determination", Font.PLAIN, 24));
+                g.drawString(personaje2.getNombre().toUpperCase() + " : " + personaje2.getVida() + " HP", posXMarcoP2, 35);
             }
 
             //aca dibujamos a los personajes en sus posiciones actuales
