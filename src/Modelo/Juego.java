@@ -1,18 +1,35 @@
 package Modelo;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Juego { // por ahora lo dejo vacio asi pruebo el menu y los botones
 private static final long DURACION_PARTIDA = 100000000000L; // 100 segundos expresados en nanosegundos
 
 private Peleador jugador1;
 private Peleador jugador2;
 private Escenario escenarioActual;
-
 private long tiempoRestante = DURACION_PARTIDA;
 private String mensajeGanador = "";
+private final List<ObservadorJuego> observadores = new ArrayList<>();
+
 
 public Juego(){
 // Constructor vacío
 } 
+
+public void agregarObservador(ObservadorJuego observador) {
+    if (observador == null) {
+        throw new IllegalArgumentException("El observador no puede ser nulo.");
+    }
+    observadores.add(observador);
+}
+
+public void notificarObservadores() {
+    for (ObservadorJuego observador : observadores) {
+        observador.alCambiarEstadoJuego(this);
+    }
+}
 
 public void inicializarJuego(String personajeP1, String personajeP2, String nombreEscenario, int anchoVentana, int altoVentana) {
 
@@ -32,16 +49,19 @@ public void inicializarJuego(String personajeP1, String personajeP2, String nomb
     this.jugador2.setMirandoDerecha(false); // El jugador 2 comienza mirando hacia la izquierda
 
     reiniciarTiempo(); // cada partida nueva arranca con el reloj completo y sin ganador
+    notificarObservadores(); // Notificar a los observadores que el juego ha sido inicializado
 }
 
 public void reiniciarTiempo() {
     this.tiempoRestante = DURACION_PARTIDA;
     this.mensajeGanador = "";
+    notificarObservadores(); // Notificar a los observadores que el tiempo ha sido reiniciado
 }
 
 // Resta el tiempo transcurrido (en nanosegundos). Nunca baja de cero.
 public void descontarTiempo(long nanosTranscurridos) {
     this.tiempoRestante = Math.max(0, this.tiempoRestante - nanosTranscurridos);
+    notificarObservadores(); // Notificar a los observadores que el tiempo ha cambiado
 }
 
 public boolean tiempoAgotado() {
@@ -64,6 +84,7 @@ public void definirGanadorPorTiempo() {
     } else {
         mensajeGanador = "Empate por tiempo";
     }
+    notificarObservadores(); // Notificar a los observadores que hay un ganador
 }
 
 // Si algún peleador se quedó sin vida, el otro gana por KO
@@ -80,7 +101,16 @@ public void verificarKO() {
     } else if (!p1Vivo) {
         mensajeGanador = "Jugador 2 gana por KO";
     }
+    notificarObservadores(); // Notificar a los observadores que hay un ganador
 }
+
+    public void aplicarDanio(Peleador objetivo, int danio) { //agrego este metodo para asegurar la notificacion del observador al aplicar algun daño.
+        if (objetivo != null) {
+            objetivo.recibirdanio(danio);
+            verificarKO();
+            notificarObservadores();
+        }
+    }
 
 public Peleador getJugador1() {
     return jugador1;

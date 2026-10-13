@@ -1,11 +1,10 @@
 package Vista;
 
 import Modelo.Juego;
+import Modelo.ObservadorJuego;
 import Modelo.Peleador;
 import java.awt.Color;
-//joaco
 import java.awt.Font;
-
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -13,20 +12,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class PanelJuego extends JPanel {
+public class PanelJuego extends JPanel implements ObservadorJuego {
 
    
-    private AnimacionPeleador animacionP1; // Animaciones de los personajes y fondo dinámico
+    private AnimacionPeleador animacionP1; 
     private AnimacionPeleador animacionP2;
     private Image imagenFondoDinamico;
-    private Juego modeloJuego; // Referencia al modelo del juego
+    private Juego modeloJuego;
 
     private final Image imagenFondoJuego = new ImageIcon("assets/Backgrounds/City4.png").getImage();
 
     private final JButton btnVolver;
 
     public PanelJuego() {
-    	
+        
         setLayout(null);
         setFocusable(true); // es importante para que el panel pueda recibir eventos de teclado
 
@@ -36,12 +35,19 @@ public class PanelJuego extends JPanel {
     }
 
     public void prepararGraficos(String p1, String p2, String escenario) {
-        // 1. Cargar las animaciones (movimiento y salto de cada personaje)
+        //  Carga las animaciones (movimiento y salto de cada personaje)
         this.animacionP1 = new AnimacionPeleador(p1);
         this.animacionP2 = new AnimacionPeleador(p2);
 
-        // 2. Cargar fondo
+        // Cargar fondo
         this.imagenFondoDinamico = new ImageIcon("assets/Backgrounds/" + escenario + ".png").getImage();
+    }
+
+    @Override
+    public void alCambiarEstadoJuego(Juego juego) {
+        // Actualizar la referencia al modelo del juego y repintar el panel
+        this.modeloJuego = juego;
+        repaint();
     }
 
     @Override
@@ -62,7 +68,7 @@ public class PanelJuego extends JPanel {
 
             //BARRA DE VIDA (joaco)
             if (personaje1 != null){
-            	int posXMarcoP1 = 50;
+                int posXMarcoP1 = 50;
                 g.setColor(Color.RED);
                 g.fillRect(50, 40, 300, 25);
                 g.setColor(Color.GREEN);

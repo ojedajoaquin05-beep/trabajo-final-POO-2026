@@ -81,7 +81,7 @@ public class SeleccionPersonaje extends JPanel {
 
         // Agregar ActionListener a los botones de personajes
         btnCiegoButton.addActionListener(e -> seleccionarPersonaje("ciego"));
-        btnPeleador2Button.addActionListener(e -> seleccionarPersonaje("peleador2"));
+        btnPeleador2Button.addActionListener(e -> seleccionarPersonaje("samurai"));
         /*btnPersonaje3.addActionListener(e -> seleccionarPersonaje("Personaje 3"));
         btnPersonaje4.addActionListener(e -> seleccionarPersonaje("Personaje 4"));
         btnPersonaje5.addActionListener(e -> seleccionarPersonaje("Personaje 5"));
