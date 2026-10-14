@@ -21,6 +21,7 @@ public class Peleador extends Entidad {
     private static final int ALCANCE_ATAQUE = 350; // Distancia máxima para que un ataque sea efectivo
     private static final int DURACION_ATAQUE = 20; // ticks que dura la animación de ataque
     private int ticksAtaque = 0;
+    private int puntajePj = 0;
 
     // El constructor recibe los datos y manda la mayoría al padre (Entidad) usando super
     public Peleador(String nombre, int posicionX, int posicionY, int vidaMaxima, int ataque, float velocidad) {
@@ -101,12 +102,23 @@ public class Peleador extends Entidad {
         if (estaAlAlcance(oponente)) {
             int danioBase;
             switch (tipoAtaque) { //el switch determina el daño segun el ataque que se ejecute
-                case PUNCH:   danioBase = ataque;      break;
-                case KICK:    danioBase = ataque + 5;  break;
-                case SPECIAL: danioBase = ataque + 15; break;
-                default:      danioBase = ataque;
+                case PUNCH:   
+                danioBase = ataque;    
+                puntajePj= 50;
+                break;
+                case KICK:    
+                danioBase = ataque + 5;
+                puntajePj = 100;
+                break;
+                case SPECIAL: 
+                danioBase = ataque + 15;
+                puntajePj = 150;
+                break;
+                default:      
+                danioBase = ataque;
             }
             oponente.recibirdanio(danioBase);
+            this.sumarPuntaje(puntajePj);
         }
     }
 

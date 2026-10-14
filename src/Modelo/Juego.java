@@ -95,8 +95,12 @@ public void verificarKO() {
         mensajeGanador = "Doble KO: empate";
     } else if (!p2Vivo) {
         mensajeGanador = "Jugador 1 gana por KO";
+        jugador1.sumarPuntaje(100);
+        notificarObservadores();
     } else if (!p1Vivo) {
         mensajeGanador = "Jugador 2 gana por KO";
+        jugador2.sumarPuntaje(100);
+        notificarObservadores();
     }
    
 }

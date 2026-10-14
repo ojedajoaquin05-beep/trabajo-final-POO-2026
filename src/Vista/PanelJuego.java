@@ -78,6 +78,11 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
                 g.drawRect(posXMarcoP1, 40, 300, 25);
                 g.setFont(new Font("Determination", Font.PLAIN, 24));
                 g.drawString(personaje1.getNombre().toUpperCase() + " : " + personaje1.getVida() + " HP", posXMarcoP1, 35);
+
+                // PUNTAJE JUGADOR 1
+                g.setFont(new Font("Determination", Font.PLAIN, 20));
+                g.setColor(Color.black);
+                g.drawString("SCORE: " + personaje1.getPuntaje(), posXMarcoP1, 85);
             }
 
             if (personaje2 != null) {
@@ -94,6 +99,11 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
                 g.drawRect(posXMarcoP2, 40, 300, 25);
                 g.setFont(new Font("Determination", Font.PLAIN, 24));
                 g.drawString(personaje2.getNombre().toUpperCase() + " : " + personaje2.getVida() + " HP", posXMarcoP2, 35);
+
+                // PUNTAJE JUGADOR 2
+                g.setFont(new Font("Determination", Font.PLAIN, 20));
+                g.setColor(Color.black);
+                g.drawString("SCORE: " + personaje2.getPuntaje(), posXMarcoP2, 85);
             }
 
             //aca dibujamos a los personajes en sus posiciones actuales
