@@ -22,8 +22,8 @@ public class PanelPausa extends JPanel{
 
     
     public PanelPausa(){
-        
-        setBackground(Color.DARK_GRAY);
+        final float opacidad = 0.5f;					// Rango 0-1
+        setBackground(new Color(0, 0, 0, opacidad));	// Fondo semitransparente
         setOpaque(true);
         setLayout(new GridBagLayout());
         setFocusable(true);
@@ -35,16 +35,16 @@ public class PanelPausa extends JPanel{
         gbc.anchor = GridBagConstraints.CENTER;
 
         lblTitulo = new JLabel("JUEGO EN PAUSA");
-        lblTitulo.setFont(new Font("Arial", Font.BOLD, 48));
+        lblTitulo.setFont(new Font("Determination", Font.BOLD, 48));
         lblTitulo.setForeground(Color.WHITE);
         add(lblTitulo, gbc);
 
         btnReanudar = new JButton("REANUDAR PARTIDA");
-        btnReanudar. setFont(new Font("Arial", Font.BOLD, 20));
+        btnReanudar. setFont(new Font("Determination", Font.BOLD, 20));
         add(btnReanudar, gbc);
 
         btnVolverMenu = new JButton("VOLVER AL MENU PRINCIPAL");
-        btnVolverMenu.setFont(new Font("Arial", Font.BOLD, 20));
+        btnVolverMenu.setFont(new Font("Determination", Font.BOLD, 20));
         add(btnVolverMenu, gbc);
 
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "Pausa_salir");
