@@ -3,6 +3,7 @@ package Controlador;
 import Modelo.Juego;
 import Modelo.Musica;
 import Vista.SeleccionPersonaje;
+import Vista.SonidoJuego;
 import Vista.VentanaJuego;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
@@ -102,5 +103,6 @@ public class ControladorMenu {
         // Detiene la música del menú principal e inicia la de la pelea 
         musicaMenu.pausar();
         musicaPelea.reproducirLoop();
+        modeloJuego.agregarObservador(new SonidoJuego(musicaPelea, musicaMenu));
     }
 }

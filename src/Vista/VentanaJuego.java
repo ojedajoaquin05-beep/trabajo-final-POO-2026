@@ -41,6 +41,12 @@ public class VentanaJuego extends JFrame {
         add(panelContenedor);
     }
 
+    // La ventana registra su panel de juego como observador del modelo
+    public void setModeloJuego(Juego modeloJuego) {
+       panelJuego.setModeloJuego(modeloJuego);
+       modeloJuego.agregarObservador(panelJuego);
+    }
+
     public void prepararGraficosCombate(String p1, String p2, String escenario) {
         panelJuego.prepararGraficos(p1, p2, escenario);
     }
@@ -58,7 +64,6 @@ public class VentanaJuego extends JFrame {
     public JPanel getPanelContenedor() { return panelContenedor; }
     public JPanel getPantallaJugar() { return panelJuego; }
     public SeleccionPersonaje getPantallaSeleccionPersonaje() { return pantallaSeleccionPersonaje; }
-    public void setModeloJuego(Juego modeloJuego) { panelJuego.setModeloJuego(modeloJuego); }
 
     public void mostrarVentana() {
         setVisible(true);

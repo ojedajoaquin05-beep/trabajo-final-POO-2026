@@ -5,10 +5,8 @@ import Modelo.Escenario;
 import Modelo.Juego;
 import Modelo.Peleador;
 import Vista.VentanaJuego;
-
 import java.awt.CardLayout;
 import javax.swing.JPanel;
-
 import javax.swing.Timer;
 
 public class ControladorJuego {
@@ -132,7 +130,6 @@ public class ControladorJuego {
                 // Si la partida sigue activa, procesamos el movimiento y los ataques con normalidad
                 procesarMovimiento();
                 procesarAtaque();
-                modeloJuego.verificarKO();
             }
 
             if(p1 != null) p1.aplicarFisica();
@@ -160,77 +157,40 @@ public class ControladorJuego {
                 }
             }
 
-            //Control del temporizador de combate
-            if (!modeloJuego.hayGanador()) {
-            	// Calcula el tiempo transcurrido exacto entre frames para evitar que el contador corra más lento en caso de no poder sostener 60 fps constantes
-            	long timestamp = System.nanoTime();
-            	modeloJuego.descontarTiempo(timestamp - timestampUltimoFrame);
-            	timestampUltimoFrame = timestamp;
-
-            	if (modeloJuego.tiempoAgotado()) {
-            	    modeloJuego.definirGanadorPorTiempo();
-            	}
-            }
-
-            //  Redibujar la pantalla
-            vista.getPantallaJugar().repaint();
+            //El modelo avanza el reloj y avisa a la vista (el panel se redibuja solo, es el Observer)
+            long timestamp = System.nanoTime();
+            modeloJuego.avanzarTick(timestamp - timestampUltimoFrame);
+            timestampUltimoFrame = timestamp;
         });
     }
 
-    private void procesarMovimiento() {
-        // JUGADOR 1 (wasd)
-        Peleador p1 = modeloJuego.getJugador1();
-        if (p1 != null) {
-            float vel = p1.getVelocidad();
-            boolean seMueveP1 = false;
-
-            //salto
-            if(teclado.isP1Arriba()){
-                p1.saltar();
-            }
-
-            if (teclado.isP1Derecha()) {
-                p1.mover(vel, 0);
-                p1.setMirandoDerecha(true);
-                seMueveP1 = true;
-            }
-            if (teclado.isP1Izquierda()) {
-                p1.mover(-vel, 0);
-                p1.setMirandoDerecha(false);
-                seMueveP1 = true;
-            }
-
-            // Animar únicamente si se está moviendo
-            if (seMueveP1 && p1.isEnElSuelo()) {
-                p1.actualizarAnimacion(4); // 2x2 = 4 frames
-            }
+   private void procesarMovimiento() {
+    // JUGADOR 1 (wasd)
+    Peleador p1 = modeloJuego.getJugador1();
+    if (p1 != null) {
+        if (teclado.isP1Arriba()) {
+            p1.saltar();
         }
-
-        // JUGADOR 2 (Flechas) 
-        Peleador p2 = modeloJuego.getJugador2();
-        if (p2 != null) {
-            float vel = p2.getVelocidad();
-            boolean seMueveP2 = false;
-
-             //salto
-            if(teclado.isP2Arriba()){
-                p2.saltar();
-            }
-
-            if (teclado.isP2Derecha()) {
-                p2.mover(vel, 0);
-                p2.setMirandoDerecha(true);
-                seMueveP2 = true;
-            }
-            if (teclado.isP2Izquierda()) {
-                p2.mover(-vel, 0);
-                p2.setMirandoDerecha(false);
-                seMueveP2 = true;
-            }
-
-            if (seMueveP2 && p2.isEnElSuelo()) {
-                p2.actualizarAnimacion(4);
-            }
+        if (teclado.isP1Derecha()) {
+            p1.caminar(1);
+        }
+        if (teclado.isP1Izquierda()) {
+            p1.caminar(-1);
         }
     }
+
+    // JUGADOR 2 (Flechas)
+    Peleador p2 = modeloJuego.getJugador2();
+    if (p2 != null) {
+        if (teclado.isP2Arriba()) {
+            p2.saltar();
+        }
+        if (teclado.isP2Derecha()) {
+            p2.caminar(1);
+        }
+        if (teclado.isP2Izquierda()) {
+            p2.caminar(-1);
+        }
+    }
+}
 }

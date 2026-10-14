@@ -24,7 +24,12 @@ public class EstadoAtacando implements EstadoPeleador {
     }
 
    @Override
-    public String getNombre() {
-        return "ATACANDO";
+    public AccionPeleador getAnimacion() {
+        return AccionPeleador.ATACANDO;
+    }
+
+    @Override
+    public void caminar(Peleador peleador, int direccion) {
+      peleador.desplazar(direccion); 
     }
 }

@@ -137,10 +137,7 @@ public class Peleador extends Entidad {
     }
     public void setEnElSuelo(boolean enElSuelo){
         this.enElSuelo = enElSuelo;
-        // Notifica al estado actual sobre el cambio de suelo para evaluar transiciones
-        if (this.estadoActual != null) {
-            this.estadoActual.actualizar(this);
-        }
+        
     }
     public float getVelocidadY(){
         return velocidadY;
@@ -169,6 +166,31 @@ public class Peleador extends Entidad {
         if (this.estadoActual != null) {
             this.estadoActual.actualizar(this);
         }
+    }
+
+    // El estado actual decide si el peleador puede caminar
+    public void caminar(int direccion) {
+      this.estadoActual.caminar(this, direccion);
+    }
+
+// Lo llaman los estados que permiten moverse: mueve, orienta y anima
+    public void desplazar(int direccion) {
+      mover(velocidad * direccion, 0);
+      setMirandoDerecha(direccion > 0);
+      if (enElSuelo) {
+        actualizarAnimacion(4); // 2x2 = 4 frames
+      }
+    }
+
+    // Cuando la vida llega a 0, el peleador pasa al estado MUERTO
+    @Override
+    public void recibirdanio(int cantidad) {
+      super.recibirdanio(cantidad);
+      if (!estaVivo()) {
+        cambiarEstado(new EstadoMuerto());
+      } else {
+        cambiarEstado(new EstadoHerido());
+      }
     }
 
 }

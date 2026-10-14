@@ -22,7 +22,12 @@ public class EstadoQuieto implements EstadoPeleador {
     }
 
    @Override
-    public String getNombre() {
-        return "QUIETO";
+    public AccionPeleador getAnimacion() {
+        return AccionPeleador.QUIETO;
+    }
+    
+    @Override
+    public void caminar(Peleador peleador, int direccion) {
+      peleador.desplazar(direccion);
     }
 }

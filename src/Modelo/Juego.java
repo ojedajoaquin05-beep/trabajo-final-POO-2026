@@ -55,13 +55,11 @@ public void inicializarJuego(String personajeP1, String personajeP2, String nomb
 public void reiniciarTiempo() {
     this.tiempoRestante = DURACION_PARTIDA;
     this.mensajeGanador = "";
-    notificarObservadores(); // Notificar a los observadores que el tiempo ha sido reiniciado
 }
 
 // Resta el tiempo transcurrido (en nanosegundos). Nunca baja de cero.
 public void descontarTiempo(long nanosTranscurridos) {
     this.tiempoRestante = Math.max(0, this.tiempoRestante - nanosTranscurridos);
-    notificarObservadores(); // Notificar a los observadores que el tiempo ha cambiado
 }
 
 public boolean tiempoAgotado() {
@@ -84,7 +82,6 @@ public void definirGanadorPorTiempo() {
     } else {
         mensajeGanador = "Empate por tiempo";
     }
-    notificarObservadores(); // Notificar a los observadores que hay un ganador
 }
 
 // Si algún peleador se quedó sin vida, el otro gana por KO
@@ -101,15 +98,19 @@ public void verificarKO() {
     } else if (!p1Vivo) {
         mensajeGanador = "Jugador 2 gana por KO";
     }
-    notificarObservadores(); // Notificar a los observadores que hay un ganador
+   
 }
 
-    public void aplicarDanio(Peleador objetivo, int danio) { //agrego este metodo para asegurar la notificacion del observador al aplicar algun daño.
-        if (objetivo != null) {
-            objetivo.recibirdanio(danio);
-            verificarKO();
-            notificarObservadores();
+    // Un tick del juego: avanza el reloj, define ganador por tiempo y avisa UNA sola vez a los observadores
+    public void avanzarTick(long nanosTranscurridos) {
+        verificarKO(); // Verifica si hay un ganador por KO antes de descontar tiempo
+        if (!hayGanador()) {
+          descontarTiempo(nanosTranscurridos);
+           if (tiempoAgotado()) {
+               definirGanadorPorTiempo();
+            }
         }
+        notificarObservadores();
     }
 
 public Peleador getJugador1() {

@@ -20,9 +20,15 @@ public class EstadoSalto implements EstadoPeleador {
         }
     }
 
-    @Override
-    public String getNombre() {
-        return "SALTO";
+   @Override
+    public AccionPeleador getAnimacion() {
+        return AccionPeleador.SALTO;
     }
+
+    @Override
+public void caminar(Peleador peleador, int direccion) {
+    peleador.desplazar(direccion);
+}
+
 }
     

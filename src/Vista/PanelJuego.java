@@ -46,7 +46,6 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
     @Override
     public void alCambiarEstadoJuego(Juego juego) {
         // Actualizar la referencia al modelo del juego y repintar el panel
-        this.modeloJuego = juego;
         repaint();
     }
 
