@@ -43,9 +43,6 @@ El diseño buscará mantener una estructura organizada y modular que permita agr
     El sistema permitirá guardar los resultados o puntajes obtenidos por los jugadores.
     Los mejores resultados podrán ser consultados posteriormente mediante un sistema de High Scores almacenado en una base de datos.
 
-![alt text](image.png)
-
-
 ## 3. Arquitectura y diseño
 
 ### Patron de diseño adicional: 
