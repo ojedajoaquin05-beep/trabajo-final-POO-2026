@@ -6,7 +6,7 @@ public class Peleador extends Entidad {
     private int puntaje;
     protected int respawn;
     private float velocidad; 
-    private EstadoPeleador estadoActual;
+    private EstadoPeleador estadoActual; // Patrón State: referencia polimórfica a la interfaz
     private int frameActual; // Para las animaciones.
     private int contadorTicksAnimacion; // Para controlar la velocidad de la animación.
     private int ticksPorFrame = 8; // Número de ticks que cada frame debe durar.
@@ -22,19 +22,13 @@ public class Peleador extends Entidad {
     private static final int DURACION_ATAQUE = 20; // ticks que dura la animación de ataque
     private int ticksAtaque = 0;
 
-
-
-    public enum EstadoPeleador {
-        QUIETO, MOVIENDOSE, SALTO ,ATACANDO, MUERTO
-    }
-
     // El constructor recibe los datos y manda la mayoría al padre (Entidad) usando super
     public Peleador(String nombre, int posicionX, int posicionY, int vidaMaxima, int ataque, float velocidad) {
         super(nombre, posicionX, posicionY, vidaMaxima, ataque); 
         this.velocidad = velocidad;
         this.puntaje = 0;
         this.respawn = 1;
-        this.estadoActual = EstadoPeleador.QUIETO;
+        this.estadoActual = new EstadoQuieto(); // Inicia en estado quieto
         this.frameActual = 0;
         this.contadorTicksAnimacion = 0;
         this.MirandoDerecha = true;
@@ -43,7 +37,7 @@ public class Peleador extends Entidad {
     }
        
     public void cambiarEstado(EstadoPeleador nuevoEstado) {
-        if (this.estadoActual != nuevoEstado) {
+        if (nuevoEstado != null && (this.estadoActual == null || !this.estadoActual.getClass().equals(nuevoEstado.getClass()))) {
             this.estadoActual = nuevoEstado;
             this.frameActual = 0; // Reinicia el frame al cambiar de estado
             this.contadorTicksAnimacion = 0; // Reinicia el contador de ticks
@@ -71,8 +65,6 @@ public class Peleador extends Entidad {
         }
     }
     
-    
-
     public void morir() {
         if (vida <= 0 && respawn == 0) {
             // lógica de muerte
@@ -81,12 +73,10 @@ public class Peleador extends Entidad {
     }
 
     public void saltar() {
-        if(enElSuelo){
-            this.velocidadY = fuerzaSalto;
-            this.enElSuelo = false;
-            cambiarEstado(EstadoPeleador.SALTO);
-        }
+        // Delega la acción de saltar al estado actual
+        this.estadoActual.saltar(this);
     }
+
     public void aplicarFisica(){
         if(!enElSuelo){
             this.posicionY += velocidadY;
@@ -95,36 +85,42 @@ public class Peleador extends Entidad {
     }
 
     public void ejecutarAtaque (ActionType tipoAtaque, Peleador oponente){
+        // Delega la ejecución del ataque al estado actual
+        this.estadoActual.ejecutarAtaque(this, tipoAtaque, oponente);
+    }
+
+    // Método que ejecuta el golpe real cuando el estado (EstadoQuieto o EstadoSalto) lo autoriza
+    public void procesarGolpe(ActionType tipoAtaque, Peleador oponente) {
         if(oponente == null || !oponente.estaVivo() || ticksEnfriamiento > 0) {
             return;
         }
         ticksEnfriamiento = ENFRIAMIENTO_ATAQUE;
         ticksAtaque = DURACION_ATAQUE; // Inicia la duración del ataque
-        cambiarEstado(EstadoPeleador.ATACANDO);
+        cambiarEstado(new EstadoAtacando());
 
-    if (estaAlAlcance(oponente)) {
+        if (estaAlAlcance(oponente)) {
             int danioBase;
-    switch (tipoAtaque) { //el switch determina el daño segun el ataque que se ejecute
-        case PUNCH:   danioBase = ataque;      break;
-        case KICK:    danioBase = ataque + 5;  break;
-        case SPECIAL: danioBase = ataque + 15; break;
-        default:      danioBase = ataque;
+            switch (tipoAtaque) { //el switch determina el daño segun el ataque que se ejecute
+                case PUNCH:   danioBase = ataque;      break;
+                case KICK:    danioBase = ataque + 5;  break;
+                case SPECIAL: danioBase = ataque + 15; break;
+                default:      danioBase = ataque;
+            }
+            oponente.recibirdanio(danioBase);
+        }
     }
-    oponente.recibirdanio(danioBase);
-    }
-}
 
     // El rival tiene que estar adelante, dentro del alcance y a una altura similar (Dsps vemos si le implementamos hitbox entre ellos para que no se atraviesen.)
     private boolean estaAlAlcance(Peleador oponente) {
-    int centroPropio = this.posicionX + (this.ancho / 2);
-    int centroOponente = oponente.getPosicionX() + (oponente.ancho() / 2);
-    int distancia = centroOponente - centroPropio; // positivo: el rival está a la derecha
+        int centroPropio = this.posicionX + (this.ancho / 2);
+        int centroOponente = oponente.getPosicionX() + (oponente.ancho() / 2);
+        int distancia = centroOponente - centroPropio; // positivo: el rival está a la derecha
 
-    boolean rivalAdelante = isMirandoDerecha() ? distancia >= 0 : distancia <= 0;
-    boolean alturaSimilar = Math.abs(this.posicionY - oponente.getPosicionY()) < (this.alto / 2);
+        boolean rivalAdelante = isMirandoDerecha() ? distancia >= 0 : distancia <= 0;
+        boolean alturaSimilar = Math.abs(this.posicionY - oponente.getPosicionY()) < (this.alto / 2);
 
-    return rivalAdelante && Math.abs(distancia) <= ALCANCE_ATAQUE && alturaSimilar;
-}
+        return rivalAdelante && Math.abs(distancia) <= ALCANCE_ATAQUE && alturaSimilar;
+    }
 
     // Getters y Setters exclusivos del Peleador
     public float getVelocidad() { return velocidad; }
@@ -141,28 +137,38 @@ public class Peleador extends Entidad {
     }
     public void setEnElSuelo(boolean enElSuelo){
         this.enElSuelo = enElSuelo;
-        if(enElSuelo){
-            this.velocidadY = 0;
-            if(this.estadoActual == EstadoPeleador.SALTO){
-                cambiarEstado(EstadoPeleador.QUIETO);
-            }
+        // Notifica al estado actual sobre el cambio de suelo para evaluar transiciones
+        if (this.estadoActual != null) {
+            this.estadoActual.actualizar(this);
         }
     }
     public float getVelocidadY(){
         return velocidadY;
     }
+    public void setVelocidadY(float velocidadY) {
+        this.velocidadY = velocidadY;
+    }
+    public float getFuerzaSalto() {
+        return fuerzaSalto;
+    }
+    public int getTicksEnfriamiento() {
+        return ticksEnfriamiento;
+    }
+    public int getTicksAtaque() {
+        return ticksAtaque;
+    }
 
     public void actualizarEnfriamiento() {
-    if (ticksEnfriamiento > 0) {
-        ticksEnfriamiento--;
-    }
-    // Cuando termina el ataque vuelve a SALTO si está en el aire, o a QUIETO si está en el suelo
-    if (estadoActual == EstadoPeleador.ATACANDO) {
-        ticksAtaque--;
-        if (ticksAtaque <= 0) {
-            cambiarEstado(enElSuelo ? EstadoPeleador.QUIETO : EstadoPeleador.SALTO);
+        if (ticksEnfriamiento > 0) {
+            ticksEnfriamiento--;
+        }
+        if (ticksAtaque > 0) {
+            ticksAtaque--;
+        }
+        // Delega la actualización y transición al estado actual
+        if (this.estadoActual != null) {
+            this.estadoActual.actualizar(this);
         }
     }
-}
 
 }

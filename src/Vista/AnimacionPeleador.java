@@ -17,11 +17,13 @@ public class AnimacionPeleador {
     }
 
     public BufferedImage getSpriteActual(Peleador p) {
-        if (p.getEstadoActual() == Peleador.EstadoPeleador.ATACANDO) {
+        String estado = p.getEstadoActual().getNombre();
+
+        if ("ATACANDO".equals(estado)) {
            int i = (int) (p.getProgresoAtaque() * ataque.length); // le añadi esto para que el ataque se vea mas fluido y no se vea tan rapido
            return ataque[Math.min(i, ataque.length - 1)];
         }
-        if (p.getEstadoActual() == Peleador.EstadoPeleador.SALTO) {
+        if ("SALTO".equals(estado)) {
             float vy = p.getVelocidadY();
             int frame = vy < -10 ? 0 : vy < 0 ? 1 : vy < 10 ? 2 : 3;
             return salto[frame % salto.length];
