@@ -45,7 +45,34 @@ El diseño buscará mantener una estructura organizada y modular que permita agr
 
 ## 3. Arquitectura y diseño
 
-### Patron de diseño adicional: 
+### Patron de diseño aplicados
+
+### Patrones de diseño aplicados
+
+Se implementaron tres patrones: Observer, State y Singleton + DAO.
+
+#### 1. Observer (comportamiento)
+**Problema:** la vista y el sonido necesitaban enterarse de los cambios del juego (vida, tiempo, ganador) sin que el modelo conociera a la interfaz gráfica. Con el modelo llamando directamente a la vista se rompía el MVC, y la música y los efectos de sonido no tenían dónde engancharse.
+
+**Solución:** `Juego` es el sujeto observable. Mantiene una lista de `ObservadorJuego` y llama a `notificarObservadores()` en cada cambio de estado (por ejemplo, en `avanzarTick`). Hay dos observadores independientes:
+- `PanelJuego`: se redibuja solo cuando el modelo cambia.
+- `SonidoJuego`: reproduce música y efectos según lo que ocurre en el modelo.
+
+Para sumar otro observador (por ejemplo, un registro de eventos) no hay que modificar `Juego`.
+
+#### 2. State (comportamiento)
+**Problema:** lo que puede hacer un peleador depende de su situación (en el suelo, saltando, atacando, herido o muerto). Controlarlo con banderas y condicionales en `Peleador` era frágil y difícil de extender.
+
+**Solución:** `Peleador` es el contexto y delego ese comportamiento en `EstadoPeleador`, con estas implementaciones: `EstadoQuieto`, `EstadoSalto`, `EstadoAtacando`, `EstadoHerido` y `EstadoMuerto`. Cada estado decide qué acciones permite y a qué estado pasa después, por ejemplo cuando termina el ataque o cuando la vida llega a 0. `TipoAnimacion` le indica a la vista qué animación mostrar, sin que la vista conozca los estados.
+
+#### 3. Singleton + DAO (persistencia)
+**Problema:** había que guardar los puntajes de cada combate (3 letras, puntos y fecha) de forma permanente, sin que el modelo del juego dependiera de la base de datos.
+
+**Solución:**
+- **Singleton (`Conexion`):** garantiza una única conexión a SQLite para todo el programa, ya que dos conexiones al mismo archivo se bloquean entre sí. Se obtiene una sola vez en `main` y viaja por constructor.
+- **DAO:** la interfaz `PuntajeDAO` (`guardar`, `mejores`) vive en el modelo y no contiene SQL. Sus implementaciones son `PuntajeDAOSQLite` (única clase que conoce la tabla `puntajes`) y `PuntajeDAOMemoria` (respaldo si la base falla). `Juego` recibe el DAO por constructor y depende solo de la interfaz. La entidad es `Puntaje`, que valida sus datos al crearse.
+
+Al finalizar una partida, el ganador ingresa 3 letras y el puntaje se guarda en `juego.db`.
 
 ### Diagramas de diseños:
 

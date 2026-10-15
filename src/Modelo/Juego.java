@@ -1,5 +1,6 @@
 package Modelo;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +13,14 @@ private Escenario escenarioActual;
 private long tiempoRestante = DURACION_PARTIDA;
 private String mensajeGanador = "";
 private final List<ObservadorJuego> observadores = new ArrayList<>();
+private final PuntajeDAO puntajeDAO;
+private Peleador ganador; // null mientras no haya ganador
 
-
-public Juego(){
-// Constructor vacío
+public Juego(PuntajeDAO puntajeDAO){
+   if (puntajeDAO == null){
+    throw new IllegalArgumentException("El DAO es obligatorio");
+   }
+   this.puntajeDAO = puntajeDAO;
 } 
 
 public void agregarObservador(ObservadorJuego observador) {
@@ -34,7 +39,7 @@ public void notificarObservadores() {
 public void inicializarJuego(String personajeP1, String personajeP2, String nombreEscenario, int anchoVentana, int altoVentana) {
 
     this.mensajeGanador = "";
-
+    this.ganador = null;
     if ("EscenarioCiudad".equalsIgnoreCase(nombreEscenario) || "escenario1".equalsIgnoreCase(nombreEscenario)) {
         this.escenarioActual = new EscenarioCiudad(anchoVentana, altoVentana);
     } else if ("EscenarioItalia".equalsIgnoreCase(nombreEscenario) || "escenario2".equalsIgnoreCase(nombreEscenario)) {
@@ -77,10 +82,13 @@ public void definirGanadorPorTiempo() {
 
     if (vidaP1 > vidaP2) {
         mensajeGanador = "Jugador 1 gana por tiempo";
+        this.ganador = jugador1;
     } else if (vidaP2 > vidaP1) {
         mensajeGanador = "Jugador 2 gana por tiempo";
+        this.ganador = jugador2;
     } else {
         mensajeGanador = "Empate por tiempo";
+        this.ganador = null;
     }
 }
 
@@ -93,16 +101,38 @@ public void verificarKO() {
 
     if (!p1Vivo && !p2Vivo) {
         mensajeGanador = "Doble KO: empate";
+        this.ganador = null;
     } else if (!p2Vivo) {
         mensajeGanador = "Jugador 1 gana por KO";
+        this.ganador = jugador1;
         jugador1.sumarPuntaje(100);
         notificarObservadores();
     } else if (!p1Vivo) {
         mensajeGanador = "Jugador 2 gana por KO";
+        this.ganador = jugador2;
         jugador2.sumarPuntaje(100);
         notificarObservadores();
     }
    
+}
+
+// Puntaje de la partida: puntos por golpes + bonus por vida restante
+public int puntajeGanador() {
+    if (ganador == null) return 0;
+    return ganador.getPuntaje() + ganador.getVida() * 5; // bonus por vida restante
+}
+
+public boolean guardarPuntaje(String iniciales) {
+    if (ganador == null) return false;
+    try {
+        return puntajeDAO.guardar(new Puntaje(iniciales, puntajeGanador(), LocalDate.now()));
+    } catch (IllegalArgumentException e) {
+        return false; // iniciales inválidas
+    }
+}
+
+public List<Puntaje> mejoresPuntajes() {
+    return puntajeDAO.mejores(10);
 }
 
     // Un tick del juego: avanza el reloj, define ganador por tiempo y avisa UNA sola vez a los observadores
