@@ -8,6 +8,7 @@ import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -49,7 +50,13 @@ public class PanelMenu extends JPanel {
 
     private JButton disenoBoton(String texto, Color colorFondo) {
         JButton boton = new JButton(texto);
-        boton.setFont(new Font("Determination", Font.PLAIN, 30));
+        Font tipografiaBotones = null;
+        try {
+        	tipografiaBotones = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Tipografias/determination.ttf"));
+        } catch (Exception e) {
+        	System.out.println(e.getStackTrace());
+        }
+        boton.setFont(tipografiaBotones.deriveFont(30.0f));
         boton.setBackground(colorFondo);
         boton.setForeground(Color.BLACK);
         boton.setFocusPainted(false);

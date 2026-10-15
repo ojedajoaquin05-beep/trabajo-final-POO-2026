@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -64,6 +66,12 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
         if (modeloJuego != null) {
             Peleador personaje1 = modeloJuego.getJugador1();
             Peleador personaje2 = modeloJuego.getJugador2();
+            Font tipografiaVida = null;
+            try {
+            	tipografiaVida = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Tipografias/determination.ttf"));
+            } catch (Exception e) {
+            	System.out.println(e.getStackTrace());
+            }
 
             //BARRA DE VIDA (joaco)
             if (personaje1 != null){
@@ -76,11 +84,11 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
 
                 g.setColor(Color.BLACK);
                 g.drawRect(posXMarcoP1, 40, 300, 25);
-                g.setFont(new Font("Determination", Font.PLAIN, 24));
+                g.setFont(tipografiaVida.deriveFont(24.0f));
                 g.drawString(personaje1.getNombre().toUpperCase() + " : " + personaje1.getVida() + " HP", posXMarcoP1, 35);
 
                 // PUNTAJE JUGADOR 1
-                g.setFont(new Font("Determination", Font.PLAIN, 20));
+                g.setFont(tipografiaVida.deriveFont(20.0f));
                 g.setColor(Color.black);
                 g.drawString("SCORE: " + personaje1.getPuntaje(), posXMarcoP1, 85);
             }
@@ -97,11 +105,11 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
                 
                 g.setColor(Color.BLACK);
                 g.drawRect(posXMarcoP2, 40, 300, 25);
-                g.setFont(new Font("Determination", Font.PLAIN, 24));
+                g.setFont(tipografiaVida.deriveFont(24.0f));
                 g.drawString(personaje2.getNombre().toUpperCase() + " : " + personaje2.getVida() + " HP", posXMarcoP2, 35);
 
                 // PUNTAJE JUGADOR 2
-                g.setFont(new Font("Determination", Font.PLAIN, 20));
+                g.setFont(tipografiaVida.deriveFont(20.0f));
                 g.setColor(Color.black);
                 g.drawString("SCORE: " + personaje2.getPuntaje(), posXMarcoP2, 85);
             }
@@ -141,7 +149,13 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
 
         //TEMPORIZADOR (joaco)
         long tiempoRestanteNanos = modeloJuego.getTiempoRestante();
-            g.setFont(new Font("DSEG7 Modern", Font.BOLD, 48));
+        Font tipografiaDisplay = null;
+        try {
+        	tipografiaDisplay = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Tipografias/DSEG7Modern-Bold.ttf")).deriveFont(48.0f);
+        } catch (Exception e) {
+        	System.out.println(e.getStackTrace());
+        }
+            g.setFont(tipografiaDisplay);
             String textoTiempo = String.format("%02.0f", Math.min(99, Math.ceil(tiempoRestanteNanos / 1000000000.0)));
             int anchoTexto = g.getFontMetrics().stringWidth(textoTiempo);
             int x = (getWidth() / 2 - anchoTexto / 2);

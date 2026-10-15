@@ -6,6 +6,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.io.File;
+
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -19,7 +21,6 @@ public class PanelPausa extends JPanel{
     private final JButton btnVolverMenu;
     private final JLabel lblTitulo;
     private boolean escapePresionado = false;
-
     
     public PanelPausa(){
         final float opacidad = 0.5f;					// Rango 0-1
@@ -33,18 +34,25 @@ public class PanelPausa extends JPanel{
         gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.insets = new Insets(15,0,15,0);
         gbc.anchor = GridBagConstraints.CENTER;
+        
+        Font tipografiaMenu = null;
+        try {
+        	tipografiaMenu = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Tipografias/determination.ttf"));
+        } catch (Exception e) {
+        	System.out.println(e.getStackTrace());
+        }
 
         lblTitulo = new JLabel("JUEGO EN PAUSA");
-        lblTitulo.setFont(new Font("Determination", Font.BOLD, 48));
+        lblTitulo.setFont(tipografiaMenu.deriveFont(48.0f));
         lblTitulo.setForeground(Color.WHITE);
         add(lblTitulo, gbc);
 
         btnReanudar = new JButton("REANUDAR PARTIDA");
-        btnReanudar. setFont(new Font("Determination", Font.BOLD, 20));
+        btnReanudar. setFont(tipografiaMenu.deriveFont(20.0f));
         add(btnReanudar, gbc);
 
         btnVolverMenu = new JButton("VOLVER AL MENU PRINCIPAL");
-        btnVolverMenu.setFont(new Font("Determination", Font.BOLD, 20));
+        btnVolverMenu.setFont(tipografiaMenu.deriveFont(20.0f));
         add(btnVolverMenu, gbc);
 
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "Pausa_salir");
