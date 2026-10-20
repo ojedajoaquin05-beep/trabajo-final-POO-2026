@@ -10,9 +10,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.swing.SwingUtilities;
 
-public class main {
-	public static VentanaJuego ventana;
-	public static ControladorMenu controlador;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -35,4 +32,3 @@ public class main {
             vista.mostrarVentana();
         });
     }
-}

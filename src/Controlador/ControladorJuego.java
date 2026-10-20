@@ -6,6 +6,7 @@ import Modelo.Juego;
 import Modelo.Peleador;
 import Vista.VentanaJuego;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -74,6 +75,26 @@ public class ControladorJuego {
     // Forzar redibujado inmediato del contenedor de tarjetas
     contenedor.revalidate();
     contenedor.repaint();
+  }
+
+// Al terminar la partida, el ganador ingresa 3 letras y el modelo guarda el puntaje
+private void pedirInicialesYGuardar() {
+    if (!modeloJuego.hayGanador() || modeloJuego.puntajeGanador() <= 0) {
+        return; // empate o sin puntos, no se guarda nada
+    }
+    String mensaje = "Ganaste con " + modeloJuego.puntajeGanador() + " puntos. Ingresa 3 letras:";
+    while (true) {
+        String iniciales = JOptionPane.showInputDialog(
+                null, mensaje, "Nuevo puntaje", JOptionPane.PLAIN_MESSAGE);
+        if (iniciales == null) {
+            return; // cancelo. no se guarda
+        }
+        if (modeloJuego.guardarPuntaje(iniciales.trim())) {
+            return; // guardado
+        }
+        mensaje = "Usa exactamente 3 letras (A-Z). Ganaste con "
+                + modeloJuego.puntajeGanador() + " puntos:";
+    }
 }
 
     private void procesarAtaque() {
@@ -121,6 +142,7 @@ public class ControladorJuego {
                 if (ticksFinPartida >= TICKS_ESPERA_FIN) {
                     ticksFinPartida = 0;
                     detenerPartida();
+                    pedirInicialesYGuardar();
                     java.awt.CardLayout botones = vista.getGestorBotones();
                     javax.swing.JPanel contenedor = vista.getPanelContenedor();
                     botones.show(contenedor, "BOTON_MENU");
