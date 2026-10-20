@@ -194,15 +194,24 @@ public class Peleador extends Entidad {
       }
     }
 
-    // Cuando la vida llega a 0, el peleador pasa al estado MUERTO
+    // El estado actual decide cuanto danio se recibe y como reacciona
+    public void bloquear() {
+      this.estadoActual.bloquear(this);
+    }
+
+    public void soltarBloqueo() {
+      this.estadoActual.soltarBloqueo(this);
+    }
+
+// Cuando la vida llega a 0, el peleador pasa al estado MUERTO
     @Override
     public void recibirdanio(int cantidad) {
-      super.recibirdanio(cantidad);
-      if (!estaVivo()) {
-        cambiarEstado(new EstadoMuerto());
-      } else {
-        cambiarEstado(new EstadoHerido());
-      }
+      super.recibirdanio(estadoActual.reducirDanio(cantidad));
+       if (!estaVivo()) {
+         cambiarEstado(new EstadoMuerto());
+        } else {
+                 estadoActual.alRecibirGolpe(this);
+                }
     }
 
 }

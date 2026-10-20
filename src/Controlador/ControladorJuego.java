@@ -186,10 +186,16 @@ private void pedirInicialesYGuardar() {
         });
     }
 
-   private void procesarMovimiento() {
+      private void procesarMovimiento() {
     // JUGADOR 1 (wasd)
     Peleador p1 = modeloJuego.getJugador1();
     if (p1 != null) {
+        
+        if (teclado.isP1Abajo()) {
+            p1.bloquear();
+        } else {
+            p1.soltarBloqueo();
+        }
         if (teclado.isP1Arriba()) {
             p1.saltar();
         }
@@ -204,6 +210,12 @@ private void pedirInicialesYGuardar() {
     // JUGADOR 2 (Flechas)
     Peleador p2 = modeloJuego.getJugador2();
     if (p2 != null) {
+        
+        if (teclado.isP2Abajo()) {
+            p2.bloquear();
+        } else {
+            p2.soltarBloqueo();
+        }
         if (teclado.isP2Arriba()) {
             p2.saltar();
         }

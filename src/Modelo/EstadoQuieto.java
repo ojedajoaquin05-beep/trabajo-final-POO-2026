@@ -30,4 +30,12 @@ public class EstadoQuieto implements EstadoPeleador {
     public void caminar(Peleador peleador, int direccion) {
       peleador.desplazar(direccion);
     }
+
+   
+    @Override
+    public void bloquear(Peleador peleador) {
+       if (peleador.isEnElSuelo()) {
+        peleador.cambiarEstado(new EstadoBloqueando());
+       }
+    }
 }
