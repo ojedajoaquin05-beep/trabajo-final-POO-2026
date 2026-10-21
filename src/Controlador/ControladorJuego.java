@@ -186,11 +186,11 @@ private void pedirInicialesYGuardar() {
         });
     }
 
-      private void procesarMovimiento() {
+    private void procesarMovimiento() {
     // JUGADOR 1 (wasd)
     Peleador p1 = modeloJuego.getJugador1();
     if (p1 != null) {
-        
+        // S mantenida: guardia. Al soltarla, vuelve a quieto
         if (teclado.isP1Abajo()) {
             p1.bloquear();
         } else {
@@ -199,18 +199,17 @@ private void pedirInicialesYGuardar() {
         if (teclado.isP1Arriba()) {
             p1.saltar();
         }
-        if (teclado.isP1Derecha()) {
-            p1.caminar(1);
-        }
-        if (teclado.isP1Izquierda()) {
-            p1.caminar(-1);
+        //si aprieta izquierda y derecha a la vez se cancelan y no se mueve
+        int direccionP1 = (teclado.isP1Derecha() ? 1 : 0) - (teclado.isP1Izquierda() ? 1 : 0);
+        if (direccionP1 != 0) {
+            p1.caminar(direccionP1);
         }
     }
 
     // JUGADOR 2 (Flechas)
     Peleador p2 = modeloJuego.getJugador2();
     if (p2 != null) {
-        
+        // Flecha abajo mantenida: guardia. Al soltarla, vuelve a quieto
         if (teclado.isP2Abajo()) {
             p2.bloquear();
         } else {
@@ -219,11 +218,10 @@ private void pedirInicialesYGuardar() {
         if (teclado.isP2Arriba()) {
             p2.saltar();
         }
-        if (teclado.isP2Derecha()) {
-            p2.caminar(1);
-        }
-        if (teclado.isP2Izquierda()) {
-            p2.caminar(-1);
+        // direccion neta: si aprieta izquierda y derecha a la vez se cancelan y no se mueve
+        int direccionP2 = (teclado.isP2Derecha() ? 1 : 0) - (teclado.isP2Izquierda() ? 1 : 0);
+        if (direccionP2 != 0) {
+            p2.caminar(direccionP2);
         }
     }
 }
