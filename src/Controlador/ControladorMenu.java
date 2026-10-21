@@ -70,6 +70,19 @@ public class ControladorMenu {
             volverAlMenu();
         });
 
+        // NUEVO: Acción para volver a la pantalla de selección de personajes desde la pausa
+        vista.getPanelPausa().getBtnSeleccionPersonaje().addActionListener(evento -> {
+            controladorJuego.detenerPartida(); // Detiene el motor del juego actual
+            musicaPelea.detener();            // Apaga la música de combate
+            musicaMenu.reproducirLoop();      // Restaura la música del menú principal
+            vista.getPantallaSeleccionPersonaje().reiniciarSeleccion(); // Resetea las selecciones previas
+            vista.getGestorBotones().show(vista.getPanelContenedor(), "PANTALLA_SELECCION"); // Muestra la pantalla de selección
+        });
+
+        vista.getPanelPausa().getBtnVolverMenu().addActionListener(evento -> {
+            volverAlMenu();
+        });
+
         // El observador de sonido se registra una sola vez (no en cada combate)
         modeloJuego.agregarObservador(new SonidoJuego(musicaPelea, musicaMenu));
         musicaMenu.reproducirLoop();

@@ -136,16 +136,40 @@ private void pedirInicialesYGuardar() {
             Peleador p1 = modeloJuego.getJugador1();
             Peleador p2 = modeloJuego.getJugador2();
 
-                        // Solo se acepta movimiento y ataque mientras la partida siga
+            //NUEVO 
+            //COLISION DE LOS PERSONAJES
+
+            int cuerpoAncho = 150;
+            int offsetP1 = (p1.ancho() - cuerpoAncho) / 2;
+            int offsetP2 = (p2.ancho() - cuerpoAncho) / 2;
+
+            java.awt.Rectangle caja1 = new java.awt.Rectangle(p1.getPosicionX() + offsetP1, p1.getPosicionY(), cuerpoAncho, p1.alto());
+            java.awt.Rectangle caja2 = new java.awt.Rectangle(p2.getPosicionX() + offsetP2, p2.getPosicionY(), cuerpoAncho, p2.alto());
+
+            if (p1 != null && p2 != null && caja1.intersects(caja2)) {
+                int centroP1 = p1.getPosicionX() + p1.ancho() * 2/10;
+                int centroP2 = p2.getPosicionX() + p2.ancho() * 2/10; 
+
+                if (centroP1<centroP2) {
+                    p1.setPosicionX(p1.getPosicionX() - 1);
+                    p2.setPosicionX(p2.getPosicionX() + 1);
+                }else{
+                    p1.setPosicionX(p1.getPosicionX() + 1);
+                    p2.setPosicionX(p2.getPosicionX() - 1);
+                }
+            }
+            //NUEVO
+                        
+            // Solo se acepta movimiento y ataque mientras la partida siga
             if (modeloJuego.hayGanador()) {
                 ticksFinPartida++;
                 if (ticksFinPartida >= TICKS_ESPERA_FIN) {
                     ticksFinPartida = 0;
+
+                    //CAMBIOS DETENEMOS Y MOSTRAMOS OPCIONES EN LUGAR DE IR AL MENU PRINCIPAL
                     detenerPartida();
                     pedirInicialesYGuardar();
-                    java.awt.CardLayout botones = vista.getGestorBotones();
-                    javax.swing.JPanel contenedor = vista.getPanelContenedor();
-                    botones.show(contenedor, "BOTON_MENU");
+                    mostrarOpcionesFinPartida();
                     return;
                 }
             } else {
@@ -178,6 +202,7 @@ private void pedirInicialesYGuardar() {
                     escenario.delimitarMovimiento(p2);
                 }
             }
+
 
             //El modelo avanza el reloj y avisa a la vista (el panel se redibuja solo, es el Observer)
             long timestamp = System.nanoTime();
@@ -224,5 +249,49 @@ private void pedirInicialesYGuardar() {
             p2.caminar(direccionP2);
         }
     }
+}
+
+private void mostrarOpcionesFinPartida() {
+    String[] opciones = {"revancha", "menú principal"};
+    int seleccion = javax.swing.JOptionPane.showOptionDialog(
+        vista,
+                "¿Qué deseas hacer a continuación?",
+                "Fin del Combate",
+                javax.swing.JOptionPane.DEFAULT_OPTION,
+                javax.swing.JOptionPane.QUESTION_MESSAGE,
+                null,
+                opciones,
+                opciones[0]
+    );
+
+    if (seleccion == 0) {
+        //REVANCHA
+        reiniciarRevancha();
+    } else {
+     java.awt.CardLayout botones = vista.getGestorBotones();
+        javax.swing.JPanel contenedor = vista.getPanelContenedor();
+        botones.show(contenedor, "BOTON_MENU");   
+    }
+}
+
+private void reiniciarRevancha(){
+    if (modeloJuego.getJugador1() != null && modeloJuego.getJugador2() != null && modeloJuego.getEscenarioActual() != null){
+        String p1 = modeloJuego.getJugador1().getNombre();
+            String p2 = modeloJuego.getJugador2().getNombre();
+            String escenario = modeloJuego.getEscenarioActual().getNombre();
+            
+            int ancho = vista.getWidth();
+            int alto = vista.getHeight();
+
+            // Reiniciamos el modelo y los gráficos con los mismos parámetros
+            modeloJuego.inicializarJuego(p1, p2, escenario, ancho, alto);
+            vista.prepararGraficosCombate(p1, p2, escenario);
+            
+            java.awt.CardLayout botones = vista.getGestorBotones();
+            javax.swing.JPanel contenedor = vista.getPanelContenedor();
+            botones.show(contenedor, "BOTON_JUEGO");
+
+            iniciarPartida();
+        }
 }
 }

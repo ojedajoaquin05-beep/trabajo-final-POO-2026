@@ -18,10 +18,11 @@ import javax.swing.KeyStroke;
 public class PanelPausa extends JPanel{
 
     private final JButton btnReanudar;
+     private final JButton btnSeleccionPersonaje; // NUEVO: Botón para cambiar de personaje
     private final JButton btnVolverMenu;
     private final JLabel lblTitulo;
     private boolean escapePresionado = false;
-    
+
     public PanelPausa(){
         final float opacidad = 0.5f;					// Rango 0-1
         setBackground(new Color(0, 0, 0, opacidad));	// Fondo semitransparente
@@ -51,6 +52,11 @@ public class PanelPausa extends JPanel{
         btnReanudar. setFont(tipografiaMenu.deriveFont(20.0f));
         add(btnReanudar, gbc);
 
+        // NUEVO: Inicialización y diseño del botón de selección de personaje
+        btnSeleccionPersonaje = new JButton("SELECCIONAR PERSONAJE");
+        btnSeleccionPersonaje.setFont(tipografiaMenu.deriveFont(20.0f));
+        add(btnSeleccionPersonaje, gbc);
+
         btnVolverMenu = new JButton("VOLVER AL MENU PRINCIPAL");
         btnVolverMenu.setFont(tipografiaMenu.deriveFont(20.0f));
         add(btnVolverMenu, gbc);
@@ -72,5 +78,6 @@ public class PanelPausa extends JPanel{
 
     public JButton getBtnReanudar(){return btnReanudar;}
     public JButton getBtnVolverMenu(){return btnVolverMenu;}
-}
+    public JButton getBtnSeleccionPersonaje() { return btnSeleccionPersonaje; } // NUEVO: Getter para el botón  
 
+}
