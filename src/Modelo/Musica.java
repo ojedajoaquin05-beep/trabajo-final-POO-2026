@@ -1,8 +1,8 @@
 package Modelo;
 
-import javax.sound.sampled.*;
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
+import javax.sound.sampled.*;
 
 public class Musica {
 
@@ -33,6 +33,13 @@ public class Musica {
     public void pausar() {
         clip.stop();
     }
+
+    public void detener() {
+    if (clip != null) {
+        clip.stop();
+        clip.setFramePosition(0);
+    }
+}
 
     public void reanudar() {
         clip.start();

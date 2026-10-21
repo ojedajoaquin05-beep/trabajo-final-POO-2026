@@ -20,7 +20,7 @@ public class SonidoJuego implements ObservadorJuego {
     public void alCambiarEstadoJuego(Juego juego) {
         if (juego.hayGanador() && !finProcesado) {
             finProcesado = true;
-            musicaPelea.pausar();
+            musicaPelea.detener();
             musicaMenu.reproducirLoop();
         } else if (!juego.hayGanador()) {
             finProcesado = false; // combate nuevo: vuelve a quedar listo

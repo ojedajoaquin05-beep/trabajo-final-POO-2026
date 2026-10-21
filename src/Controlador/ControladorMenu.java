@@ -54,8 +54,7 @@ public class ControladorMenu {
 
         // BOTONES DE RETORNOS
         vista.getBtnVolverJugar().addActionListener(evento -> {
-            controladorJuego.detenerPartida(); 
-            botones.show(contenedor, "BOTON_MENU");
+            volverAlMenu();
         }); 
         
         vista.getBtnVolverOpciones().addActionListener(evento -> {
@@ -68,10 +67,20 @@ public class ControladorMenu {
         });
 
         vista.getPanelPausa().getBtnVolverMenu().addActionListener(evento -> {
-            controladorJuego.detenerPartida();
-            botones.show(contenedor, "BOTON_MENU");
-});
+            volverAlMenu();
+        });
+
+        // El observador de sonido se registra una sola vez (no en cada combate)
+        modeloJuego.agregarObservador(new SonidoJuego(musicaPelea, musicaMenu));
         musicaMenu.reproducirLoop();
+    }
+
+    // Vuelve al menu principal desde cualquier parte del combate: corta la partida y cambia la musica
+    private void volverAlMenu() {
+        controladorJuego.detenerPartida();
+        musicaPelea.detener();
+        musicaMenu.reproducirLoop();
+        vista.getGestorBotones().show(vista.getPanelContenedor(), "BOTON_MENU");
     }
 
     public void iniciarCombate(){
@@ -103,6 +112,5 @@ public class ControladorMenu {
         // Detiene la música del menú principal e inicia la de la pelea 
         musicaMenu.pausar();
         musicaPelea.reproducirLoop();
-        modeloJuego.agregarObservador(new SonidoJuego(musicaPelea, musicaMenu));
     }
 }
