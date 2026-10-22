@@ -82,7 +82,7 @@ private void pedirInicialesYGuardar() {
     if (!modeloJuego.hayGanador() || modeloJuego.puntajeGanador() <= 0) {
         return; // empate o sin puntos, no se guarda nada
     }
-    String mensaje = "Ganaste con " + modeloJuego.puntajeGanador() + " puntos. Ingresa 3 letras:";
+    String mensaje = "Tu puntaje fue: " + modeloJuego.puntajeGanador() + "\nIngresa 3 letras para guardarlo:";
     while (true) {
         String iniciales = JOptionPane.showInputDialog(
                 null, mensaje, "Nuevo puntaje", JOptionPane.PLAIN_MESSAGE);
@@ -92,8 +92,7 @@ private void pedirInicialesYGuardar() {
         if (modeloJuego.guardarPuntaje(iniciales.trim())) {
             return; // guardado
         }
-        mensaje = "Usa exactamente 3 letras (A-Z). Ganaste con "
-                + modeloJuego.puntajeGanador() + " puntos:";
+        mensaje = "Debes ingresar exactamente 3 letras, vuelve a intentarlo:";
     }
 }
 
@@ -252,7 +251,7 @@ private void pedirInicialesYGuardar() {
 }
 
 private void mostrarOpcionesFinPartida() {
-    String[] opciones = {"revancha", "menú principal"};
+    String[] opciones = {"Revancha", "Menú Principal"};
     int seleccion = javax.swing.JOptionPane.showOptionDialog(
         vista,
                 "¿Qué deseas hacer a continuación?",

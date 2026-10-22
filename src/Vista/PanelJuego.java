@@ -170,10 +170,10 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
               String mensaje = modeloJuego.getMensajeGanador();
                 g.setFont(new Font("Arial", Font.BOLD, 60));
                 g.setColor(new Color(0, 0, 0, 150));
-                g.fillRect(0, (getHeight() / 2) - 80, getWidth(), 120);
+                g.fillRect(0, (getHeight() / 2) - 180, getWidth(), 120);
                 g.setColor(Color.YELLOW);
                 int anchoMensaje = g.getFontMetrics().stringWidth(mensaje);
-                g.drawString(mensaje, (getWidth() / 2 - anchoMensaje / 2), getHeight() / 2);  
+                g.drawString(mensaje, (getWidth() / 2 - anchoMensaje / 2), getHeight() / 2 - 100);  
             }
 
         java.awt.Toolkit.getDefaultToolkit().sync();
