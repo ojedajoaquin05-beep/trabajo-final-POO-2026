@@ -5,6 +5,7 @@ import Modelo.Musica;
 import Vista.SeleccionPersonaje;
 import Vista.SonidoJuego;
 import Vista.VentanaJuego;
+import Vista.PanelOpciones;
 import java.awt.CardLayout;
 import javax.swing.JPanel;
 
@@ -131,9 +132,11 @@ public class ControladorMenu {
 
         controladorJuego.iniciarPartida();
         
-        // Detiene la música del menú principal y selecciona una para la pelea 
+        // Detiene la música del menú principal y reproduce la seleccionada para la pelea 
         musicaMenu.pausar();
-        int indice = (int)(Math.random() * musicaPelea.length);
+        
+        int indice = (int)PanelOpciones.getSpnSeleccionMusica().getValue() - 1;
+        if (indice == -1) indice = (int)(Math.random() * 4);	// Si el índice es -1 quiere decir que se seleccionó la opción 0, en ese caso elegir un tema al azar
         musicaPelea[indice].reproducirLoop();
     }
 }
