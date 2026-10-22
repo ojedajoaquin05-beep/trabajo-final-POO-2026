@@ -14,7 +14,12 @@ public class ControladorMenu {
     private final Juego modeloJuego; 
     private final ControladorJuego controladorJuego;
     private Musica musicaMenu = new Musica("assets/audio/MenuPrincipal.wav");
-    private Musica musicaPelea = new Musica("assets/audio/Pelea1.wav");
+    private Musica[] musicaPelea = {
+    		new Musica("assets/audio/Pelea1.wav"),
+    		new Musica("assets/audio/Pelea2.wav"),
+    		new Musica("assets/audio/Pelea3.wav"),
+    		new Musica("assets/audio/Pelea4.wav"),
+    };
 
     public ControladorMenu(VentanaJuego vista, Juego modeloJuego, ControladorTeclado teclado) {
         if (vista == null) {
@@ -73,7 +78,9 @@ public class ControladorMenu {
         // NUEVO: Acción para volver a la pantalla de selección de personajes desde la pausa
         vista.getPanelPausa().getBtnSeleccionPersonaje().addActionListener(evento -> {
             controladorJuego.detenerPartida(); // Detiene el motor del juego actual
-            musicaPelea.detener();            // Apaga la música de combate
+            for (Musica i : musicaPelea) {
+            	i.detener();					// Detiene la música de la pelea, se hace en loop para probar todas las disponibles
+            }
             musicaMenu.reproducirLoop();      // Restaura la música del menú principal
             vista.getPantallaSeleccionPersonaje().reiniciarSeleccion(); // Resetea las selecciones previas
             vista.getGestorBotones().show(vista.getPanelContenedor(), "PANTALLA_SELECCION"); // Muestra la pantalla de selección
@@ -91,7 +98,9 @@ public class ControladorMenu {
     // Vuelve al menu principal desde cualquier parte del combate: corta la partida y cambia la musica
     private void volverAlMenu() {
         controladorJuego.detenerPartida();
-        musicaPelea.detener();
+        for (Musica m : musicaPelea) {
+        	m.detener();					// Detiene la música de la pelea
+        }
         musicaMenu.reproducirLoop();
         vista.getGestorBotones().show(vista.getPanelContenedor(), "BOTON_MENU");
     }
@@ -122,8 +131,9 @@ public class ControladorMenu {
 
         controladorJuego.iniciarPartida();
         
-        // Detiene la música del menú principal e inicia la de la pelea 
+        // Detiene la música del menú principal y selecciona una para la pelea 
         musicaMenu.pausar();
-        musicaPelea.reproducirLoop();
+        int indice = (int)(Math.random() * musicaPelea.length);
+        musicaPelea[indice].reproducirLoop();
     }
 }

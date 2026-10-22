@@ -22,3 +22,9 @@
 hs_err_pid*
 replay_pid*
 
+# Database
+*.db
+
+# Classpath and project
+.classpath
+.project
