@@ -141,6 +141,14 @@ public int leerVolumen() {
 	return configuracionDAO.getVolumen();
 }
 
+public boolean guardarMusica(int musica) {
+	return configuracionDAO.setMusicaPelea(musica);
+}
+
+public int leerMusica() {
+	return configuracionDAO.getMusicaPelea();
+}
+
 public List<Puntaje> mejoresPuntajes() {
     return puntajeDAO.mejores(10);
 }

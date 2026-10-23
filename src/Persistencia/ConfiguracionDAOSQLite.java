@@ -19,10 +19,10 @@ public class ConfiguracionDAOSQLite implements ConfiguracionDAO {
         }
         this.conexion = conexion;
         try (Statement sentencia = conexion.createStatement()) {
-            sentencia.execute("CREATE TABLE IF NOT EXISTS configuracion (clave TEXT PRIMARY KEY, valor TEXT)");
-        }
-        try (Statement sentencia = conexion.createStatement()) {
-        	sentencia.execute("INSERT OR IGNORE INTO configuracion (clave, valor) VALUES ('volMusica', 127)");
+            sentencia.execute("CREATE TABLE IF NOT EXISTS configuracion (clave TEXT PRIMARY KEY, valor INTEGER)");
+            sentencia.execute("INSERT OR IGNORE INTO configuracion (clave, valor) VALUES ('volMusica', 127)");
+            sentencia.execute("INSERT OR IGNORE INTO configuracion (clave, valor) VALUES ('mutearMusica', 0)");
+            sentencia.execute("INSERT OR IGNORE INTO configuracion (clave, valor) VALUES ('musicaPelea', 1)");
         }
     }
 
@@ -30,7 +30,7 @@ public class ConfiguracionDAOSQLite implements ConfiguracionDAO {
     public boolean setVolumen(int vol) {
         String sql = "UPDATE configuracion SET valor = ? WHERE clave = 'volMusica'";
         try (PreparedStatement sentencia = this.conexion.prepareStatement(sql)) {
-            sentencia.setString(1, String.valueOf(vol));
+            sentencia.setInt(1, vol);
             return sentencia.executeUpdate() == 1;
         } catch (SQLException e) {
             return false;
@@ -49,6 +49,33 @@ public class ConfiguracionDAOSQLite implements ConfiguracionDAO {
             }
         } catch (SQLException e) {
             return 127;
+        }
+        return resultado;
+    }
+    
+    @Override
+    public boolean setMusicaPelea(int musica) {
+        String sql = "UPDATE configuracion SET valor = ? WHERE clave = 'musicaPelea'";
+        try (PreparedStatement sentencia = this.conexion.prepareStatement(sql)) {
+            sentencia.setInt(1, musica);
+            return sentencia.executeUpdate() == 1;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    @Override
+	public int getMusicaPelea() {
+        String sql = "SELECT valor FROM configuracion WHERE clave = 'musicaPelea'";
+        int resultado = 1;
+        try (PreparedStatement sentencia = this.conexion.prepareStatement(sql)) {
+            try (ResultSet filas = sentencia.executeQuery()) {
+                while (filas.next()) {
+                    resultado = filas.getInt("valor");
+                }
+            }
+        } catch (SQLException e) {
+            return 1;
         }
         return resultado;
     }

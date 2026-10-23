@@ -29,8 +29,10 @@ public class main {
                 vista.setModeloJuego(juego); // Establecer el modelo del juego en la vista
                 ControladorTeclado teclado = new ControladorTeclado();
                 ControladorMenu controlador = new ControladorMenu(vista,juego, teclado);
-                int vol = configuracion.getVolumen();					// Recupera la configuración de volumen de música
-                PanelOpciones.getSldVolumenMusica().setValue(vol);		// Coloca el valor en el control deslizante
+                int vol = configuracion.getVolumen();							// Recupera la configuración de volumen de música
+                PanelOpciones.getSldVolumenMusica().setValue(vol);				// Coloca el valor en el control deslizante
+                int musicaPelea = configuracion.getMusicaPelea();
+                PanelOpciones.getSpnSeleccionMusica().setValue(musicaPelea);	// Lo mismo con la elección de música de pelea
                 vista.mostrarVentana();
             } catch (SQLException e) {
                 System.err.println("No se pudo abrir la base, uso memoria: " + e.getMessage());

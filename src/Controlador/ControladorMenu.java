@@ -89,6 +89,11 @@ public class ControladorMenu {
         	musicaMenu.setVolumen(vol);	// Aplica esta configuración tanto a la música del menú
         	for (Musica m : musicaPelea) m.setVolumen(vol);		// como a la de la pelea
         });
+        
+        PanelOpciones.getSpnSeleccionMusica().addChangeListener(evento -> {
+        	int musica = (int)PanelOpciones.getSpnSeleccionMusica().getValue();
+        	modeloJuego.guardarMusica(musica);
+        });
 
         // NUEVO: Acción para volver a la pantalla de selección de personajes desde la pausa
         vista.getPanelPausa().getBtnSeleccionPersonaje().addActionListener(evento -> {
