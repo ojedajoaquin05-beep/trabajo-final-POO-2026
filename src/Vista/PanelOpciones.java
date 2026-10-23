@@ -6,6 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
+import javax.swing.JCheckBox;
 import javax.swing.SpinnerNumberModel;
 
 public class PanelOpciones extends JPanel {
@@ -19,6 +20,9 @@ public class PanelOpciones extends JPanel {
     private static JSlider sldVolumenMusica, sldVolumenFX;
     private final JLabel lblVolumenMusica, lblVolumenFX, lblSeleccionMusica;
     private static JSpinner spnSeleccionMusica = null;
+    
+    //checkbox para mutear directamente
+    private static JCheckBox ckbMutearMusica;
 
     public PanelOpciones() {
         setBackground(Color.DARK_GRAY);
@@ -35,11 +39,13 @@ public class PanelOpciones extends JPanel {
         sldVolumenMusica = new JSlider(0, 127, 127);
         sldVolumenFX = new JSlider(0, 127, 127);
         spnSeleccionMusica = new JSpinner(new SpinnerNumberModel(1, 0, 4, 1));	// valor por defecto, minimo, maximo, paso
+        ckbMutearMusica = new JCheckBox("Silenciar", false);
 
         add(lblTitulo);
         add(btnVolver);
         add(lblVolumenMusica);
         add(sldVolumenMusica);
+        add(ckbMutearMusica);
         add(lblVolumenFX);
         add(sldVolumenFX);
         add(lblSeleccionMusica);
@@ -50,4 +56,5 @@ public class PanelOpciones extends JPanel {
     public static JSlider getSldVolumenMusica() { return sldVolumenMusica; }
     public static JSlider getSldVolumenFX() { return sldVolumenFX; }
     public static JSpinner getSpnSeleccionMusica() { return spnSeleccionMusica; }
+    public static JCheckBox getCkbMutearMusica() { return ckbMutearMusica; }
 }

@@ -77,11 +77,15 @@ public class ControladorMenu {
         });
         
         PanelOpciones.getSldVolumenMusica().addChangeListener(evento -> {
-        	// Función matemática para aproximar una respuesta lineal del control de volumen
-        	// Extraída de "General MIDI System Level 1 Developer Guidelines", MIDI Manufacturers Association
-        	float volumen = 40.0f * (float)Math.log((PanelOpciones.getSldVolumenMusica().getValue()) / 127.0);
-        	musicaMenu.setVolumen(volumen);							// Aplica esta configuración tanto a la música del menú
-        	for (Musica m : musicaPelea) m.setVolumen(volumen);		// como a la de la pelea
+        	int vol = PanelOpciones.getCkbMutearMusica().isSelected() ? 0 : PanelOpciones.getSldVolumenMusica().getValue();
+        	musicaMenu.setVolumen(vol);	// Aplica esta configuración tanto a la música del menú
+        	for (Musica m : musicaPelea) m.setVolumen(vol);		// como a la de la pelea
+        });
+        
+        PanelOpciones.getCkbMutearMusica().addChangeListener(evento -> {
+        	int vol = PanelOpciones.getCkbMutearMusica().isSelected() ? 0 : PanelOpciones.getSldVolumenMusica().getValue();
+        	musicaMenu.setVolumen(vol);	// Aplica esta configuración tanto a la música del menú
+        	for (Musica m : musicaPelea) m.setVolumen(vol);		// como a la de la pelea
         });
 
         // NUEVO: Acción para volver a la pantalla de selección de personajes desde la pausa
