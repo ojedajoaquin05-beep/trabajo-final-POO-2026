@@ -45,5 +45,13 @@ public class Musica {
         clip.start();
         clip.loop(Clip.LOOP_CONTINUOUSLY);
     }
+    
+    public void setVolumen(float db) {
+    	// MASTER_GAIN recibe un parámetro expresado en decibeles donde 0 es el volumen máximo
+    	// y se utilizan valores negativos para especificar un volumen menor
+    	FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+    	gainControl.setValue(db);
+    	if (this.isReproduciendo()) clip.start();
+    }
 
 }

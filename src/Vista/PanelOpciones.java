@@ -16,7 +16,7 @@ public class PanelOpciones extends JPanel {
     private final JLabel lblTitulo;
 
     //controles deslizantes para volumen musica y fx, y sus respectivas etiquetas
-    private final JSlider sldVolumenMusica, sldVolumenFX;
+    private static JSlider sldVolumenMusica, sldVolumenFX;
     private final JLabel lblVolumenMusica, lblVolumenFX, lblSeleccionMusica;
     private static JSpinner spnSeleccionMusica = null;
 
@@ -32,9 +32,9 @@ public class PanelOpciones extends JPanel {
         lblVolumenFX.setForeground(Color.WHITE);
         lblSeleccionMusica = new JLabel("SELECCION MUSICA PELEA");
         lblSeleccionMusica.setForeground(Color.WHITE);
-        sldVolumenMusica = new JSlider(0, 100);
-        sldVolumenFX = new JSlider(0, 100);
-        spnSeleccionMusica = new JSpinner(new SpinnerNumberModel(1, 0, 4, 1));
+        sldVolumenMusica = new JSlider(0, 127, 127);
+        sldVolumenFX = new JSlider(0, 127, 127);
+        spnSeleccionMusica = new JSpinner(new SpinnerNumberModel(1, 0, 4, 1));	// valor por defecto, minimo, maximo, paso
 
         add(lblTitulo);
         add(btnVolver);
@@ -47,7 +47,7 @@ public class PanelOpciones extends JPanel {
     }
 
     public JButton getBtnVolver() { return btnVolver; }
-    public JSlider getSldVolumenMusica() { return sldVolumenMusica; }
-    public JSlider getSldVolumenFX() { return sldVolumenFX; }
+    public static JSlider getSldVolumenMusica() { return sldVolumenMusica; }
+    public static JSlider getSldVolumenFX() { return sldVolumenFX; }
     public static JSpinner getSpnSeleccionMusica() { return spnSeleccionMusica; }
 }
