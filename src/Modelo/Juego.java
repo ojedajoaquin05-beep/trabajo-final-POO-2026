@@ -14,12 +14,14 @@ private long tiempoRestante = DURACION_PARTIDA;
 private String mensajeGanador = "";
 private final List<ObservadorJuego> observadores = new ArrayList<>();
 private final PuntajeDAO puntajeDAO;
+private final ConfiguracionDAO configuracionDAO;
 private Peleador ganador; // null mientras no haya ganador
 
-public Juego(PuntajeDAO puntajeDAO){
-   if (puntajeDAO == null){
+public Juego(ConfiguracionDAO configuracionDAO, PuntajeDAO puntajeDAO){
+   if (configuracionDAO == null || puntajeDAO == null){
     throw new IllegalArgumentException("El DAO es obligatorio");
    }
+   this.configuracionDAO = configuracionDAO;
    this.puntajeDAO = puntajeDAO;
 } 
 
@@ -129,6 +131,14 @@ public boolean guardarPuntaje(String iniciales) {
     } catch (IllegalArgumentException e) {
         return false; // iniciales inválidas
     }
+}
+
+public boolean guardarVolumen(int vol) {
+	return configuracionDAO.setVolumen(vol);
+}
+
+public int leerVolumen() {
+	return configuracionDAO.getVolumen();
 }
 
 public List<Puntaje> mejoresPuntajes() {

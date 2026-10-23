@@ -1,5 +1,6 @@
 package Controlador;
 
+import Modelo.ConfiguracionDAO;
 import Modelo.Juego;
 import Modelo.Musica;
 import Vista.SeleccionPersonaje;
@@ -80,6 +81,7 @@ public class ControladorMenu {
         	int vol = PanelOpciones.getCkbMutearMusica().isSelected() ? 0 : PanelOpciones.getSldVolumenMusica().getValue();
         	musicaMenu.setVolumen(vol);	// Aplica esta configuración tanto a la música del menú
         	for (Musica m : musicaPelea) m.setVolumen(vol);		// como a la de la pelea
+        	modeloJuego.guardarVolumen(vol);
         });
         
         PanelOpciones.getCkbMutearMusica().addChangeListener(evento -> {

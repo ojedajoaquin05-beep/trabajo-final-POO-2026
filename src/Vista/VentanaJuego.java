@@ -31,7 +31,6 @@ public class VentanaJuego extends JFrame {
         panelOpciones = new PanelOpciones(); //inicializo el panel de opciones
         panelPausa = new PanelPausa(); //inicializo el panel de pausa
 
-
         panelContenedor.add(panelMenu, "BOTON_MENU");
         panelContenedor.add(pantallaSeleccionPersonaje, "PANTALLA_SELECCION");
         panelContenedor.add(panelJuego, "BOTON_JUEGO");
