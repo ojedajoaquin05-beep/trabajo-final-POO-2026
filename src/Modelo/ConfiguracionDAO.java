@@ -5,4 +5,6 @@ public interface ConfiguracionDAO {
     int getVolumen();
 	boolean setMusicaPelea(int musica);
 	int getMusicaPelea();
+	boolean setMute(boolean mute);
+	boolean getMute();
 }

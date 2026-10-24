@@ -88,6 +88,7 @@ public class ControladorMenu {
         	int vol = PanelOpciones.getCkbMutearMusica().isSelected() ? 0 : PanelOpciones.getSldVolumenMusica().getValue();
         	musicaMenu.setVolumen(vol);	// Aplica esta configuración tanto a la música del menú
         	for (Musica m : musicaPelea) m.setVolumen(vol);		// como a la de la pelea
+        	modeloJuego.guardarMute(PanelOpciones.getCkbMutearMusica().isSelected());
         });
         
         PanelOpciones.getSpnSeleccionMusica().addChangeListener(evento -> {
@@ -112,6 +113,7 @@ public class ControladorMenu {
 
         // El observador de sonido se registra una sola vez (no en cada combate)
         modeloJuego.agregarObservador(new SonidoJuego(musicaPelea, musicaMenu));
+        musicaMenu.setVolumen(0);
         musicaMenu.reproducirLoop();
     }
 

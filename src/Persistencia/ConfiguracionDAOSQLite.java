@@ -40,7 +40,7 @@ public class ConfiguracionDAOSQLite implements ConfiguracionDAO {
     @Override
 	public int getVolumen() {
         String sql = "SELECT valor FROM configuracion WHERE clave = 'volMusica'";
-        int resultado = 127;	// por defecto toma volumen maximo
+        int resultado = 0;
         try (PreparedStatement sentencia = this.conexion.prepareStatement(sql)) {
             try (ResultSet filas = sentencia.executeQuery()) {
                 while (filas.next()) {
@@ -48,7 +48,7 @@ public class ConfiguracionDAOSQLite implements ConfiguracionDAO {
                 }
             }
         } catch (SQLException e) {
-            return 127;
+            return 0;
         }
         return resultado;
     }
@@ -76,6 +76,32 @@ public class ConfiguracionDAOSQLite implements ConfiguracionDAO {
             }
         } catch (SQLException e) {
             return 1;
+        }
+        return resultado;
+    }
+    @Override
+    public boolean setMute(boolean mute) {
+        String sql = "UPDATE configuracion SET valor = ? WHERE clave = 'mutearMusica'";
+        try (PreparedStatement sentencia = this.conexion.prepareStatement(sql)) {
+            sentencia.setInt(1, mute ? 1 : 0);
+            return sentencia.executeUpdate() == 1;
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    @Override
+	public boolean getMute() {
+        String sql = "SELECT valor FROM configuracion WHERE clave = 'mutearMusica'";
+        boolean resultado = false;
+        try (PreparedStatement sentencia = this.conexion.prepareStatement(sql)) {
+            try (ResultSet filas = sentencia.executeQuery()) {
+                while (filas.next()) {
+                    resultado = (filas.getInt("valor") == 1);
+                }
+            }
+        } catch (SQLException e) {
+            return false;
         }
         return resultado;
     }

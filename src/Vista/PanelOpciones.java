@@ -36,8 +36,8 @@ public class PanelOpciones extends JPanel {
         lblVolumenFX.setForeground(Color.WHITE);
         lblSeleccionMusica = new JLabel("SELECCION MUSICA PELEA");
         lblSeleccionMusica.setForeground(Color.WHITE);
-        sldVolumenMusica = new JSlider(0, 127, 127);
-        sldVolumenFX = new JSlider(0, 127, 127);
+        sldVolumenMusica = new JSlider(0, 127, 0);
+        sldVolumenFX = new JSlider(0, 127, 0);
         spnSeleccionMusica = new JSpinner(new SpinnerNumberModel(1, 0, 4, 1));	// valor por defecto, minimo, maximo, paso
         ckbMutearMusica = new JCheckBox("Silenciar", false);
 

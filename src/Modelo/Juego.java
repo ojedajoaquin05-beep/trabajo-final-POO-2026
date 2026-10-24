@@ -149,6 +149,14 @@ public int leerMusica() {
 	return configuracionDAO.getMusicaPelea();
 }
 
+public boolean guardarMute(boolean mute) {
+	return configuracionDAO.setMute(mute);
+}
+
+public boolean leerMute() {
+	return configuracionDAO.getMute();
+}
+
 public List<Puntaje> mejoresPuntajes() {
     return puntajeDAO.mejores(10);
 }

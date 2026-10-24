@@ -33,6 +33,8 @@ public class main {
                 PanelOpciones.getSldVolumenMusica().setValue(vol);				// Coloca el valor en el control deslizante
                 int musicaPelea = configuracion.getMusicaPelea();
                 PanelOpciones.getSpnSeleccionMusica().setValue(musicaPelea);	// Lo mismo con la elección de música de pelea
+                boolean mute = configuracion.getMute();
+                PanelOpciones.getCkbMutearMusica().setSelected(mute);			// Mute
                 vista.mostrarVentana();
             } catch (SQLException e) {
                 System.err.println("No se pudo abrir la base, uso memoria: " + e.getMessage());
