@@ -78,11 +78,11 @@ Al finalizar una partida, el ganador ingresa 3 letras y el puntaje se guarda en 
 
 ![alt text](Main.drawio-1.png)
 
-![alt text](<Controlador.drawio (1)-1.png>)
+![alt text](<Controlador.drawio-1.png>)
 
 ![alt text](Modelo.drawio-1.png)
 
-![alt text](<Vista.drawio (1)-1.png>)
+![alt text](<Vista.drawio-1.png>)
 
 ## 4. Stack Tecnológico 
 
