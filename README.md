@@ -12,7 +12,7 @@
 ## 2. Dominio y Alcance del Sistema 
 
 ### Descripción del Problema
-Se busca desarrollar una aplicación de escritorio correspondiente al género plataform fighting, cosistiendo en batallas cortas entre jugadores. Cada jugador podra elegir entre 2 personajes para jugar.
+Se busca desarrollar una aplicación de escritorio correspondiente al género fighting game, cosistiendo en batallas cortas entre jugadores. Cada jugador podra elegir entre 2 personajes para jugar.
 El juego contará inicialmente con 2 personajes jugables, cada uno con características y habilidades diferentes.
 
 ### Objetivo del Sistema
@@ -76,11 +76,13 @@ Al finalizar una partida, el ganador ingresa 3 letras y el puntaje se guarda en 
 
 ### Diagramas de diseños:
 
-![alt text](Controlador.drawio.png)
+![alt text](Main.drawio-1.png)
 
-![alt text](Modelo.drawio.png)
+![alt text](<Controlador.drawio (1)-1.png>)
 
-![alt text](Vista.drawio.png)
+![alt text](Modelo.drawio-1.png)
+
+![alt text](<Vista.drawio (1)-1.png>)
 
 ## 4. Stack Tecnológico 
 
