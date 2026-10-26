@@ -2,13 +2,16 @@ package Controlador;
 
 import Modelo.Juego;
 import Modelo.Musica;
+import Vista.GraficosCombate;
 import Vista.PanelOpciones;
 import Vista.SeleccionPersonaje;
 import Vista.SonidoJuego;
 import Vista.VentanaJuego;
 import java.awt.CardLayout;
+import java.util.concurrent.ExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 public class ControladorMenu {
     
@@ -136,37 +139,60 @@ public class ControladorMenu {
         vista.getGestorBotones().show(vista.getPanelContenedor(), "BOTON_MENU");
     }
 
-    public void iniciarCombate(){
+       public void iniciarCombate(){
         System.out.println("inicia combate");
 
         controladorJuego.detenerPartida();
 
+        // Todo lo que se lee de la ventana se lee aca, en el hilo de eventos
         SeleccionPersonaje seleccionPanel = vista.getPantallaSeleccionPersonaje();
-        String personajeP1 = seleccionPanel.getPersonajeP1();
-        String personajeP2 = seleccionPanel.getPersonajeP2();
-        String escenarioSeleccionado = seleccionPanel.getEscenarioSeleccionado();
+        final String personajeP1 = seleccionPanel.getPersonajeP1();
+        final String personajeP2 = seleccionPanel.getPersonajeP2();
+        final String escenarioSeleccionado = seleccionPanel.getEscenarioSeleccionado();
 
         System.out.println("Personaje P1: " + personajeP1 + ", Personaje P2: " + personajeP2 + ", Escenario: " + escenarioSeleccionado);
 
-        int anchoVentana = vista.getWidth();
-        int altoVentana = vista.getHeight();
+        final int anchoVentana = vista.getWidth();
+        final int altoVentana = vista.getHeight();
 
-        modeloJuego.inicializarJuego(personajeP1, personajeP2, escenarioSeleccionado, anchoVentana, altoVentana); 
-        System.out.println("Juego inicializado con personajes y escenario seleccionados.");
-        vista.prepararGraficosCombate(personajeP1, personajeP2, escenarioSeleccionado); 
-        System.out.println("graficos cargados");
-        
         CardLayout botones = vista.getGestorBotones(); 
         JPanel contenedor = vista.getPanelContenedor();
-        botones.show(contenedor, "BOTON_JUEGO");
 
-        controladorJuego.iniciarPartida();
-        
-        // Detiene la música del menú principal y reproduce la seleccionada para la pelea 
-        musicaMenu.pausar();
-        
-        int indice = (int)PanelOpciones.getSpnSeleccionMusica().getValue() - 1;
-        if (indice == -1) indice = (int)(Math.random() * 4);	// Si el índice es -1 quiere decir que se seleccionó la opción 0, en ese caso elegir un tema al azar
-        musicaPelea[indice].reproducirLoop();
+        botones.show(contenedor, "PANTALLA_CARGA");
+        new SwingWorker<GraficosCombate, Void>() {
+
+            @Override
+            protected GraficosCombate doInBackground() throws Exception { 
+                long inicio = System.currentTimeMillis();
+                GraficosCombate graficos = vista.cargarGraficosCombate(personajeP1, personajeP2, escenarioSeleccionado);
+                long falta = 1500 - (System.currentTimeMillis() - inicio);
+                if (falta > 0) Thread.sleep(falta);
+                return graficos;
+            }
+
+            @Override
+            protected void done() { 
+                try {
+                    GraficosCombate graficos = get(); 
+                    modeloJuego.inicializarJuego(personajeP1, personajeP2, escenarioSeleccionado, anchoVentana, altoVentana);
+                    System.out.println("Juego inicializado con personajes y escenario seleccionados.");
+                    vista.aplicarGraficosCombate(graficos);
+                    System.out.println("graficos cargados");
+                    botones.show(contenedor, "BOTON_JUEGO");
+
+                    controladorJuego.iniciarPartida();
+
+                    musicaMenu.pausar();
+
+                    int indice = (int)PanelOpciones.getSpnSeleccionMusica().getValue() - 1;
+                    if (indice == -1) indice = (int)(Math.random() * 4);
+                    musicaPelea[indice].reproducirLoop();
+                } catch (InterruptedException | ExecutionException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(vista, "No se pudo cargar el combate");
+                    volverAlMenu();
+                }
+            }
+        }.execute();
     }
 }

@@ -15,6 +15,7 @@ public class VentanaJuego extends JFrame {
     private final SeleccionPersonaje pantallaSeleccionPersonaje;
     private final PanelOpciones panelOpciones;
     private final PanelPausa panelPausa;
+    private final PanelCarga panelCarga;
 
     public VentanaJuego() {
         setTitle("Plataformero de Peleas");
@@ -27,6 +28,7 @@ public class VentanaJuego extends JFrame {
 
         panelMenu = new PanelMenu(); //inicializo el panel de menu principal
         panelJuego = new PanelJuego(); //inicializo el panel de juego
+        panelCarga = new PanelCarga(); //inicializo la pantalla de carga
         pantallaSeleccionPersonaje = new SeleccionPersonaje(); //inicializo el panel de seleccion de personaje
         panelOpciones = new PanelOpciones(); //inicializo el panel de opciones
         panelPausa = new PanelPausa(); //inicializo el panel de pausa
@@ -36,6 +38,7 @@ public class VentanaJuego extends JFrame {
         panelContenedor.add(panelJuego, "BOTON_JUEGO");
         panelContenedor.add(panelOpciones, "BOTON_OPCIONES");
         panelContenedor.add(panelPausa, "PANTALLA_PAUSA");
+        panelContenedor.add(panelCarga, "PANTALLA_CARGA");
 
         add(panelContenedor);
     }
@@ -48,6 +51,16 @@ public class VentanaJuego extends JFrame {
 
     public void prepararGraficosCombate(String p1, String p2, String escenario) {
         panelJuego.prepararGraficos(p1, p2, escenario);
+    }
+
+        // Carga los graficos (se puede llamar desde otro hilo: no toca componentes)
+    public GraficosCombate cargarGraficosCombate(String p1, String p2, String escenario) {
+        return PanelJuego.cargarGraficos(p1, p2, escenario);
+    }
+
+    // Entrega los graficos ya cargados al panel
+    public void aplicarGraficosCombate(GraficosCombate graficos) {
+        panelJuego.aplicarGraficos(graficos);
     }
 
     // botones (delegan en cada panel)

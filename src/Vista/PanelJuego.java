@@ -53,13 +53,21 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
         //add(btnVolver);
     }
 
-    public void prepararGraficos(String p1, String p2, String escenario) {
-        //  Carga las animaciones (movimiento y salto de cada personaje)
-        this.animacionP1 = new AnimacionPeleador(p1);
-        this.animacionP2 = new AnimacionPeleador(p2);
+    public static GraficosCombate cargarGraficos(String p1, String p2, String escenario) {
+        return new GraficosCombate(
+                new AnimacionPeleador(p1),
+                new AnimacionPeleador(p2),
+                new ImageIcon("assets/Backgrounds/" + escenario + ".png").getImage());
+    }
 
-        // Cargar fondo
-        this.imagenFondoDinamico = new ImageIcon("assets/Backgrounds/" + escenario + ".png").getImage();
+    public void aplicarGraficos(GraficosCombate graficos) {
+        this.animacionP1 = graficos.getAnimacionP1();
+        this.animacionP2 = graficos.getAnimacionP2();
+        this.imagenFondoDinamico = graficos.getFondo();
+    }
+
+    public void prepararGraficos(String p1, String p2, String escenario) {
+        aplicarGraficos(cargarGraficos(p1, p2, escenario));
     }
 
     @Override

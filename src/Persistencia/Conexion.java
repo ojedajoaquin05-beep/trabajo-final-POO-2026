@@ -15,7 +15,7 @@ public class Conexion {
         this.conexion = DriverManager.getConnection("jdbc:sqlite:juego.db");
     }
 
-    public static Conexion getInstancia() throws SQLException {
+    public static synchronized Conexion getInstancia() throws SQLException {
         if (instancia == null) {
             instancia = new Conexion();
         }
