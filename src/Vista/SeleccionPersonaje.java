@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -24,6 +25,8 @@ public class SeleccionPersonaje extends JPanel {
 
     private JButton btnVolver;
     private Runnable alFinalizarSeleccion; // Variable para almacenar la acción a ejecutar al finalizar la selección
+    
+    private JButton btnCiegoButton, btnPeleador2Button;
 
     public SeleccionPersonaje(){
         
@@ -150,9 +153,15 @@ public class SeleccionPersonaje extends JPanel {
             personajeP1 = personaje;
             lblTituloPersonajes.setText("Jugador 2: Selecciona tu personaje");
         } else if (personajeP2 == null) {
-            personajeP2 = personaje;
-            // Una vez que ambos jugadores han seleccionado sus personajes, se puede pasar a la selección de escenario
-            subGestorVistas.show(subContenedor, "PANEL_ESCENARIOS");
+        	if (personaje == personajeP1) {		// Bloquea al jugador 2 la posibilidad de elegir el personaje que ya eligió el jugador 1
+        		String[] opciones = {"Aceptar"};
+                JOptionPane.showOptionDialog(null, "El jugador 1 ya eligió este personaje, por favor seleccioná uno distinto", "Error",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, opciones, opciones[0]);
+        	} else {
+        		personajeP2 = personaje;
+        		// Una vez que ambos jugadores han seleccionado sus personajes, se puede pasar a la selección de escenario
+        		subGestorVistas.show(subContenedor, "PANEL_ESCENARIOS");
+        	}
         }
     }
 
