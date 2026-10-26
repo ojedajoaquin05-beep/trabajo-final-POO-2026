@@ -53,8 +53,9 @@ public class PanelOpciones extends JPanel {
     }
 
     public JButton getBtnVolver() { return btnVolver; }
+    // Se entra desde el menu o desde la pausa: el boton indica a donde vuelve
+    public void setTextoVolver(String texto) { btnVolver.setText(texto); }
     public static JSlider getSldVolumenMusica() { return sldVolumenMusica; }
-    public static JSlider getSldVolumenFX() { return sldVolumenFX; }
     public static JSpinner getSpnSeleccionMusica() { return spnSeleccionMusica; }
     public static JCheckBox getCkbMutearMusica() { return ckbMutearMusica; }
 }

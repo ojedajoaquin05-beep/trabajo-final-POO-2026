@@ -43,10 +43,6 @@ public class Musica {
     }
 }
 
-    public void reanudar() {
-        clip.start();
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
-    }
     
     public void setVolumen(int vol) {
     	// MASTER_GAIN recibe un parámetro expresado en decibeles donde 0 es el volumen máximo

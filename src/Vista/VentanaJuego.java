@@ -71,6 +71,7 @@ public class VentanaJuego extends JFrame {
     public JButton getBtnVolverOpciones() { return panelOpciones.getBtnVolver(); }
 
     public PanelPausa getPanelPausa(){return panelPausa;}
+    public PanelOpciones getPanelOpciones(){return panelOpciones;}
 
     public CardLayout getGestorBotones() { return gestorBotones; }
     public JPanel getPanelContenedor() { return panelContenedor; }

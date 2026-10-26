@@ -9,7 +9,6 @@ public abstract class Entidad implements Colision {
     protected String nombre;
     protected int  posicionX; 
     protected int posicionY;
-    protected boolean seleccionado;
     protected int vida;
     protected int vidaMaxima;
     protected int ataque;
@@ -25,7 +24,6 @@ public abstract class Entidad implements Colision {
         this.vidaMaxima = vida;
         this.vida = vida;
         this.ataque = ataque;
-        this.seleccionado = false;
     }
 
     public void recibirdanio(int cantidad) {
@@ -71,12 +69,8 @@ public abstract class Entidad implements Colision {
     public int getPosicionY() { return posicionY; }
     public void setPosicionY(int posicionY) { this.posicionY = posicionY; }
     
-    public boolean isSeleccionado() { return seleccionado; }
-    public void setSeleccionado(boolean seleccionado) { this.seleccionado = seleccionado; }
-    
     public int getVida() { return vida; }
     public int getVidaMaxima() { return vidaMaxima; }
-    public int getAtaque() { return ataque; }
 
     public void mover(float dX, float dY){
         this.posicionX += dX;

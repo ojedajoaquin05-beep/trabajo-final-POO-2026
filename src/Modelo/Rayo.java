@@ -14,7 +14,6 @@ public class Rayo {
     private static final int INTERVALO_GOLPE = 12;       // ticks entre un golpe y el siguiente
     private static final int ALTO_HITBOX = 200;
 
-    private final Peleador duenio;
     private final int origenX;
     private final int y;          // altura del centro del rayo
     private final int direccion;  // -1 izquierda, 1 derecha
@@ -27,8 +26,7 @@ public class Rayo {
     private boolean impactando = false; // true mientras esta tocando al rival
     private boolean chocando = false;   // true mientras esta chocando contra el rayo del otro
 
-    public Rayo(Peleador duenio, int origenX, int y, int direccion) {
-        this.duenio = duenio;
+    public Rayo(int origenX, int y, int direccion) {
         this.origenX = origenX;
         this.y = y;
         this.direccion = direccion;
@@ -82,7 +80,6 @@ public class Rayo {
     public boolean isActivo() { return activo; }
     public boolean isImpactando() { return impactando; }
     public boolean isChocando() { return chocando; }
-    public Peleador getDuenio() { return duenio; }
     public int getOrigenX() { return origenX; }
     public int getY() { return y; }
     public int getDireccion() { return direccion; }

@@ -6,7 +6,6 @@ import java.awt.Rectangle;
 public class Peleador extends Entidad { 
     
     private int puntaje;
-    protected int respawn;
     private float velocidad; 
     private EstadoPeleador estadoActual; // Patrón State: referencia polimórfica a la interfaz
     private int frameActual; // Para las animaciones.
@@ -36,7 +35,6 @@ public class Peleador extends Entidad {
         super(nombre, posicionX, posicionY, vidaMaxima, ataque); 
         this.velocidad = velocidad;
         this.puntaje = 0;
-        this.respawn = 1;
         this.estadoActual = new EstadoQuieto(); // Inicia en estado quieto
         this.frameActual = 0;
         this.contadorTicksAnimacion = 0;
@@ -66,24 +64,31 @@ public class Peleador extends Entidad {
         }
     }
 
+    // El peleador obedece a su control (teclado, o en el futuro una IA): guardia, salto, caminata y ataque.
+    // Cada orden pasa por el estado actual, que decide si la acepta (patron State)
+    public void obedecer(ControlJugador control, Peleador rival) {
+        // abajo mantenido: guardia. Al soltarlo, vuelve a quieto
+        cubrirse(control.abajo());
+        if (control.arriba()) {
+            saltar();
+        }
+        //si aprieta izquierda y derecha a la vez se cancelan y no se mueve
+        int direccion = (control.derecha() ? 1 : 0) - (control.izquierda() ? 1 : 0);
+        if (direccion != 0) {
+            caminar(direccion);
+        }
+        ActionType ataque = elegirAtaque(control);
+        if (ataque != null) {
+            ejecutarAtaque(ataque, rival);
+        }
+    }
 
-    // Método exclusivo de los peleadores para dañar a otros
-    public void atacar(Entidad objetivo) {
-        objetivo.recibirdanio(this.ataque);
-    }
-    
-    public void respawnear() {
-        if (respawn > 0 && vida <= 0) {
-            vida = vidaMaxima;
-            respawn--;
-        }
-    }
-    
-    public void morir() {
-        if (vida <= 0 && respawn == 0) {
-            // lógica de muerte
-            System.out.println(nombre + " ha sido derrotado");
-        }
+    // Traduce lo que pide el control al tipo de ataque (si aprieta varios, gana el golpe, despues la patada y por ultimo el especial)
+    private ActionType elegirAtaque(ControlJugador control) {
+        if (control.golpe()) return ActionType.PUNCH;
+        if (control.patada()) return ActionType.KICK;
+        if (control.especial()) return ActionType.SPECIAL;
+        return null; // no pidio ningun ataque
     }
 
     public boolean saltar() {
@@ -156,7 +161,7 @@ public class Peleador extends Entidad {
             int direccion = MirandoDerecha ? 1 : -1;
             int origenX = posicionX + ancho / 2 + direccion * DISTANCIA_MANOS;
             int altura = posicionY + (int) (alto * 0.45);
-            rayo = new Rayo(this, origenX, altura, direccion);
+            rayo = new Rayo(origenX, altura, direccion);
         }
     }
 
@@ -186,7 +191,6 @@ public class Peleador extends Entidad {
     }
 
     // Getters y Setters exclusivos del Peleador
-    public float getVelocidad() { return velocidad; }
     public int getPuntaje() { return puntaje; }
     public void sumarPuntaje(int puntos) { this.puntaje += puntos; }
     public EstadoPeleador getEstadoActual() { return estadoActual; }
@@ -210,9 +214,6 @@ public class Peleador extends Entidad {
     }
     public float getFuerzaSalto() {
         return fuerzaSalto;
-    }
-    public int getTicksEnfriamiento() {
-        return ticksEnfriamiento;
     }
     public int getTicksAtaque() {
         return ticksAtaque;

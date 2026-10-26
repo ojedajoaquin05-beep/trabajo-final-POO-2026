@@ -1,15 +1,14 @@
 package Controlador;
 
-import Modelo.ActionType;
-import Modelo.Escenario;
 import Modelo.Juego;
-import Modelo.Peleador;
 import Vista.VentanaJuego;
 import java.awt.CardLayout;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+// Controlador del combate: maneja el game loop, la pausa y el fin de la partida.
+// La entrada la traduce ControladorTeclado y las reglas (movimiento, ataques, colision, fisica) estan en el modelo
 public class ControladorJuego {
 
     private final VentanaJuego vista;
@@ -43,7 +42,6 @@ public class ControladorJuego {
         this.ticksFinPartida = 0;
         this.timestampUltimoFrame = System.nanoTime();
         this.teclado.configurarTeclas(vista.getPantallaJugar());
-        vista.getPantallaJugar().requestFocusInWindow();
 
         vista.getPantallaJugar().revalidate();
         vista.getPantallaJugar().repaint();
@@ -65,7 +63,7 @@ public class ControladorJuego {
 
     public void alternarPausa() {
     pausado = !pausado;
-  
+
     if (pausado) {
         teclado.resetearTeclas();
         // Ordena al CardLayout mostrar el panel de pausa
@@ -74,7 +72,7 @@ public class ControladorJuego {
         // Regresa al panel del juego
         vista.getPantallaJugar().requestFocusInWindow();
     }
-    
+
     CardLayout botones = vista.getGestorBotones();
     JPanel contenedor = vista.getPanelContenedor();
     botones.show(contenedor, pausado ? "PANTALLA_PAUSA" : "BOTON_JUEGO");
@@ -103,35 +101,16 @@ private void pedirInicialesYGuardar() {
     }
 }
 
-    private void procesarAtaque() {
-        Peleador p1 = modeloJuego.getJugador1();
-        Peleador p2 = modeloJuego.getJugador2();
-        if (p1 == null || p2 == null) return;
-
-        atacarSegunTeclas(p1, p2, teclado.isP1Golpe(), teclado.isP1Patada(), teclado.isP1Especial());
-        atacarSegunTeclas(p2, p1, teclado.isP2Golpe(), teclado.isP2Patada(), teclado.isP2Especial());
-    }
-
-    // Traduce las teclas apretadas al tipo de ataque
-    private void atacarSegunTeclas(Peleador atacante, Peleador rival, boolean golpe, boolean patada, boolean especial) {
-        if (golpe) {
-            atacante.ejecutarAtaque(ActionType.PUNCH, rival);
-        } else if (patada) {
-            atacante.ejecutarAtaque(ActionType.KICK, rival);
-        } else if (especial) {
-            atacante.ejecutarAtaque(ActionType.SPECIAL, rival);
-        }
-    }
-
+    // Un tick cada 16 ms (aprox 60 cuadros por segundo). Corre en el hilo de eventos (javax.swing.Timer)
     private void configurarGameLoop() {
         gameLoop = new Timer(16, e -> {
 
             //detectar si se presiona ESC
             if(teclado.isJuegoPausadoPulsado()){
-                alternarPausa();;
+                alternarPausa();
             }
 
-            //si esta pausado no se procesa ni fisica ni ataques 
+            //si esta pausado no se procesa ni fisica ni ataques
             if(pausado){
                 if(vista.getPanelPausa().isEscapePresionado()){
                     alternarPausa();
@@ -139,114 +118,31 @@ private void pedirInicialesYGuardar() {
                 return;
             }
 
-            Peleador p1 = modeloJuego.getJugador1();
-            Peleador p2 = modeloJuego.getJugador2();
-
-            //NUEVO 
-            //COLISION DE LOS PERSONAJES
-
-            int cuerpoAncho = 150;
-            int offsetP1 = (p1.ancho() - cuerpoAncho) / 2;
-            int offsetP2 = (p2.ancho() - cuerpoAncho) / 2;
-
-            java.awt.Rectangle caja1 = new java.awt.Rectangle(p1.getPosicionX() + offsetP1, p1.getPosicionY(), cuerpoAncho, p1.alto());
-            java.awt.Rectangle caja2 = new java.awt.Rectangle(p2.getPosicionX() + offsetP2, p2.getPosicionY(), cuerpoAncho, p2.alto());
-
-            if (p1 != null && p2 != null && caja1.intersects(caja2)) {
-                int centroP1 = p1.getPosicionX() + p1.ancho() * 2/10;
-                int centroP2 = p2.getPosicionX() + p2.ancho() * 2/10; 
-
-                if (centroP1<centroP2) {
-                    p1.setPosicionX(p1.getPosicionX() - 1);
-                    p2.setPosicionX(p2.getPosicionX() + 1);
-                }else{
-                    p1.setPosicionX(p1.getPosicionX() + 1);
-                    p2.setPosicionX(p2.getPosicionX() - 1);
-                }
-            }
-            //NUEVO
-                        
             // Solo se acepta movimiento y ataque mientras la partida siga
             if (modeloJuego.hayGanador()) {
                 ticksFinPartida++;
                 if (ticksFinPartida >= TICKS_ESPERA_FIN) {
-                    ticksFinPartida = 0;
-
-                    //CAMBIOS DETENEMOS Y MOSTRAMOS OPCIONES EN LUGAR DE IR AL MENU PRINCIPAL
-                    detenerPartida();
-                    pedirInicialesYGuardar();
-                 if (alTerminarCombate != null) {alTerminarCombate.ejecutar();}
+                    terminarCombate();
                     return;
                 }
             } else {
-                // Si la partida sigue activa, procesamos el movimiento y los ataques con normalidad
-                procesarMovimiento();
-                procesarAtaque();
+                // El controlador solo entrega las teclas; que hace cada peleador lo decide el modelo
+                modeloJuego.procesarControles(teclado.getJugador1(), teclado.getJugador2());
             }
 
-            if(p1 != null) p1.aplicarFisica();
-            if(p2 != null) p2.aplicarFisica();
-            if(p1 != null) p1.actualizarEnfriamiento();
-            if(p2 != null) p2.actualizarEnfriamiento();
-            //Fisicas y límites del escenario
-            Escenario escenario = modeloJuego.getEscenarioActual();
-            if (escenario != null) {
-                if (p1 != null) {
-
-                    //verifica si toca el suelo 
-                    boolean sobreSueloP1 = escenario.estaSobreSuelo(p1);
-                    p1.setEnElSuelo(sobreSueloP1);
-
-                    escenario.delimitarMovimiento(p1);
-                }
-                if (p2 != null) {
-
-                    //verifica si toca el suelo 
-                    boolean sobreSueloP2 = escenario.estaSobreSuelo(p2);
-                    p2.setEnElSuelo(sobreSueloP2);
-
-                    escenario.delimitarMovimiento(p2);
-                }
-            }
-
-
-            //El modelo avanza el reloj y avisa a la vista (el panel se redibuja solo, es el Observer)
+            //El modelo avanza (fisica, colision, rayos, reloj) y avisa a la vista (el panel se redibuja solo, es el Observer)
             long timestamp = System.nanoTime();
             modeloJuego.avanzarTick(timestamp - timestampUltimoFrame);
             timestampUltimoFrame = timestamp;
         });
     }
 
-    private void procesarMovimiento() {
-    // JUGADOR 1 (wasd)
-    Peleador p1 = modeloJuego.getJugador1();
-    if (p1 != null) {
-        // S mantenida: guardia. Al soltarla, vuelve a quieto
-        p1.cubrirse(teclado.isP1Abajo());
-        if (teclado.isP1Arriba()) {
-            p1.saltar();
-        }
-        //si aprieta izquierda y derecha a la vez se cancelan y no se mueve
-        int direccionP1 = (teclado.isP1Derecha() ? 1 : 0) - (teclado.isP1Izquierda() ? 1 : 0);
-        if (direccionP1 != 0) {
-            p1.caminar(direccionP1);
-        }
+    //CAMBIOS DETENEMOS Y MOSTRAMOS OPCIONES EN LUGAR DE IR AL MENU PRINCIPAL
+    private void terminarCombate() {
+        ticksFinPartida = 0;
+        detenerPartida();
+        pedirInicialesYGuardar();
+        if (alTerminarCombate != null) {alTerminarCombate.ejecutar();}
     }
-
-    // JUGADOR 2 (Flechas)
-    Peleador p2 = modeloJuego.getJugador2();
-    if (p2 != null) {
-        // Flecha abajo mantenida: guardia. Al soltarla, vuelve a quieto
-        p2.cubrirse(teclado.isP2Abajo());
-        if (teclado.isP2Arriba()) {
-            p2.saltar();
-        }
-        // direccion neta: si aprieta izquierda y derecha a la vez se cancelan y no se mueve
-        int direccionP2 = (teclado.isP2Derecha() ? 1 : 0) - (teclado.isP2Izquierda() ? 1 : 0);
-        if (direccionP2 != 0) {
-            p2.caminar(direccionP2);
-        }
-    }
-}
 
 }

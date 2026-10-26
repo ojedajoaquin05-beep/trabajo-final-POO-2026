@@ -18,6 +18,7 @@ public class ControladorMenu {
     private final VentanaJuego vista;
     private final Juego modeloJuego; 
     private final ControladorJuego controladorJuego;
+    private String pantallaAlSalirDeOpciones = "BOTON_MENU"; // a las opciones se entra desde el menu o desde la pausa
     private Musica musicaMenu = new Musica("assets/audio/MenuPrincipal.wav");
     private Musica[] musicaPelea = {
     		new Musica("assets/audio/Pelea1.wav"),
@@ -54,7 +55,7 @@ public class ControladorMenu {
         });
 
         vista.getBtnOpciones().addActionListener(evento -> {
-            botones.show(contenedor, "BOTON_OPCIONES");
+            abrirOpciones("BOTON_MENU", "Volver al Menu");
         });
         
         vista.getBtnSalir().addActionListener(evento -> {
@@ -67,8 +68,14 @@ public class ControladorMenu {
             volverAlMenu();
         }); 
         
+        // Vuelve a donde se entro: al menu, o a la pausa si la partida esta en curso
         vista.getBtnVolverOpciones().addActionListener(evento -> {
-            botones.show(contenedor, "BOTON_MENU");
+            botones.show(contenedor, pantallaAlSalirDeOpciones);
+        });
+
+        // Desde la pausa se puede ajustar el volumen sin perder la partida (el juego sigue pausado)
+        vista.getPanelPausa().getBtnConfiguracion().addActionListener(evento -> {
+            abrirOpciones("PANTALLA_PAUSA", "Volver a la Pausa");
         });
 
         //gestion de los botones de la pantalla pausa 
@@ -116,6 +123,13 @@ public class ControladorMenu {
         modeloJuego.agregarObservador(new SonidoJuego(musicaPelea, musicaMenu));
         musicaMenu.setVolumen(0);
         musicaMenu.reproducirLoop();
+    }
+
+    // Muestra las opciones y recuerda a que pantalla volver
+    private void abrirOpciones(String pantallaDeRegreso, String textoBotonVolver) {
+        pantallaAlSalirDeOpciones = pantallaDeRegreso;
+        vista.getPanelOpciones().setTextoVolver(textoBotonVolver);
+        vista.getGestorBotones().show(vista.getPanelContenedor(), "BOTON_OPCIONES");
     }
 
     private void preguntarAlTerminarCombate() {

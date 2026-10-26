@@ -19,6 +19,7 @@ public class PanelPausa extends JPanel{
 
     private final JButton btnReanudar;
      private final JButton btnSeleccionPersonaje; // NUEVO: Botón para cambiar de personaje
+    private final JButton btnConfiguracion; // para cambiar el volumen sin salir de la partida
     private final JButton btnVolverMenu;
     private final JLabel lblTitulo;
     private boolean escapePresionado = false;
@@ -57,6 +58,10 @@ public class PanelPausa extends JPanel{
         btnSeleccionPersonaje.setFont(tipografiaMenu.deriveFont(20.0f));
         add(btnSeleccionPersonaje, gbc);
 
+        btnConfiguracion = new JButton("CONFIGURACION");
+        btnConfiguracion.setFont(tipografiaMenu.deriveFont(20.0f));
+        add(btnConfiguracion, gbc);
+
         btnVolverMenu = new JButton("VOLVER AL MENU PRINCIPAL");
         btnVolverMenu.setFont(tipografiaMenu.deriveFont(20.0f));
         add(btnVolverMenu, gbc);
@@ -78,6 +83,7 @@ public class PanelPausa extends JPanel{
 
     public JButton getBtnReanudar(){return btnReanudar;}
     public JButton getBtnVolverMenu(){return btnVolverMenu;}
-    public JButton getBtnSeleccionPersonaje() { return btnSeleccionPersonaje; } // NUEVO: Getter para el botón  
+    public JButton getBtnSeleccionPersonaje() { return btnSeleccionPersonaje; } // NUEVO: Getter para el botón
+    public JButton getBtnConfiguracion() { return btnConfiguracion; }
 
 }

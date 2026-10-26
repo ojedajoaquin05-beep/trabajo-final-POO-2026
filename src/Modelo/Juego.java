@@ -16,6 +16,7 @@ private final List<ObservadorJuego> observadores = new ArrayList<>();
 private final PuntajeDAO puntajeDAO;
 private final ConfiguracionDAO configuracionDAO;
 private Peleador ganador; // null mientras no haya ganador
+private final GestorRayos gestorRayos = new GestorRayos(); // los rayos del especial se resuelven en su propia clase
 
 public Juego(ConfiguracionDAO configuracionDAO, PuntajeDAO puntajeDAO){
    if (configuracionDAO == null || puntajeDAO == null){
@@ -159,17 +160,44 @@ public List<Puntaje> mejoresPuntajes() {
     return puntajeDAO.mejores(10);
 }
 
-    // Un tick del juego: avanza el reloj, define ganador por tiempo y avisa UNA sola vez a los observadores
+    // Cada jugador le da ordenes a su peleador. El controlador solo entrega los controles, la decision la toma el modelo
+    public void procesarControles(ControlJugador control1, ControlJugador control2) {
+        if (jugador1 == null || jugador2 == null || hayGanador()) return; // con ganador ya no se aceptan ordenes
+        jugador1.obedecer(control1, jugador2);
+        jugador2.obedecer(control2, jugador1);
+    }
+
+    // Un tick del juego: fisica, KO, rayos, reloj y avisa UNA sola vez a los observadores
     public void avanzarTick(long nanosTranscurridos) {
+        separarPeleadores();
+        actualizarPeleador(jugador1); // la fisica sigue aunque haya ganador (el que perdio termina de caer)
+        actualizarPeleador(jugador2);
         verificarKO(); // Verifica si hay un ganador por KO antes de descontar tiempo
         if (!hayGanador()) {
-          actualizarRayos();
+          gestorRayos.actualizar(jugador1, jugador2, escenarioActual.getAnchoVentana());
           descontarTiempo(nanosTranscurridos);
            if (tiempoAgotado()) {
                definirGanadorPorTiempo();
             }
         }
         notificarObservadores();
+    }
+
+    // Los cuerpos no se pueden atravesar: si se superponen, cada uno se corre 1 px hacia su lado
+    private void separarPeleadores() {
+        if (!jugador1.getCuerpo().intersects(jugador2.getCuerpo())) return;
+        int empuje = jugador1.getPosicionX() < jugador2.getPosicionX() ? -1 : 1;
+        jugador1.mover(empuje, 0);
+        jugador2.mover(-empuje, 0);
+    }
+
+    // Gravedad, enfriamientos, estado actual, suelo y limites del escenario de un peleador
+    private void actualizarPeleador(Peleador peleador) {
+        peleador.aplicarFisica();
+        peleador.actualizarEnfriamiento();
+        //verifica si toca el suelo
+        peleador.setEnElSuelo(escenarioActual.estaSobreSuelo(peleador));
+        escenarioActual.delimitarMovimiento(peleador);
     }
 
 public Peleador getJugador1() {
@@ -191,50 +219,5 @@ public long getTiempoRestante() {
 public String getMensajeGanador() {
     return mensajeGanador;
 }
-
-    // Un tick de los rayos: primero avanzan, despues se resuelve el choque entre ellos y por ultimo golpean al rival
-    private void actualizarRayos() {
-        Rayo rayo1 = jugador1.getRayo();
-        Rayo rayo2 = jugador2.getRayo();
-        boolean activo1 = rayo1 != null && rayo1.isActivo();
-        boolean activo2 = rayo2 != null && rayo2.isActivo();
-        int ancho = escenarioActual.getAnchoVentana();
-        if (activo1) rayo1.actualizar(ancho);
-        if (activo2) rayo2.actualizar(ancho);
-
-        // Si los dos rayos se cruzan se frenan en el punto medio entre sus origenes y ninguno llega al rival
-        if (activo1 && activo2 && rayo1.getDireccion() != rayo2.getDireccion()
-                && rayo1.getHitbox().intersects(rayo2.getHitbox())) {
-            int medio = (rayo1.getOrigenX() + rayo2.getOrigenX()) / 2;
-            rayo1.limitarLargo(Math.abs(medio - rayo1.getOrigenX()));
-            rayo2.limitarLargo(Math.abs(medio - rayo2.getOrigenX()));
-            rayo1.marcarChoque();
-            rayo2.marcarChoque();
-        }
-
-        if (activo1) golpearConRayo(jugador1, jugador2);
-        if (activo2) golpearConRayo(jugador2, jugador1);
-    }
-
-    // Si el rayo del tirador toca al rival se frena en su cuerpo y le saca vida de a poco (dano progresivo)
-    private void golpearConRayo(Peleador tirador, Peleador rival) {
-        Rayo rayo = tirador.getRayo();
-        if (rayo == null || !rayo.isActivo()) return;
-        if (!rival.estaVivo()) {
-            rayo.desactivar();
-            return;
-        }
-        java.awt.Rectangle cuerpo = rival.getCuerpo();
-        if (rayo.getHitbox().intersects(cuerpo)) {
-            int centroRival = cuerpo.x + cuerpo.width / 2;
-            rayo.limitarLargo(Math.abs(centroRival - rayo.getOrigenX()));
-            rayo.marcarImpacto();
-            if (rayo.puedeGolpear()) {
-                rival.recibirdanio(rayo.getDanioPorGolpe()); // el estado del rival decide cuanto le llega (si se cubre, la mitad)
-                tirador.sumarPuntaje(10);
-                rayo.registrarGolpe();
-            }
-        }
-    }
 
 }
