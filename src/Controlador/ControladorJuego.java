@@ -23,6 +23,9 @@ public class ControladorJuego {
     private static final int TICKS_ESPERA_FIN = 90;
 
     private boolean pausado = false;
+    private AlTerminarCombate alTerminarCombate;
+
+
 
     public ControladorJuego(VentanaJuego vista, Juego modeloJuego, ControladorTeclado teclado) {
         if (vista == null || modeloJuego == null || teclado == null) {
@@ -47,6 +50,10 @@ public class ControladorJuego {
         vista.getPantallaJugar().requestFocusInWindow();
 
         gameLoop.start(); // Inicializo el motor del juego
+    }
+
+     public void setAlTerminarCombate(AlTerminarCombate alTerminarCombate) {
+        this.alTerminarCombate = alTerminarCombate;
     }
 
     public void detenerPartida() {
@@ -168,7 +175,7 @@ private void pedirInicialesYGuardar() {
                     //CAMBIOS DETENEMOS Y MOSTRAMOS OPCIONES EN LUGAR DE IR AL MENU PRINCIPAL
                     detenerPartida();
                     pedirInicialesYGuardar();
-                    mostrarOpcionesFinPartida();
+                 if (alTerminarCombate != null) {alTerminarCombate.ejecutar();}
                     return;
                 }
             } else {
@@ -215,11 +222,7 @@ private void pedirInicialesYGuardar() {
     Peleador p1 = modeloJuego.getJugador1();
     if (p1 != null) {
         // S mantenida: guardia. Al soltarla, vuelve a quieto
-        if (teclado.isP1Abajo()) {
-            p1.bloquear();
-        } else {
-            p1.soltarBloqueo();
-        }
+        p1.cubrirse(teclado.isP1Abajo());
         if (teclado.isP1Arriba()) {
             p1.saltar();
         }
@@ -234,11 +237,7 @@ private void pedirInicialesYGuardar() {
     Peleador p2 = modeloJuego.getJugador2();
     if (p2 != null) {
         // Flecha abajo mantenida: guardia. Al soltarla, vuelve a quieto
-        if (teclado.isP2Abajo()) {
-            p2.bloquear();
-        } else {
-            p2.soltarBloqueo();
-        }
+        p2.cubrirse(teclado.isP2Abajo());
         if (teclado.isP2Arriba()) {
             p2.saltar();
         }
@@ -250,47 +249,4 @@ private void pedirInicialesYGuardar() {
     }
 }
 
-private void mostrarOpcionesFinPartida() {
-    String[] opciones = {"Revancha", "Menú Principal"};
-    int seleccion = javax.swing.JOptionPane.showOptionDialog(
-        vista,
-                "¿Qué deseas hacer a continuación?",
-                "Fin del Combate",
-                javax.swing.JOptionPane.DEFAULT_OPTION,
-                javax.swing.JOptionPane.QUESTION_MESSAGE,
-                null,
-                opciones,
-                opciones[0]
-    );
-
-    if (seleccion == 0) {
-        //REVANCHA
-        reiniciarRevancha();
-    } else {
-     java.awt.CardLayout botones = vista.getGestorBotones();
-        javax.swing.JPanel contenedor = vista.getPanelContenedor();
-        botones.show(contenedor, "BOTON_MENU");   
-    }
-}
-
-private void reiniciarRevancha(){
-    if (modeloJuego.getJugador1() != null && modeloJuego.getJugador2() != null && modeloJuego.getEscenarioActual() != null){
-        String p1 = modeloJuego.getJugador1().getNombre();
-            String p2 = modeloJuego.getJugador2().getNombre();
-            String escenario = modeloJuego.getEscenarioActual().getNombre();
-            
-            int ancho = vista.getWidth();
-            int alto = vista.getHeight();
-
-            // Reiniciamos el modelo y los gráficos con los mismos parámetros
-            modeloJuego.inicializarJuego(p1, p2, escenario, ancho, alto);
-            vista.prepararGraficosCombate(p1, p2, escenario);
-            
-            java.awt.CardLayout botones = vista.getGestorBotones();
-            javax.swing.JPanel contenedor = vista.getPanelContenedor();
-            botones.show(contenedor, "BOTON_JUEGO");
-
-            iniciarPartida();
-        }
-}
 }

@@ -1,5 +1,7 @@
 package Modelo;
 
+import java.awt.Rectangle;
+
 
 public class Peleador extends Entidad { 
     
@@ -21,7 +23,13 @@ public class Peleador extends Entidad {
     private static final int ALCANCE_ATAQUE = 350; // Distancia máxima para que un ataque sea efectivo
     private static final int DURACION_ATAQUE = 20; // ticks que dura la animación de ataque
     private int ticksAtaque = 0;
+    private static final int ENFRIAMIENTO_ESPECIAL = 900; // aprox 15 s a 60 cuadros por segundo
+    private int ticksEnfriamientoEspecial = 0;
     private int puntajePj = 0;
+    private Rayo rayo; // el rayo del especial en curso (null si no hay)
+    private static final int ANCHO_CUERPO = 150; // el cuerpo es mas angosto que el sprite
+    private static final int DISTANCIA_MANOS = 100; // del centro del sprite a las manos
+    private boolean seDesplazoEnTick = false; // para volver al frame de reposo cuando deja de caminar
 
     // El constructor recibe los datos y manda la mayoría al padre (Entidad) usando super
     public Peleador(String nombre, int posicionX, int posicionY, int vidaMaxima, int ataque, float velocidad) {
@@ -39,6 +47,11 @@ public class Peleador extends Entidad {
        
     public void cambiarEstado(EstadoPeleador nuevoEstado) {
         if (nuevoEstado != null && (this.estadoActual == null || !this.estadoActual.getClass().equals(nuevoEstado.getClass()))) {
+            // Si el peleador sale del especial (por ejemplo, lo golpean) el rayo se corta
+            if (rayo != null && !(nuevoEstado instanceof EstadoEspecial)) {
+                rayo.desactivar();
+                rayo = null;
+            }
             this.estadoActual = nuevoEstado;
             this.frameActual = 0; // Reinicia el frame al cambiar de estado
             this.contadorTicksAnimacion = 0; // Reinicia el contador de ticks
@@ -73,9 +86,9 @@ public class Peleador extends Entidad {
         }
     }
 
-    public void saltar() {
-        // Delega la acción de saltar al estado actual
-        this.estadoActual.saltar(this);
+    public boolean saltar() {
+        // Delega la acción de saltar al estado actual (true si el estado la acepto)
+        return this.estadoActual.saltar(this);
     }
 
     public void aplicarFisica(){
@@ -85,15 +98,16 @@ public class Peleador extends Entidad {
         }
     }
 
-    public void ejecutarAtaque (ActionType tipoAtaque, Peleador oponente){
-        // Delega la ejecución del ataque al estado actual
-        this.estadoActual.ejecutarAtaque(this, tipoAtaque, oponente);
+    public boolean ejecutarAtaque (ActionType tipoAtaque, Peleador oponente){
+        // Delega la ejecución del ataque al estado actual (true si el estado lo acepto)
+        return this.estadoActual.ejecutarAtaque(this, tipoAtaque, oponente);
     }
 
     // Método que ejecuta el golpe real cuando el estado (EstadoQuieto o EstadoSalto) lo autoriza
-    public void procesarGolpe(ActionType tipoAtaque, Peleador oponente) {
+    // Devuelve true si el golpe se realizo (false si no hay rival o todavia esta en enfriamiento)
+    public boolean procesarGolpe(ActionType tipoAtaque, Peleador oponente) {
         if(oponente == null || !oponente.estaVivo() || ticksEnfriamiento > 0) {
-            return;
+            return false;
         }
         ticksEnfriamiento = ENFRIAMIENTO_ATAQUE;
         ticksAtaque = DURACION_ATAQUE; // Inicia la duración del ataque
@@ -120,7 +134,44 @@ public class Peleador extends Entidad {
             oponente.recibirdanio(danioBase);
             this.sumarPuntaje(puntajePj);
         }
+        return true;
     }
+
+    // Lo llaman los estados que permiten el especial: si esta listo, arranca y reinicia el enfriamiento
+    // Devuelve true si el especial arranco (false si todavia se esta enfriando)
+    public boolean iniciarEspecial() {
+        if (!isEspecialListo()) {
+            return false;
+        }
+        ticksEnfriamientoEspecial = ENFRIAMIENTO_ESPECIAL;
+        ticksAtaque = DURACION_ATAQUE; // la pose del especial dura lo mismo que un ataque
+        rayo = null;
+        cambiarEstado(new EstadoEspecial());
+        return true;
+    }
+
+    // Lanza el rayo desde las manos, una sola vez por especial
+    public void lanzarRayo() {
+        if (rayo == null) {
+            int direccion = MirandoDerecha ? 1 : -1;
+            int origenX = posicionX + ancho / 2 + direccion * DISTANCIA_MANOS;
+            int altura = posicionY + (int) (alto * 0.45);
+            rayo = new Rayo(this, origenX, altura, direccion);
+        }
+    }
+
+    public boolean isRayoActivo() { return rayo != null && rayo.isActivo(); }
+    public Rayo getRayo() { return rayo; }
+
+    // Rectangulo del cuerpo (mas angosto que el sprite), centrado: sirve para saber si el rayo toca al peleador
+    public Rectangle getCuerpo() {
+        return new Rectangle(posicionX + (ancho - ANCHO_CUERPO) / 2, posicionY, ANCHO_CUERPO, alto);
+    }
+
+    public boolean isEspecialListo() { return ticksEnfriamientoEspecial <= 0; }
+
+    // 0 = recien usado, 1 = listo para usar de nuevo (para la barra)
+    public float getProgresoEspecial() { return 1f - ((float) ticksEnfriamientoEspecial / ENFRIAMIENTO_ESPECIAL); }
 
     // El rival tiene que estar adelante, dentro del alcance y a una altura similar (Dsps vemos si le implementamos hitbox entre ellos para que no se atraviesen.)
     private boolean estaAlAlcance(Peleador oponente) {
@@ -171,6 +222,9 @@ public class Peleador extends Entidad {
         if (ticksEnfriamiento > 0) {
             ticksEnfriamiento--;
         }
+        if (ticksEnfriamientoEspecial > 0) {
+            ticksEnfriamientoEspecial--;
+        }
         if (ticksAtaque > 0) {
             ticksAtaque--;
         }
@@ -178,15 +232,17 @@ public class Peleador extends Entidad {
         if (this.estadoActual != null) {
             this.estadoActual.actualizar(this);
         }
+        seDesplazoEnTick = false;
     }
 
     // El estado actual decide si el peleador puede caminar
-    public void caminar(int direccion) {
-      this.estadoActual.caminar(this, direccion);
+    public boolean caminar(int direccion) {
+      return this.estadoActual.caminar(this, direccion);
     }
 
 // Lo llaman los estados que permiten moverse: mueve, orienta y anima
     public void desplazar(int direccion) {
+      seDesplazoEnTick = true;
       mover(velocidad * direccion, 0);
       setMirandoDerecha(direccion > 0);
       if (enElSuelo) {
@@ -194,24 +250,29 @@ public class Peleador extends Entidad {
       }
     }
 
-    // El estado actual decide cuanto danio se recibe y como reacciona
-    public void bloquear() {
-      this.estadoActual.bloquear(this);
+    // El estado actual decide si se puede cubrir y si sigue en guardia (true = queda en guardia)
+    public boolean cubrirse(boolean teclaApretada) {
+      return this.estadoActual.cubrirse(this, teclaApretada);
     }
 
-    public void soltarBloqueo() {
-      this.estadoActual.soltarBloqueo(this);
-    }
-
-// Cuando la vida llega a 0, el peleador pasa al estado MUERTO
+    // El estado actual decide cuanto danio se recibe y como reacciona (Quieto: se aturde, Bloqueando: recibe la mitad...)
     @Override
     public void recibirdanio(int cantidad) {
-      super.recibirdanio(estadoActual.reducirDanio(cantidad));
-       if (!estaVivo()) {
-         cambiarEstado(new EstadoMuerto());
-        } else {
-                 estadoActual.alRecibirGolpe(this);
-                }
+      this.estadoActual.recibirDanio(this, cantidad);
+    }
+
+    // Lo usan los estados: aplica el danio a la vida (Entidad) sin volver a pasar por el estado
+    void aplicarDanio(int cantidad) {
+      super.recibirdanio(cantidad);
+    }
+
+    // Lo usan los estados para saber si hubo movimiento en este tick
+    public boolean seDesplazoEnTick() { return seDesplazoEnTick; }
+
+    // Vuelve al primer frame de la animacion
+    public void reiniciarAnimacion() {
+      this.frameActual = 0;
+      this.contadorTicksAnimacion = 0;
     }
 
 }

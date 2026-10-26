@@ -5,11 +5,15 @@ import Modelo.ObservadorJuego;
 import Modelo.Peleador;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RadialGradientPaint;
+import java.awt.RenderingHints;
+import java.awt.geom.Path2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -25,6 +29,19 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
     private final Image imagenFondoJuego = new ImageIcon("assets/Backgrounds/City4.png").getImage();
 
     private final JButton btnVolver;
+
+    // Las tipografias se cargan UNA vez (leer el .ttf del disco en cada cuadro hacia bajar los fps)
+    private static final Font TIPOGRAFIA_VIDA = cargarTipografia("assets/Tipografias/determination.ttf", 24.0f);
+    private static final Font TIPOGRAFIA_DISPLAY = cargarTipografia("assets/Tipografias/DSEG7Modern-Bold.ttf", 48.0f);
+
+    private static Font cargarTipografia(String ruta, float tamanio) {
+        try {
+            return Font.createFont(Font.TRUETYPE_FONT, new File(ruta)).deriveFont(tamanio);
+        } catch (Exception e) {
+            System.out.println("No se pudo cargar la tipografia " + ruta);
+            return new Font("Arial", Font.BOLD, (int) tamanio);
+        }
+    }
 
     public PanelJuego() {
         
@@ -66,13 +83,8 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
         if (modeloJuego != null) {
             Peleador personaje1 = modeloJuego.getJugador1();
             Peleador personaje2 = modeloJuego.getJugador2();
-            Font tipografiaVida = null;
-            try {
-            	tipografiaVida = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Tipografias/determination.ttf"));
-            } catch (Exception e) {
-            	System.out.println(e.getStackTrace());
-            }
-
+            Font tipografiaVida = TIPOGRAFIA_VIDA; // se carga una sola vez (antes se leia del disco en cada cuadro)
+            
             //BARRA DE VIDA (joaco)
             if (personaje1 != null){
                 int posXMarcoP1 = 50;
@@ -91,6 +103,7 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
                 g.setFont(tipografiaVida.deriveFont(20.0f));
                 g.setColor(Color.black);
                 g.drawString("SCORE: " + personaje1.getPuntaje(), posXMarcoP1, 85);
+                dibujarBarraEspecial(g, personaje1, posXMarcoP1);
             }
 
             if (personaje2 != null) {
@@ -112,6 +125,7 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
                 g.setFont(tipografiaVida.deriveFont(20.0f));
                 g.setColor(Color.black);
                 g.drawString("SCORE: " + personaje2.getPuntaje(), posXMarcoP2, 85);
+                dibujarBarraEspecial(g, personaje2, posXMarcoP2);
             }
 
             //aca dibujamos a los personajes en sus posiciones actuales
@@ -145,16 +159,15 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
                     g.drawImage(spriteActualP2, posX2 + ancho2, posY2, -ancho2, alto2, null);
                 }
             }
+
+            // Los rayos del especial se dibujan encima de los personajes
+            if (personaje1 != null) dibujarRayo(g, personaje1);
+            if (personaje2 != null) dibujarRayo(g, personaje2);
         }
 
         //TEMPORIZADOR (joaco)
         long tiempoRestanteNanos = modeloJuego.getTiempoRestante();
-        Font tipografiaDisplay = null;
-        try {
-        	tipografiaDisplay = Font.createFont(Font.TRUETYPE_FONT, new File("assets/Tipografias/DSEG7Modern-Bold.ttf")).deriveFont(48.0f);
-        } catch (Exception e) {
-        	System.out.println(e.getStackTrace());
-        }
+        Font tipografiaDisplay = TIPOGRAFIA_DISPLAY; // idem: cargada una sola vez
             g.setFont(tipografiaDisplay);
             String textoTiempo = String.format("%02.0f", Math.min(99, Math.ceil(tiempoRestanteNanos / 1000000000.0)));
             int anchoTexto = g.getFontMetrics().stringWidth(textoTiempo);
@@ -182,4 +195,129 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
     public void setModeloJuego(Juego modeloJuego) { this.modeloJuego = modeloJuego; }
 
     public JButton getBtnVolver() { return btnVolver; }
+
+    // Barra del ataque especial: celeste mientras se carga, amarilla cuando esta listo
+    private void dibujarBarraEspecial(Graphics g, Peleador p, int x) {
+        g.setColor(Color.DARK_GRAY);
+        g.fillRect(x, 95, 300, 12);
+        g.setColor(p.isEspecialListo() ? Color.YELLOW : Color.CYAN);
+        g.fillRect(x, 95, (int) (300 * p.getProgresoEspecial()), 12);
+        g.setColor(Color.BLACK);
+        g.drawRect(x, 95, 300, 12);
+    }
+
+    // Colores del rayo: cambialos aca para probar otro color (borde oscuro, cuerpo, centro claro)
+    private static final Color RAYO_BORDE = new Color(0, 150, 70);
+    private static final Color RAYO_CUERPO = new Color(60, 255, 140);
+    private static final Color RAYO_CENTRO = new Color(220, 255, 235);
+
+    // El rayo se dibuja con texturas que se arman UNA sola vez (dibujar degradados en cada cuadro bajaba los fps)
+    private static final int TEXTURA_ANCHO = 120;  // la textura se repite a lo largo del rayo
+    private static final int TEXTURA_ALTO = 150;
+    private static final BufferedImage TEXTURA_RAYO = crearTexturaRayo();
+    private static final BufferedImage DESTELLO_IMPACTO = crearDestello(RAYO_CUERPO, Color.WHITE, 140);
+    private static final BufferedImage DESTELLO_CHOQUE = crearDestello(new Color(255, 190, 40), new Color(255, 255, 200), 200);
+
+    // Textura del cuerpo: aura, degradado vertical, bandas diagonales y nucleo claro.
+    // Se arma de modo que repetida una al lado de otra no se note el corte
+    private static BufferedImage crearTexturaRayo() {
+        BufferedImage img = new BufferedImage(TEXTURA_ANCHO, TEXTURA_ALTO, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = img.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        int c = TEXTURA_ALTO / 2;
+        // aura
+        g2.setPaint(new GradientPaint(0, 0, new Color(RAYO_BORDE.getRed(), RAYO_BORDE.getGreen(), RAYO_BORDE.getBlue(), 0),
+                0, c, new Color(RAYO_CUERPO.getRed(), RAYO_CUERPO.getGreen(), RAYO_CUERPO.getBlue(), 150)));
+        g2.fillRect(0, 0, TEXTURA_ANCHO, c);
+        g2.setPaint(new GradientPaint(0, c, new Color(RAYO_CUERPO.getRed(), RAYO_CUERPO.getGreen(), RAYO_CUERPO.getBlue(), 150),
+                0, TEXTURA_ALTO, new Color(RAYO_BORDE.getRed(), RAYO_BORDE.getGreen(), RAYO_BORDE.getBlue(), 0)));
+        g2.fillRect(0, c, TEXTURA_ANCHO, c);
+        // cuerpo
+        g2.setPaint(new GradientPaint(0, c - 34, RAYO_BORDE, 0, c, RAYO_CUERPO));
+        g2.fillRect(0, c - 34, TEXTURA_ANCHO, 34);
+        g2.setPaint(new GradientPaint(0, c, RAYO_CUERPO, 0, c + 34, RAYO_BORDE));
+        g2.fillRect(0, c, TEXTURA_ANCHO, 34);
+        // bandas diagonales (cada 60 px, asi la textura encaja al repetirse)
+        g2.setColor(new Color(255, 255, 255, 70));
+        for (int x = -30; x < TEXTURA_ANCHO + 30; x += 60) {
+            Path2D banda = new Path2D.Double();
+            banda.moveTo(x, c - 34);
+            banda.lineTo(x + 22, c - 34);
+            banda.lineTo(x + 2, c + 34);
+            banda.lineTo(x - 20, c + 34);
+            banda.closePath();
+            g2.fill(banda);
+        }
+        // nucleo claro ondulado (la onda se repite cada 60 px)
+        g2.setColor(RAYO_CENTRO);
+        Path2D nucleo = new Path2D.Double();
+        nucleo.moveTo(0, c - 12);
+        for (int x = 0; x <= TEXTURA_ANCHO; x += 4) nucleo.lineTo(x, c - 12 + 3 * Math.sin(x * 2 * Math.PI / 60));
+        for (int x = TEXTURA_ANCHO; x >= 0; x -= 4) nucleo.lineTo(x, c + 12 + 3 * Math.sin(x * 2 * Math.PI / 60));
+        nucleo.closePath();
+        g2.fill(nucleo);
+        g2.dispose();
+        return img;
+    }
+
+    // Destello redondo con degradado radial (punta del rayo al impactar o al chocar)
+    private static BufferedImage crearDestello(Color color, Color centro, int diametro) {
+        BufferedImage img = new BufferedImage(diametro, diametro, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = img.createGraphics();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        float r = diametro / 2f;
+        g2.setPaint(new RadialGradientPaint(r, r, r, new float[]{0f, 0.45f, 1f},
+                new Color[]{centro, new Color(color.getRed(), color.getGreen(), color.getBlue(), 200),
+                            new Color(color.getRed(), color.getGreen(), color.getBlue(), 0)}));
+        g2.fillOval(0, 0, diametro, diametro);
+        g2.dispose();
+        return img;
+    }
+
+    // Dibuja el rayo del especial: anillos en las manos, cuerpo con textura que avanza,
+    // chispas y la punta que brilla (mas grande y amarilla si choca con otro rayo)
+    private void dibujarRayo(Graphics g, Peleador p) {
+        Modelo.Rayo rayo = p.getRayo();
+        if (rayo == null || !rayo.isActivo()) return;
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.translate(rayo.getOrigenX(), rayo.getY());
+        if (rayo.getDireccion() < 0) g2.scale(-1, 1); // asi siempre se dibuja "hacia la derecha"
+        int t = rayo.getTicks();
+        int largo = rayo.getLargo();
+
+        // Anillos de energia en las manos (laten mientras dura el rayo)
+        g2.setStroke(new java.awt.BasicStroke(4f));
+        for (int i = 0; i < 3; i++) {
+            int radio = 30 + ((t * 3 + i * 14) % 42);
+            g2.setColor(new Color(RAYO_CUERPO.getRed(), RAYO_CUERPO.getGreen(), RAYO_CUERPO.getBlue(), Math.max(0, 200 - (radio - 30) * 4)));
+            g2.drawOval(-radio / 2, -radio, radio, radio * 2);
+        }
+
+        if (largo > 0) {
+            // Cuerpo: la textura se repite a lo largo del rayo y se corre con el tiempo (efecto de energia que avanza)
+            java.awt.Shape clipAnterior = g2.getClip();
+            g2.clipRect(0, -TEXTURA_ALTO, largo, TEXTURA_ALTO * 2);
+            int alto = TEXTURA_ALTO + ((t % 6 < 3) ? 12 : 0); // el rayo "vibra"
+            int desfase = (t * 18) % TEXTURA_ANCHO;
+            for (int x = desfase - TEXTURA_ANCHO; x < largo; x += TEXTURA_ANCHO) {
+                g2.drawImage(TEXTURA_RAYO, x, -alto / 2, TEXTURA_ANCHO, alto, null);
+            }
+            // Chispas alrededor del rayo (posiciones que cambian en cada tick)
+            java.util.Random azar = new java.util.Random(t * 31L);
+            g2.setColor(new Color(230, 255, 240, 170));
+            for (int i = 0; i < 8; i++) {
+                int tam = 3 + azar.nextInt(5);
+                g2.fillRect(azar.nextInt(largo), azar.nextInt(150) - 75, tam, tam);
+            }
+            g2.setClip(clipAnterior);
+
+            // Punta: destello que late. Si chocan los rayos es mas grande y amarillo
+            if (rayo.isChocando() || rayo.isImpactando()) {
+                BufferedImage destello = rayo.isChocando() ? DESTELLO_CHOQUE : DESTELLO_IMPACTO;
+                int diametro = destello.getWidth() + (t % 4) * 12;
+                g2.drawImage(destello, largo - diametro / 2, -diametro / 2, diametro, diametro, null);
+            }
+        }
+        g2.dispose();
+    }
 }

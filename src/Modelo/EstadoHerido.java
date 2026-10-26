@@ -6,13 +6,32 @@ public class EstadoHerido implements EstadoPeleador {
     private int ticksRestantes = DURACION_ATURDIMIENTO;
 
     @Override
-    public void saltar(Peleador peleador) {
-        // Aturdido: no puede saltar
+    public boolean saltar(Peleador peleador) {
+        return false; // aturdido: no puede saltar
     }
 
     @Override
-    public void ejecutarAtaque(Peleador peleador, ActionType tipoAtaque, Peleador oponente) {
-        // Ni atacar
+    public boolean caminar(Peleador peleador, int direccion) {
+        return false; // aturdido: no puede caminar
+    }
+
+    @Override
+    public boolean ejecutarAtaque(Peleador peleador, ActionType tipoAtaque, Peleador oponente) {
+        return false; // ni atacar
+    }
+
+    @Override
+    public boolean cubrirse(Peleador peleador, boolean teclaApretada) {
+        return false; // aturdido: no puede cubrirse
+    }
+
+    // Ya esta aturdido: recibe el dano completo y solo cambia de estado si muere
+    @Override
+    public void recibirDanio(Peleador peleador, int danio) {
+        peleador.aplicarDanio(danio);
+        if (!peleador.estaVivo()) {
+            peleador.cambiarEstado(new EstadoMuerto());
+        }
     }
 
     @Override
@@ -27,10 +46,5 @@ public class EstadoHerido implements EstadoPeleador {
     @Override
     public AccionPeleador getAnimacion() {
         return AccionPeleador.HERIDO;
-    }
-
-    @Override
-     public void caminar(Peleador peleador, int direccion) {
-    // esta herido, no puede caminar
     }
 }

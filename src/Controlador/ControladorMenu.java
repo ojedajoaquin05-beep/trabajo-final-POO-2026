@@ -1,13 +1,13 @@
 package Controlador;
 
-import Modelo.ConfiguracionDAO;
 import Modelo.Juego;
 import Modelo.Musica;
+import Vista.PanelOpciones;
 import Vista.SeleccionPersonaje;
 import Vista.SonidoJuego;
 import Vista.VentanaJuego;
-import Vista.PanelOpciones;
 import java.awt.CardLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class ControladorMenu {
@@ -107,14 +107,23 @@ public class ControladorMenu {
             vista.getGestorBotones().show(vista.getPanelContenedor(), "PANTALLA_SELECCION"); // Muestra la pantalla de selección
         });
 
-        vista.getPanelPausa().getBtnVolverMenu().addActionListener(evento -> {
-            volverAlMenu();
-        });
 
         // El observador de sonido se registra una sola vez (no en cada combate)
+        controladorJuego.setAlTerminarCombate(()-> preguntarAlTerminarCombate());
         modeloJuego.agregarObservador(new SonidoJuego(musicaPelea, musicaMenu));
         musicaMenu.setVolumen(0);
         musicaMenu.reproducirLoop();
+    }
+
+    private void preguntarAlTerminarCombate() {
+        String[] opciones = {"Revancha", "Menú Principal"};
+        int seleccion = JOptionPane.showOptionDialog(vista, "¿Qué deseas hacer a continuación?", "Fin del Combate",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+        if (seleccion == 0) {
+            iniciarCombate();
+        } else {
+            volverAlMenu();
+        }
     }
 
     // Vuelve al menu principal desde cualquier parte del combate: corta la partida y cambia la musica
