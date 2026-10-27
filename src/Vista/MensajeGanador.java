@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
-//MSJ GANADOR (joaco): franja oscura con el resultado, solo cuando ya hay ganador
 public class MensajeGanador implements Dibujable {
 
     private static final Font TIPOGRAFIA = new Font("Arial", Font.BOLD, 60); // antes se creaba en cada cuadro

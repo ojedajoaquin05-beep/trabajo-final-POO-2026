@@ -106,14 +106,17 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
         BufferedImage spriteActual = animacion.getSpriteActual(personaje);
         int posX = personaje.getPosicionX();
         int posY = personaje.getPosicionY();
-        int ancho = personaje.ancho();
         int alto = personaje.alto();
+        // Se respeta la proporcion de la imagen y se centra en el peleador: un cuadro mas ancho
+        // (por ejemplo la estocada del samurai, con la katana entera) se dibuja mas ancho sin deformarse
+        int ancho = alto * spriteActual.getWidth() / spriteActual.getHeight();
+        int x = posX + (personaje.ancho() - ancho) / 2;
 
         if (personaje.isMirandoDerecha()){
-            g.drawImage(spriteActual, posX, posY, ancho, alto, null); // Dibuja el sprite normalmente
+            g.drawImage(spriteActual, x, posY, ancho, alto, null); // Dibuja el sprite normalmente
         } else {
             // Dibuja el sprite volteado horizontalmente
-            g.drawImage(spriteActual, posX + ancho, posY, -ancho, alto, null);
+            g.drawImage(spriteActual, x + ancho, posY, -ancho, alto, null);
         }
     }
 

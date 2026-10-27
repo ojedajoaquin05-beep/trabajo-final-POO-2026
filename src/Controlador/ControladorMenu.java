@@ -58,6 +58,16 @@ public class ControladorMenu {
             abrirOpciones("BOTON_MENU", "Volver al Menu");
         });
         
+        // Los puntajes se piden al modelo cada vez que se abre la pantalla, asi aparece el ultimo guardado
+        vista.getBtnPuntajes().addActionListener(evento -> {
+            vista.getPanelPuntajes().mostrarPuntajes(modeloJuego.mejoresPuntajes());
+            botones.show(contenedor, "PANTALLA_PUNTAJES");
+        });
+
+        vista.getPanelPuntajes().getBtnVolver().addActionListener(evento -> {
+            botones.show(contenedor, "BOTON_MENU");
+        });
+
         vista.getBtnSalir().addActionListener(evento -> {
             vista.dispose();
             System.exit(0); 
@@ -123,6 +133,14 @@ public class ControladorMenu {
         modeloJuego.agregarObservador(new SonidoJuego(musicaPelea, musicaMenu));
         musicaMenu.setVolumen(0);
         musicaMenu.reproducirLoop();
+        cargarConfiguracion(); // va al final: los listeners de arriba aplican el volumen guardado a la musica
+    }
+
+    // Pide al modelo la configuracion guardada y la pone en los controles de opciones
+    private void cargarConfiguracion() {
+        PanelOpciones.getSldVolumenMusica().setValue(modeloJuego.leerVolumen());
+        PanelOpciones.getSpnSeleccionMusica().setValue(modeloJuego.leerMusica());
+        PanelOpciones.getCkbMutearMusica().setSelected(modeloJuego.leerMute());
     }
 
     // Muestra las opciones y recuerda a que pantalla volver

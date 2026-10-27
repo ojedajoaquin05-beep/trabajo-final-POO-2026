@@ -30,10 +30,8 @@ public class EstadoMuerto implements EstadoPeleador {
 
     @Override
     public void actualizar(Peleador peleador) {
-        // Reproduce la caida una sola vez y queda en el ultimo frame (4 frames: 0 a 3)
-        if (peleador.getFrameActual() < 3) {
-            peleador.actualizarAnimacion(4);
-        }
+        // Avanza la caida; la Vista la muestra una sola vez y se queda en el ultimo cuadro de la hoja
+        peleador.actualizarAnimacion();
     }
 
     @Override

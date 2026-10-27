@@ -16,6 +16,7 @@ public class VentanaJuego extends JFrame {
     private final PanelOpciones panelOpciones;
     private final PanelPausa panelPausa;
     private final PanelCarga panelCarga;
+    private final PanelPuntajes panelPuntajes;
 
     public VentanaJuego() {
         setTitle("Plataformero de Peleas");
@@ -32,6 +33,7 @@ public class VentanaJuego extends JFrame {
         pantallaSeleccionPersonaje = new SeleccionPersonaje(); //inicializo el panel de seleccion de personaje
         panelOpciones = new PanelOpciones(); //inicializo el panel de opciones
         panelPausa = new PanelPausa(); //inicializo el panel de pausa
+        panelPuntajes = new PanelPuntajes(); //inicializo la tabla de puntajes
 
         panelContenedor.add(panelMenu, "BOTON_MENU");
         panelContenedor.add(pantallaSeleccionPersonaje, "PANTALLA_SELECCION");
@@ -39,6 +41,7 @@ public class VentanaJuego extends JFrame {
         panelContenedor.add(panelOpciones, "BOTON_OPCIONES");
         panelContenedor.add(panelPausa, "PANTALLA_PAUSA");
         panelContenedor.add(panelCarga, "PANTALLA_CARGA");
+        panelContenedor.add(panelPuntajes, "PANTALLA_PUNTAJES");
 
         add(panelContenedor);
     }
@@ -66,12 +69,14 @@ public class VentanaJuego extends JFrame {
     // botones (delegan en cada panel)
     public JButton getBtnJugar() { return panelMenu.getBtnJugar(); }
     public JButton getBtnOpciones() { return panelMenu.getBtnOpciones(); }
+    public JButton getBtnPuntajes() { return panelMenu.getBtnPuntajes(); }
     public JButton getBtnSalir() { return panelMenu.getBtnSalir(); }
     public JButton getBtnVolverJugar() { return panelJuego.getBtnVolver(); }
     public JButton getBtnVolverOpciones() { return panelOpciones.getBtnVolver(); }
 
     public PanelPausa getPanelPausa(){return panelPausa;}
     public PanelOpciones getPanelOpciones(){return panelOpciones;}
+    public PanelPuntajes getPanelPuntajes(){return panelPuntajes;}
 
     public CardLayout getGestorBotones() { return gestorBotones; }
     public JPanel getPanelContenedor() { return panelContenedor; }

@@ -24,9 +24,7 @@ public class SeleccionPersonaje extends JPanel {
     private String escenarioSeleccionado = null;
 
     private JButton btnVolver;
-    private Runnable alFinalizarSeleccion; // Variable para almacenar la acción a ejecutar al finalizar la selección
-    
-    private JButton btnCiegoButton, btnPeleador2Button;
+    private AlFinalizarSeleccion alFinalizarSeleccion; // Variable para almacenar la acción a ejecutar al finalizar la selección
 
     public SeleccionPersonaje(){
         
@@ -55,7 +53,7 @@ public class SeleccionPersonaje extends JPanel {
         add(panelInferior, BorderLayout.SOUTH);
     }
 
-    public void setAlFinalizarSeleccion(Runnable accion) {
+    public void setAlFinalizarSeleccion(AlFinalizarSeleccion accion) {
         this.alFinalizarSeleccion = accion;
     }
     //sub-pantalla de selección de personajes 
@@ -69,39 +67,34 @@ public class SeleccionPersonaje extends JPanel {
         lblTituloPersonajes.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 20, 0));
         panelPersonajes.add(lblTituloPersonajes, BorderLayout.NORTH);
 
-        JPanel panelBotones = new JPanel(new GridLayout(2, 3, 10, 10));
+        // Una fila de 4 columnas: cada personaje es una barra vertical que ocupa todo el alto
+        JPanel panelBotones = new JPanel(new GridLayout(1, 4, 15, 0));
         panelBotones.setOpaque(false);
-        //panelBotones.setBackground(Color.DARK_GRAY);//
-        panelBotones.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 80, 40, 80));
+        panelBotones.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 40, 30, 40));
 
-        // Crear botones para los personajes
-        JButton btnCiegoButton = new JButton("Personaje 1");
-        JButton btnPeleador2Button = new JButton("Personaje 2");
-        /*JButton btnPersonaje3 = new JButton("Personaje 3");
-        JButton btnPersonaje4 = new JButton("Personaje 4");
-        JButton btnPersonaje5 = new JButton("Personaje 5");
-        JButton btnPersonaje6 = new JButton("Personaje 6");*/
+        // Crear las barras de los personajes
+        JButton btnCiego = new BarraPersonaje("CIEGO", new Color(120, 90, 160), "assets/Retratos/ciego.png");
+        JButton btnSamurai = new BarraPersonaje("SAMURAI", new Color(200, 60, 60), "assets/Retratos/samurai.png");
+        JButton btnRugbier = new BarraPersonaje("RUGBIER", new Color(40, 140, 80), "assets/Retratos/rugbier.png");
+        JButton btnPersonaje4 = new BarraPersonaje("PROXIMAMENTE", Color.GRAY, null);
+        btnPersonaje4.setEnabled(false); // lugar reservado para un cuarto personaje
 
         // Agregar ActionListener a los botones de personajes
-        btnCiegoButton.addActionListener(e -> seleccionarPersonaje("ciego"));
-        btnPeleador2Button.addActionListener(e -> seleccionarPersonaje("samurai"));
-        /*btnPersonaje3.addActionListener(e -> seleccionarPersonaje("Personaje 3"));
-        btnPersonaje4.addActionListener(e -> seleccionarPersonaje("Personaje 4"));
-        btnPersonaje5.addActionListener(e -> seleccionarPersonaje("Personaje 5"));
-        btnPersonaje6.addActionListener(e -> seleccionarPersonaje("Personaje 6"));*/
+        btnCiego.addActionListener(e -> seleccionarPersonaje("ciego"));
+        btnSamurai.addActionListener(e -> seleccionarPersonaje("samurai"));
+        btnRugbier.addActionListener(e -> seleccionarPersonaje("rugbier"));
 
         // Agregar botones al panel
-        panelBotones.add(btnCiegoButton);
-        panelBotones.add(btnPeleador2Button);
-        /* panelBotones.add(btnPersonaje3);
+        panelBotones.add(btnCiego);
+        panelBotones.add(btnSamurai);
+        panelBotones.add(btnRugbier);
         panelBotones.add(btnPersonaje4);
-        panelBotones.add(btnPersonaje5);
-        panelBotones.add(btnPersonaje6); */ 
 
         panelPersonajes.add(panelBotones, BorderLayout.CENTER);
 
         return panelPersonajes;
     }
+
 
     //sub-pantalla2: selección de escenarios
     private JPanel crearPanelEscenarios() {
@@ -121,26 +114,14 @@ public class SeleccionPersonaje extends JPanel {
         // Crear botones para los escenarios
         JButton btnEscenario1Button = new JButton("Escenario 1");
         JButton btnEscenario2Button = new JButton("Escenario 2");
-        /*JButton btnEscenario3 = new JButton("Escenario 3");
-        JButton btnEscenario4 = new JButton("Escenario 4");
-        JButton btnEscenario5 = new JButton("Escenario 5");
-        JButton btnEscenario6 = new JButton("Escenario 6");*/
 
         // Agregar ActionListener a los botones de escenarios
         btnEscenario1Button.addActionListener(e -> seleccionarEscenario("escenario1"));
         btnEscenario2Button.addActionListener(e -> seleccionarEscenario("escenario2"));
-       /* btnEscenario3.addActionListener(e -> seleccionarEscenario("escenario3"));
-        btnEscenario4.addActionListener(e -> seleccionarEscenario("escenario4"));
-        btnEscenario5.addActionListener(e -> seleccionarEscenario("escenario5"));
-        btnEscenario6.addActionListener(e -> seleccionarEscenario("escenario6"));*/
 
         // Agregar botones al panel
         panelBotones.add(btnEscenario1Button);
         panelBotones.add(btnEscenario2Button);
-       /* panelBotones.add(btnEscenario3);
-        panelBotones.add(btnEscenario4);
-        panelBotones.add(btnEscenario5);
-        panelBotones.add(btnEscenario6);*/
 
         panelEscenarios.add(panelBotones, BorderLayout.CENTER);
 
@@ -153,7 +134,7 @@ public class SeleccionPersonaje extends JPanel {
             personajeP1 = personaje;
             lblTituloPersonajes.setText("Jugador 2: Selecciona tu personaje");
         } else if (personajeP2 == null) {
-        	if (personaje == personajeP1) {		// Bloquea al jugador 2 la posibilidad de elegir el personaje que ya eligió el jugador 1
+        	if (personaje.equals(personajeP1)) {		// Bloquea al jugador 2 la posibilidad de elegir el personaje que ya eligió el jugador 1
         		String[] opciones = {"Aceptar"};
                 JOptionPane.showOptionDialog(null, "El jugador 1 ya eligió este personaje, por favor seleccioná uno distinto", "Error",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.ERROR_MESSAGE, null, opciones, opciones[0]);
@@ -169,7 +150,7 @@ public class SeleccionPersonaje extends JPanel {
     private void seleccionarEscenario(String escenario) {
         this.escenarioSeleccionado = escenario;
         if (alFinalizarSeleccion != null) {
-            alFinalizarSeleccion.run(); // Ejecuta la acción definida al finalizar la selección
+            alFinalizarSeleccion.ejecutar(); // Ejecuta la acción definida al finalizar la selección
         }
         // aca termina el flujo de la seleccion de escenario y personajes
     }

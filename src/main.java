@@ -26,7 +26,7 @@ public class main {
                 puntajes = new PuntajeDAOSQLite(c);
                 configuracion = new ConfiguracionDAOSQLite(c);
                 Juego juego = new Juego(configuracion, puntajes);
-                vista.setModeloJuego(juego); // Establecer el modelo del juego en la vista
+                vista.setModeloJuego(juego);   //Establecer el modelo del juego en la vista
                 ControladorTeclado teclado = new ControladorTeclado();
                 ControladorMenu controlador = new ControladorMenu(vista,juego, teclado);
                 int vol = configuracion.getVolumen();							// Recupera la configuración de volumen de música

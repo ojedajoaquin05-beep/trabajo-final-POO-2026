@@ -18,20 +18,23 @@ public class PanelMenu extends JPanel {
     private final Image imagen = new ImageIcon("referencias/Imagen_Juego.jpg").getImage();
     private final JButton btnJugar;
     private final JButton btnOpciones;
+    private final JButton btnPuntajes;
     private final JButton btnSalir;
 
     public PanelMenu() {
         setLayout(new BorderLayout());
 
-        JPanel panelBotones = new JPanel(new GridLayout(3, 1, 0, 20));
+        JPanel panelBotones = new JPanel(new GridLayout(4, 1, 0, 20));
         panelBotones.setOpaque(false);
 
         btnJugar = disenoBoton("JUGAR", new Color(139, 195, 74));
         btnOpciones = disenoBoton("CONFIGURACION", new Color(255, 193, 7));
+        btnPuntajes = disenoBoton("PUNTAJES", new Color(33, 150, 243));
         btnSalir = disenoBoton("SALIR", new Color(244, 67, 54));
 
         panelBotones.add(btnJugar);
         panelBotones.add(btnOpciones);
+        panelBotones.add(btnPuntajes);
         panelBotones.add(btnSalir);
 
         JPanel panelMargenInferior = new JPanel(new GridBagLayout());
@@ -72,5 +75,6 @@ public class PanelMenu extends JPanel {
 
     public JButton getBtnJugar() { return btnJugar; }
     public JButton getBtnOpciones() { return btnOpciones; }
+    public JButton getBtnPuntajes() { return btnPuntajes; }
     public JButton getBtnSalir() { return btnSalir; }
 }

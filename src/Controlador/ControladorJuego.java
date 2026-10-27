@@ -7,8 +7,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-// Controlador del combate: maneja el game loop, la pausa y el fin de la partida.
-// La entrada la traduce ControladorTeclado y las reglas (movimiento, ataques, colision, fisica) estan en el modelo
 public class ControladorJuego {
 
     private final VentanaJuego vista;
@@ -101,7 +99,7 @@ private void pedirInicialesYGuardar() {
     }
 }
 
-    // Un tick cada 16 ms (aprox 60 cuadros por segundo). Corre en el hilo de eventos (javax.swing.Timer)
+    // Un tick cada 16 ms (aprox 60 cuadros por segundo) corre en el hilo de eventos 
     private void configurarGameLoop() {
         gameLoop = new Timer(16, e -> {
 
@@ -137,7 +135,7 @@ private void pedirInicialesYGuardar() {
         });
     }
 
-    //CAMBIOS DETENEMOS Y MOSTRAMOS OPCIONES EN LUGAR DE IR AL MENU PRINCIPAL
+   
     private void terminarCombate() {
         ticksFinPartida = 0;
         detenerPartida();

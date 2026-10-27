@@ -2,13 +2,11 @@ package Modelo;
 
 import java.awt.Rectangle;
 
-// Resuelve los rayos del ataque especial en cada tick (antes estaba dentro de Juego).
-// Juego coordina la partida (tiempo, KO, ganador); esta clase sabe como avanzan, chocan y golpean los rayos (SRP)
+
 public class GestorRayos {
 
     private static final int PUNTOS_POR_GOLPE = 10; // puntos que suma el tirador por cada golpe del rayo
 
-    // Un tick de los rayos: primero avanzan, despues se resuelve el choque entre ellos y por ultimo golpean al rival
     public void actualizar(Peleador jugador1, Peleador jugador2, int anchoEscenario) {
         Rayo rayo1 = jugador1.getRayo();
         Rayo rayo2 = jugador2.getRayo();

@@ -4,7 +4,6 @@ import Modelo.Juego;
 import java.awt.Color;
 import java.awt.Graphics;
 
-//TEMPORIZADOR (joaco): arriba al centro, se pone rojo en los ultimos 10 segundos
 public class RelojPartida implements Dibujable {
 
     private static final long DIEZ_SEGUNDOS = 10000000000L; // en nanosegundos

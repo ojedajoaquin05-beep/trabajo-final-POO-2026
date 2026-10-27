@@ -6,8 +6,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 // HUD de un peleador: nombre y vida, barra de vida, puntaje y barra del especial (joaco)
-// Clase abstracta: tiene todo el dibujo en comun y deja a cada hija solo lo que cambia
-// (que peleador muestra y de que lado de la pantalla va). HudJugador1 y HudJugador2 heredan de esta
 public abstract class HudPeleador implements Dibujable {
 
     protected static final int ANCHO_BARRA = 300;
@@ -16,8 +14,6 @@ public abstract class HudPeleador implements Dibujable {
     private static final int Y_BARRA_ESPECIAL = 95;
     private static final int ALTO_BARRA_ESPECIAL = 12;
 
-    // El orden del dibujo es fijo para los dos jugadores; los pasos que cambian los resuelve cada hija.
-    // final: las hijas no pueden cambiar este orden, solo completar los metodos abstractos
     @Override
     public final void dibujar(Graphics g, Juego juego, int anchoPanel, int altoPanel) {
         Peleador peleador = elegirPeleador(juego);

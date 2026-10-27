@@ -34,6 +34,7 @@ public class EstadoEspecial implements EstadoPeleador {
     // Al terminar la pose sale el rayo (una sola vez) y el peleador espera quieto hasta que se apague
     @Override
     public void actualizar(Peleador peleador) {
+        peleador.actualizarAnimacion(); // la energia "titila" mientras sale el rayo
         if (peleador.getTicksAtaque() <= 0) {
             peleador.lanzarRayo();
             if (!peleador.isRayoActivo()) {
@@ -42,9 +43,8 @@ public class EstadoEspecial implements EstadoPeleador {
         }
     }
 
-    // Por ahora usa la animacion de ataque (despues puede tener la suya)
     @Override
     public AccionPeleador getAnimacion() {
-        return AccionPeleador.ATACANDO;
+        return AccionPeleador.ESPECIAL;
     }
 }

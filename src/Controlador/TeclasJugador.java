@@ -2,9 +2,6 @@ package Controlador;
 
 import Modelo.ControlJugador;
 
-// Las teclas de UN jugador: guarda que botones tiene apretados en este momento.
-// Implementa ControlJugador, asi el modelo le pregunta "¿quiere saltar?" sin saber que detras hay un teclado.
-// Hay una instancia por jugador (mismo molde, distintos objetos): ya no se repiten las variables p1... y p2...
 public class TeclasJugador implements ControlJugador {
 
     private boolean arriba, abajo, izquierda, derecha;

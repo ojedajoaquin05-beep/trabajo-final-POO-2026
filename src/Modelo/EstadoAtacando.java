@@ -2,6 +2,12 @@ package Modelo;
 
 public class EstadoAtacando implements EstadoPeleador {
 
+    private final ActionType tipoAtaque; // golpe o patada: cambia solo la animacion
+
+    public EstadoAtacando(ActionType tipoAtaque) {
+        this.tipoAtaque = tipoAtaque;
+    }
+
     @Override
     public boolean saltar(Peleador peleador) {
         return false; // bloqueado durante la animacion del golpe
@@ -44,6 +50,6 @@ public class EstadoAtacando implements EstadoPeleador {
 
     @Override
     public AccionPeleador getAnimacion() {
-        return AccionPeleador.ATACANDO;
+        return tipoAtaque == ActionType.KICK ? AccionPeleador.PATADA : AccionPeleador.ATACANDO;
     }
 }

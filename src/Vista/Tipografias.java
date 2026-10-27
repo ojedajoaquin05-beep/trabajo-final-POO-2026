@@ -3,7 +3,6 @@ package Vista;
 import java.awt.Font;
 import java.io.File;
 
-// Las tipografias se cargan UNA vez (leer el .ttf del disco en cada cuadro hacia bajar los fps).
 // Las comparten el HUD y el reloj
 final class Tipografias {
 

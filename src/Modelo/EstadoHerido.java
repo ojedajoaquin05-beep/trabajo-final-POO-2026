@@ -36,7 +36,7 @@ public class EstadoHerido implements EstadoPeleador {
 
     @Override
     public void actualizar(Peleador peleador) {
-        peleador.actualizarAnimacion(2); // alterna los 2 primeros frames
+        peleador.actualizarAnimacion(); // la Vista alterna los 2 primeros frames
         ticksRestantes--;
         if (ticksRestantes <= 0) {
             peleador.cambiarEstado(peleador.isEnElSuelo() ? new EstadoQuieto() : new EstadoSalto());

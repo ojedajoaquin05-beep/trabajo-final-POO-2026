@@ -21,13 +21,14 @@ public class Peleador extends Entidad {
     private int ticksEnfriamiento = 0;
     private static final int ALCANCE_ATAQUE = 350; // Distancia máxima para que un ataque sea efectivo
     private static final int DURACION_ATAQUE = 20; // ticks que dura la animación de ataque
+    private static final int DURACION_ESPECIAL = 40; // la carga del especial dura mas (aprox 0,66 s) para que se vea la pose
     private int ticksAtaque = 0;
+    private int duracionAccion = DURACION_ATAQUE; // lo que dura la accion en curso (golpe o especial), para calcular el progreso
     private static final int ENFRIAMIENTO_ESPECIAL = 900; // aprox 15 s a 60 cuadros por segundo
     private int ticksEnfriamientoEspecial = 0;
     private int puntajePj = 0;
     private Rayo rayo; // el rayo del especial en curso (null si no hay)
     private static final int ANCHO_CUERPO = 150; // el cuerpo es mas angosto que el sprite
-    private static final int DISTANCIA_MANOS = 100; // del centro del sprite a las manos
     private boolean seDesplazoEnTick = false; // para volver al frame de reposo cuando deja de caminar
 
     // El constructor recibe los datos y manda la mayoría al padre (Entidad) usando super
@@ -56,16 +57,15 @@ public class Peleador extends Entidad {
         }
     }
 
-    public void actualizarAnimacion(int totalFramesEstado) {
+    // El modelo solo cuenta cuadros. Cuantos tiene cada animacion lo sabe la Vista (depende de la hoja de sprites)
+    public void actualizarAnimacion() {
         contadorTicksAnimacion++;
         if (contadorTicksAnimacion >= ticksPorFrame) {
-            frameActual = (frameActual + 1) % totalFramesEstado; // Cicla entre los frames del estado actual
+            frameActual++; // la Vista lo usa ciclando (%) o quedandose en el ultimo cuadro (muerte)
             contadorTicksAnimacion = 0; // Reinicia el contador de ticks
         }
     }
 
-    // El peleador obedece a su control (teclado, o en el futuro una IA): guardia, salto, caminata y ataque.
-    // Cada orden pasa por el estado actual, que decide si la acepta (patron State)
     public void obedecer(ControlJugador control, Peleador rival) {
         // abajo mantenido: guardia. Al soltarlo, vuelve a quieto
         cubrirse(control.abajo());
@@ -115,8 +115,9 @@ public class Peleador extends Entidad {
             return false;
         }
         ticksEnfriamiento = ENFRIAMIENTO_ATAQUE;
+        duracionAccion = DURACION_ATAQUE;
         ticksAtaque = DURACION_ATAQUE; // Inicia la duración del ataque
-        cambiarEstado(new EstadoAtacando());
+        cambiarEstado(new EstadoAtacando(tipoAtaque));
 
         if (estaAlAlcance(oponente)) {
             int danioBase;
@@ -149,18 +150,20 @@ public class Peleador extends Entidad {
             return false;
         }
         ticksEnfriamientoEspecial = ENFRIAMIENTO_ESPECIAL;
-        ticksAtaque = DURACION_ATAQUE; // la pose del especial dura lo mismo que un ataque
+        duracionAccion = DURACION_ESPECIAL;
+        ticksAtaque = DURACION_ESPECIAL; // la pose del especial (carga) antes de que salga el rayo
         rayo = null;
         cambiarEstado(new EstadoEspecial());
         return true;
     }
 
-    // Lanza el rayo desde las manos, una sola vez por especial
+    // Lanza el rayo una sola vez por especial, desde el punto de disparo de cada personaje (ojos, katana, pelo)
     public void lanzarRayo() {
         if (rayo == null) {
             int direccion = MirandoDerecha ? 1 : -1;
-            int origenX = posicionX + ancho / 2 + direccion * DISTANCIA_MANOS;
-            int altura = posicionY + (int) (alto * 0.45);
+            OrigenRayo origen = OrigenRayo.de(nombre);
+            int origenX = posicionX + ancho / 2 + direccion * origen.getAdelante();
+            int altura = posicionY + (int) (alto * origen.getAltura());
             rayo = new Rayo(origenX, altura, direccion);
         }
     }
@@ -197,7 +200,7 @@ public class Peleador extends Entidad {
     public int getFrameActual() { return frameActual; }
     public boolean isMirandoDerecha() { return MirandoDerecha; }
     public void setMirandoDerecha(boolean mirandoDerecha) { this.MirandoDerecha = mirandoDerecha; }
-    public float getProgresoAtaque() {return 1f - ((float) ticksAtaque / DURACION_ATAQUE); } // Devuelve un valor entre 0 y 1 indicando el progreso del ataque
+    public float getProgresoAtaque() {return 1f - ((float) ticksAtaque / duracionAccion); } // Devuelve un valor entre 0 y 1 indicando el progreso del golpe o de la carga del especial
 
     public boolean isEnElSuelo(){
         return enElSuelo;
@@ -247,7 +250,7 @@ public class Peleador extends Entidad {
       mover(velocidad * direccion, 0);
       setMirandoDerecha(direccion > 0);
       if (enElSuelo) {
-        actualizarAnimacion(4); // 2x2 = 4 frames
+        actualizarAnimacion();
       }
     }
 

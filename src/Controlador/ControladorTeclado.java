@@ -8,18 +8,17 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-// Controlador de entrada: traduce el teclado en el estado de las teclas de cada jugador.
-// No mueve ni ataca a nadie: eso lo decide el modelo (Peleador.obedecer)
+
 public class ControladorTeclado {
 
-    // controles de cada jugador (mismo tipo de objeto, distintas teclas)
+    
     private final TeclasJugador jugador1 = new TeclasJugador();
     private final TeclasJugador jugador2 = new TeclasJugador();
 
     //control de pausa
     private boolean juegoPausadoPulsado;
 
-    // se devuelven como la interfaz del modelo: quien los usa solo puede leerlos
+    // se devuelven como la interfaz del modelo, quien los usa solo puede leerlos
     public ControlJugador getJugador1() { return jugador1; }
     public ControlJugador getJugador2() { return jugador2; }
 
@@ -52,7 +51,7 @@ public class ControladorTeclado {
         registrarTeclasJugador(panel, "P2", jugador2, "UP", "DOWN", "LEFT", "RIGHT", "J", "K", "L");
     }
 
-    // Registra las 7 teclas de un jugador. El mismo metodo sirve para los dos (antes estaba todo escrito dos veces)
+    // Registra las 7 teclas de un jugador
     private void registrarTeclasJugador(JPanel panel, String prefijo, TeclasJugador teclas,
             String arriba, String abajo, String izquierda, String derecha, String golpe, String patada, String especial) {
         registrarTecla(panel, arriba, prefijo + "_" + arriba, v -> teclas.setArriba(v));         // salto
@@ -77,7 +76,7 @@ public class ControladorTeclado {
     panel.getActionMap().put(nombre + "_release", new AbstractAction() {
         @Override
         public void actionPerformed(ActionEvent e) { alCambiar.accept(false); }
-    }); // este metodo es para no repetir tanto codigo.
+    }); 
 
 }
 

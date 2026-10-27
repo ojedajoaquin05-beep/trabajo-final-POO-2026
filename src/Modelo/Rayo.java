@@ -2,9 +2,6 @@ package Modelo;
 
 import java.awt.Rectangle;
 
-// Ataque especial: un rayo que sale de las manos del peleador, crece hacia adelante y
-// le saca vida al rival de a poco (dano progresivo) mientras lo toca.
-// El dano total se reparte en varios golpes chicos, asi se ve bajar la barra de vida.
 public class Rayo {
 
     private static final int VELOCIDAD_CRECIMIENTO = 40; // pixeles por tick
@@ -32,7 +29,7 @@ public class Rayo {
         this.direccion = direccion;
     }
 
-    // Un tick: el rayo crece hasta el borde del escenario y se apaga al cumplir su duracion
+    // Un tick: el rayo crece hasta el borde del escenario y se apaga al cumplir su duracion 
     public void actualizar(int anchoEscenario) {
         ticks++;
         if (ticksParaGolpe > 0) {
