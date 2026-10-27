@@ -1,5 +1,6 @@
 package Vista;
 
+import Modelo.Escenario;
 import Modelo.Juego;
 import Modelo.Peleador;
 import java.awt.Color;
@@ -14,13 +15,25 @@ public abstract class HudPeleador implements Dibujable {
     private static final int Y_BARRA_ESPECIAL = 95;
     private static final int ALTO_BARRA_ESPECIAL = 12;
 
+    // Decide el color de los labels de vida y puntaje para que contrasten bien con el fondo de cada escenario
+    private Color colorTextoEscenario(Escenario escenario) {
+    	switch (escenario.getNombre()) {
+    	case "EscenarioCiudad":
+    		return Color.BLACK;
+    	case "EscenarioItalia":
+    		return Color.WHITE;
+    	default:
+    		return Color.BLACK;		// si hubiera un error y no cargara bien el nombre defaultea a color negro
+    	}
+    }
+    
     @Override
     public final void dibujar(Graphics g, Juego juego, int anchoPanel, int altoPanel) {
         Peleador peleador = elegirPeleador(juego);
         if (peleador == null) return;
         int xMarco = calcularXMarco(anchoPanel);
-        dibujarVida(g, peleador, xMarco);
-        dibujarPuntaje(g, peleador, xMarco);
+        dibujarVida(g, peleador, xMarco, colorTextoEscenario(juego.getEscenarioActual()));
+        dibujarPuntaje(g, peleador, xMarco, colorTextoEscenario(juego.getEscenarioActual()));
         dibujarBarraEspecial(g, peleador, xMarco);
     }
 
@@ -31,23 +44,22 @@ public abstract class HudPeleador implements Dibujable {
     protected abstract int calcularXRelleno(int xMarco, int anchoRelleno);
 
     //BARRA DE VIDA (joaco)
-    private void dibujarVida(Graphics g, Peleador peleador, int xMarco) {
+    private void dibujarVida(Graphics g, Peleador peleador, int xMarco, Color colorTexto) {
         g.setColor(Color.RED);
         g.fillRect(xMarco, Y_BARRA_VIDA, ANCHO_BARRA, ALTO_BARRA_VIDA);
         g.setColor(Color.GREEN);
         int anchoVida = Math.max(0, (int) (ANCHO_BARRA * ((double) peleador.getVida() / peleador.getVidaMaxima())));
         g.fillRect(calcularXRelleno(xMarco, anchoVida), Y_BARRA_VIDA, anchoVida, ALTO_BARRA_VIDA);
-
-        g.setColor(Color.BLACK);
+        g.setColor(colorTexto);
         g.drawRect(xMarco, Y_BARRA_VIDA, ANCHO_BARRA, ALTO_BARRA_VIDA);
         g.setFont(Tipografias.VIDA.deriveFont(24.0f));
         g.drawString(peleador.getNombre().toUpperCase() + " : " + peleador.getVida() + " HP", xMarco, 35);
     }
 
     // PUNTAJE
-    private void dibujarPuntaje(Graphics g, Peleador peleador, int xMarco) {
+    private void dibujarPuntaje(Graphics g, Peleador peleador, int xMarco, Color colorTexto) {
         g.setFont(Tipografias.VIDA.deriveFont(20.0f));
-        g.setColor(Color.black);
+        g.setColor(colorTexto);
         g.drawString("SCORE: " + peleador.getPuntaje(), xMarco, 85);
     }
 

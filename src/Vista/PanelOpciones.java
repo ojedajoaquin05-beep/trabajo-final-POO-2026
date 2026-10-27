@@ -35,10 +35,13 @@ public class PanelOpciones extends JPanel {
     //etiqueta titulo menu opciones
     private final JLabel lblTitulo;
 
-    //controles deslizantes para volumen musica y fx, y sus respectivas etiquetas
-    private static JSlider sldVolumenMusica, sldVolumenFX;
-    private final JLabel lblVolumenMusica, lblVolumenFX, lblSeleccionMusica;
+    //control deslizante para volumen de musica, y su respectiva etiqueta
+    private static JSlider sldVolumenMusica;
+    private final JLabel lblVolumenMusica, lblSeleccionMusica;
     private static JSpinner spnSeleccionMusica = null;
+    
+    //etiqueta para avisar de opcion de tema aleatorio
+    private static JLabel lblInfoTemaAleatorio;
 
     //checkbox para mutear directamente
     private static JCheckBox ckbMutearMusica;
@@ -51,11 +54,12 @@ public class PanelOpciones extends JPanel {
         lblTitulo.setForeground(ACENTO);
 
         lblVolumenMusica = etiqueta("VOLUMEN MUSICA");
-        lblVolumenFX = etiqueta("VOLUMEN FX");
-        lblSeleccionMusica = etiqueta("MUSICA DE PELEA");
+        lblSeleccionMusica = etiqueta("SELECCIONAR MUSICA DE PELEA");
+        
+        // Los tags html en el texto permiten implementar un salto de línea sin tener que usar 2 etiquetas
+        lblInfoTemaAleatorio = etiqueta("<html>Elige 0 para reproducir un<br/>tema al azar cada vez</html>");
 
         sldVolumenMusica = deslizador();
-        sldVolumenFX = deslizador();
 
         spnSeleccionMusica = new JSpinner(new SpinnerNumberModel(1, 0, 4, 1));	// valor por defecto, minimo, maximo, paso
         spnSeleccionMusica.setFont(LETRA);
@@ -93,8 +97,8 @@ public class PanelOpciones extends JPanel {
 
         agregarFila(tarjeta, 0, lblVolumenMusica, sldVolumenMusica);
         agregarFila(tarjeta, 1, new JLabel(), ckbMutearMusica);
-        agregarFila(tarjeta, 2, lblVolumenFX, sldVolumenFX);
-        agregarFila(tarjeta, 3, lblSeleccionMusica, spnSeleccionMusica);
+        agregarFila(tarjeta, 2, lblSeleccionMusica, spnSeleccionMusica);
+        agregarFila(tarjeta, 3, new JLabel(), lblInfoTemaAleatorio);
 
         JPanel contenido = new JPanel(new BorderLayout(0, 30));
         contenido.setOpaque(false);
