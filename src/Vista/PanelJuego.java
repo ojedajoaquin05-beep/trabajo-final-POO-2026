@@ -51,7 +51,7 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
         return new GraficosCombate(
                 new AnimacionPeleador(p1),
                 new AnimacionPeleador(p2),
-                new ImageIcon("assets/Backgrounds/" + escenario + ".png").getImage());
+                new ImageIcon(FondoEscenario.de(escenario).getRutaFondo()).getImage());
     }
 
     public void aplicarGraficos(GraficosCombate graficos) {

@@ -76,19 +76,19 @@ public class SeleccionPersonaje extends JPanel {
         JButton btnCiego = new BarraPersonaje("CIEGO", new Color(120, 90, 160), "assets/Retratos/ciego.png");
         JButton btnSamurai = new BarraPersonaje("SAMURAI", new Color(200, 60, 60), "assets/Retratos/samurai.png");
         JButton btnRugbier = new BarraPersonaje("RUGBIER", new Color(40, 140, 80), "assets/Retratos/rugbier.png");
-        JButton btnPersonaje4 = new BarraPersonaje("PROXIMAMENTE", Color.GRAY, null);
-        btnPersonaje4.setEnabled(false); // lugar reservado para un cuarto personaje
+        JButton btnBorracho = new BarraPersonaje("BORRACHO", new Color(200, 150, 40), "assets/Retratos/borracho.png");
 
         // Agregar ActionListener a los botones de personajes
         btnCiego.addActionListener(e -> seleccionarPersonaje("ciego"));
         btnSamurai.addActionListener(e -> seleccionarPersonaje("samurai"));
         btnRugbier.addActionListener(e -> seleccionarPersonaje("rugbier"));
+        btnBorracho.addActionListener(e -> seleccionarPersonaje("borracho"));
 
         // Agregar botones al panel
         panelBotones.add(btnCiego);
         panelBotones.add(btnSamurai);
         panelBotones.add(btnRugbier);
-        panelBotones.add(btnPersonaje4);
+        panelBotones.add(btnBorracho);
 
         panelPersonajes.add(panelBotones, BorderLayout.CENTER);
 
@@ -107,21 +107,17 @@ public class SeleccionPersonaje extends JPanel {
         lblTituloEscenarios.setBorder(javax.swing.BorderFactory.createEmptyBorder(20, 0, 20, 0));
         panelEscenarios.add(lblTituloEscenarios, BorderLayout.NORTH);
 
-        JPanel panelBotones = new JPanel(new GridLayout(2, 3, 10, 10));
+        // Un boton por escenario, con su fondo de imagen (los datos salen del enum FondoEscenario)
+        FondoEscenario[] escenarios = FondoEscenario.values();
+        JPanel panelBotones = new JPanel(new GridLayout(1, escenarios.length, 15, 0));
         panelBotones.setOpaque(false);
-        panelBotones.setBorder(javax.swing.BorderFactory.createEmptyBorder(40, 80, 40, 80));
+        panelBotones.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 40, 30, 40));
 
-        // Crear botones para los escenarios
-        JButton btnEscenario1Button = new JButton("Escenario 1");
-        JButton btnEscenario2Button = new JButton("Escenario 2");
-
-        // Agregar ActionListener a los botones de escenarios
-        btnEscenario1Button.addActionListener(e -> seleccionarEscenario("escenario1"));
-        btnEscenario2Button.addActionListener(e -> seleccionarEscenario("escenario2"));
-
-        // Agregar botones al panel
-        panelBotones.add(btnEscenario1Button);
-        panelBotones.add(btnEscenario2Button);
+        for (FondoEscenario escenario : escenarios) {
+            JButton btnEscenario = new BarraPersonaje(escenario.getNombre(), Color.DARK_GRAY, escenario.getRutaFondo());
+            btnEscenario.addActionListener(e -> seleccionarEscenario(escenario.getClave()));
+            panelBotones.add(btnEscenario);
+        }
 
         panelEscenarios.add(panelBotones, BorderLayout.CENTER);
 

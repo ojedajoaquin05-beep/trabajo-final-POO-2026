@@ -3,7 +3,7 @@ package Vista;
 // Guarda las hojas de sprites de cada personaje: la ruta y como esta dividida (columnas x filas).
 // Todas tienen una sola fila, cuadros de 512 de alto y el personaje a la misma escala con los pies a la misma altura
 // (se arman con los cuadros de cada carpeta originales/). Para agregar un personaje nuevo solo hay que sumar una linea aca.
-// Patada: el samurai y el rugbier tienen hoja propia; el ciego todavia usa la de ataque (cuando exista, se cambia aca)
+// Patada: el samurai, el rugbier y el borracho tienen hoja propia; el ciego todavia usa la de ataque (cuando exista, se cambia aca)
 public enum SpritesPersonaje {
     CIEGO(new Hoja("assets/Ciego/ciego_quieto.png", 4, 1), new Hoja("assets/Ciego/ciego_caminata.png", 4, 1),
           new Hoja("assets/Ciego/ciego_salto.png", 4, 1),
@@ -20,7 +20,13 @@ public enum SpritesPersonaje {
             new Hoja("assets/Rugbier/rugbier_salto.png", 5, 1),
             new Hoja("assets/Rugbier/rugbier_ataque.png", 5, 1), new Hoja("assets/Rugbier/rugbier_patada.png", 6, 1),
             new Hoja("assets/Rugbier/rugbier_especial.png", 5, 1), // gira la cabeza (3) y dispara con el pelo apuntando (2)
-            new Hoja("assets/Rugbier/rugbier_muerte.png", 4, 1), new Hoja("assets/Rugbier/rugbier_herido.png", 4, 1));
+            new Hoja("assets/Rugbier/rugbier_muerte.png", 4, 1), new Hoja("assets/Rugbier/rugbier_herido.png", 4, 1)),
+    // Dibujado desde cero con figuras simples (no tiene originales)
+    BORRACHO(new Hoja("assets/Borracho/borracho_quieto.png", 4, 1), new Hoja("assets/Borracho/borracho_caminata.png", 4, 1),
+             new Hoja("assets/Borracho/borracho_salto.png", 4, 1),
+             new Hoja("assets/Borracho/borracho_ataque.png", 4, 1), new Hoja("assets/Borracho/borracho_patada.png", 6, 1),
+             new Hoja("assets/Borracho/borracho_especial.png", 5, 1), // toma de la botella (3) y escupe el rayo por la boca (2)
+             new Hoja("assets/Borracho/borracho_muerte.png", 4, 1), new Hoja("assets/Borracho/borracho_herido.png", 4, 1));
 
     // Una hoja de sprites: la imagen y en cuantas columnas y filas se recorta
     public record Hoja(String ruta, int columnas, int filas) { }
