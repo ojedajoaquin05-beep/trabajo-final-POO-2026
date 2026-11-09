@@ -10,8 +10,6 @@ public abstract class Escenario {
     protected int altoVentana;
     protected int limitePisoY; 
 
-    protected List<Suelo> plataforma;
-
     public Escenario (String nombre, int anchoVentana, int altoVentana, int limitePisoY) {
     
     if (anchoVentana <= 0 || altoVentana <= 0){
@@ -25,7 +23,6 @@ public abstract class Escenario {
     this.anchoVentana = anchoVentana;
     this.altoVentana = altoVentana;
     this.limitePisoY = limitePisoY;
-    this.plataforma = new ArrayList<>();
 
     inicializarPlataformas();
 }
@@ -34,26 +31,9 @@ protected abstract void inicializarPlataformas();
 
 public boolean estaSobreSuelo (Colision entidad) {
 
-    if (entidad.y() + entidad.alto() >= limitePisoY) {
-        return true;
-    }
-
-    for (Suelo plataforma : plataforma){
-        if (entidad.colisionaCon(plataforma)) {
-            int pieEntidad = entidad.y() + entidad.alto();
-            int topePlataforma = plataforma.y(); 
-     
-
-             if (Math.abs(pieEntidad - topePlataforma) <= 10){
-                return true;
-             }
-        }
-       
-    }
-
-    return false;
-
+    return entidad.y() + entidad.alto() >= limitePisoY;
 }
+
 
 public void delimitarMovimiento(Entidad entidad) {
 
@@ -73,5 +53,5 @@ public String getNombre() {return nombre;}
 public int getAnchoVentana() {return anchoVentana;}
 public int getAltoVentana() {return altoVentana;}
 public int getLimitePisoY() { return limitePisoY; }
-public List<Suelo> getPlataformas() { return plataforma;}
+
 }

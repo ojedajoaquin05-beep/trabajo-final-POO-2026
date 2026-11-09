@@ -9,6 +9,13 @@
             "name": "main",
             "request": "launch",
             "mainClass": "main",
+            "projectName": "trabajo-final-POO-2026_20b9bd7f"
+        },
+        {
+            "type": "java",
+            "name": "main",
+            "request": "launch",
+            "mainClass": "main",
             "projectName": "trabajo-final-POO-2026_59821591"
         },
         {

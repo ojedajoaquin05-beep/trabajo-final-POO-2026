@@ -27,15 +27,20 @@ public abstract class Entidad implements Colision {
     }
 
     public void recibirdanio(int cantidad) {
-        this.vida -= cantidad;
-        if (this.vida < 0) {
-            this.vida = 0;
-        }
+
+        this.vida = Math.max(0, this.vida - cantidad);
+        
     }
 
     public boolean estaVivo() {
         return this.vida > 0;   
     }
+
+    public void desplazarHorizontal(float dX) {
+        this.posicionX += Math.round(dX);
+    }
+
+    public abstract void actualizarComportamiento();
 
     // estos metodos se reescriben porque cada personaje tiene su propia altura y ancho. por eso se reescribe 
     @Override
@@ -76,4 +81,5 @@ public abstract class Entidad implements Colision {
         this.posicionX += dX;
         this.posicionY += dY;
     }
+
 }

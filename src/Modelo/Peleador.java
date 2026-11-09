@@ -265,6 +265,16 @@ public class Peleador extends Entidad {
       this.estadoActual.recibirDanio(this, cantidad);
     }
 
+    @Override
+    public void actualizarComportamiento() {
+        // Especialización del comportamiento de actualización física propio de un peleador
+        aplicarFisica();
+        actualizarEnfriamiento();
+        if (this.estadoActual != null) {
+            this.estadoActual.actualizar(this);
+        }
+    }
+
     // Lo usan los estados: aplica el danio a la vida (Entidad) sin volver a pasar por el estado
     void aplicarDanio(int cantidad) {
       super.recibirdanio(cantidad);
