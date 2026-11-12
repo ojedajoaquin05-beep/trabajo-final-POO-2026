@@ -30,11 +30,11 @@ public class main {
                 ControladorTeclado teclado = new ControladorTeclado();
                 ControladorMenu controlador = new ControladorMenu(vista,juego, teclado);
                 int vol = configuracion.getVolumen();							// Recupera la configuración de volumen de música
-                PanelOpciones.getSldVolumenMusica().setValue(vol);				// Coloca el valor en el control deslizante
+                vista.getPanelOpciones().getSldVolumenMusica().setValue(vol);				// Coloca el valor en el control deslizante
                 int musicaPelea = configuracion.getMusicaPelea();
-                PanelOpciones.getSpnSeleccionMusica().setValue(musicaPelea);	// Lo mismo con la elección de música de pelea
+                vista.getPanelOpciones().getSpnSeleccionMusica().setValue(musicaPelea);	// Lo mismo con la elección de música de pelea
                 boolean mute = configuracion.getMute();
-                PanelOpciones.getCkbMutearMusica().setSelected(mute);			// Mute
+                vista.getPanelOpciones().getCkbMutearMusica().setSelected(mute);			// Mute
                 vista.mostrarVentana();
             } catch (SQLException e) {
                 System.err.println("No se pudo abrir la base, uso memoria: " + e.getMessage());

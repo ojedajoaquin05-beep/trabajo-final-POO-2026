@@ -71,7 +71,6 @@ public class VentanaJuego extends JFrame {
     public JButton getBtnOpciones() { return panelMenu.getBtnOpciones(); }
     public JButton getBtnPuntajes() { return panelMenu.getBtnPuntajes(); }
     public JButton getBtnSalir() { return panelMenu.getBtnSalir(); }
-    public JButton getBtnVolverJugar() { return panelJuego.getBtnVolver(); }
     public JButton getBtnVolverOpciones() { return panelOpciones.getBtnVolver(); }
 
     public PanelPausa getPanelPausa(){return panelPausa;}

@@ -1,9 +1,9 @@
 package Controlador;
 
 import Modelo.Juego;
-import Modelo.Musica;
 import Vista.GraficosCombate;
-import Vista.PanelOpciones;
+import Vista.Musica;
+//import Vista.PanelOpciones;
 import Vista.SeleccionPersonaje;
 import Vista.SonidoJuego;
 import Vista.VentanaJuego;
@@ -72,11 +72,6 @@ public class ControladorMenu {
             vista.dispose();
             System.exit(0); 
         });
-
-        // BOTONES DE RETORNOS
-        vista.getBtnVolverJugar().addActionListener(evento -> {
-            volverAlMenu();
-        }); 
         
         // Vuelve a donde se entro: al menu, o a la pausa si la partida esta en curso
         vista.getBtnVolverOpciones().addActionListener(evento -> {
@@ -97,22 +92,22 @@ public class ControladorMenu {
             volverAlMenu();
         });
         
-        PanelOpciones.getSldVolumenMusica().addChangeListener(evento -> {
-        	int vol = PanelOpciones.getCkbMutearMusica().isSelected() ? 0 : PanelOpciones.getSldVolumenMusica().getValue();
+        vista.getPanelOpciones().getSldVolumenMusica().addChangeListener(evento -> {
+        	int vol = vista.getPanelOpciones().getCkbMutearMusica().isSelected() ? 0 : vista.getPanelOpciones().getSldVolumenMusica().getValue();
         	musicaMenu.setVolumen(vol);	// Aplica esta configuración tanto a la música del menú
         	for (Musica m : musicaPelea) m.setVolumen(vol);		// como a la de la pelea
         	modeloJuego.guardarVolumen(vol);
         });
         
-        PanelOpciones.getCkbMutearMusica().addChangeListener(evento -> {
-        	int vol = PanelOpciones.getCkbMutearMusica().isSelected() ? 0 : PanelOpciones.getSldVolumenMusica().getValue();
+        vista.getPanelOpciones().getCkbMutearMusica().addChangeListener(evento -> {
+        	int vol = vista.getPanelOpciones().getCkbMutearMusica().isSelected() ? 0 : vista.getPanelOpciones().getSldVolumenMusica().getValue();
         	musicaMenu.setVolumen(vol);	// Aplica esta configuración tanto a la música del menú
         	for (Musica m : musicaPelea) m.setVolumen(vol);		// como a la de la pelea
-        	modeloJuego.guardarMute(PanelOpciones.getCkbMutearMusica().isSelected());
+        	modeloJuego.guardarMute(vista.getPanelOpciones().getCkbMutearMusica().isSelected());
         });
         
-        PanelOpciones.getSpnSeleccionMusica().addChangeListener(evento -> {
-        	int musica = (int)PanelOpciones.getSpnSeleccionMusica().getValue();
+        vista.getPanelOpciones().getSpnSeleccionMusica().addChangeListener(evento -> {
+        	int musica = (int)vista.getPanelOpciones().getSpnSeleccionMusica().getValue();
         	modeloJuego.guardarMusica(musica);
         });
 
@@ -138,9 +133,9 @@ public class ControladorMenu {
 
     // Pide al modelo la configuracion guardada y la pone en los controles de opciones
     private void cargarConfiguracion() {
-        PanelOpciones.getSldVolumenMusica().setValue(modeloJuego.leerVolumen());
-        PanelOpciones.getSpnSeleccionMusica().setValue(modeloJuego.leerMusica());
-        PanelOpciones.getCkbMutearMusica().setSelected(modeloJuego.leerMute());
+    	vista.getPanelOpciones().getSldVolumenMusica().setValue(modeloJuego.leerVolumen());
+    	vista.getPanelOpciones().getSpnSeleccionMusica().setValue(modeloJuego.leerMusica());
+    	vista.getPanelOpciones().getCkbMutearMusica().setSelected(modeloJuego.leerMute());
     }
 
     // Muestra las opciones y recuerda a que pantalla volver
@@ -216,7 +211,7 @@ public class ControladorMenu {
 
                     musicaMenu.pausar();
 
-                    int indice = (int)PanelOpciones.getSpnSeleccionMusica().getValue() - 1;
+                    int indice = (int)vista.getPanelOpciones().getSpnSeleccionMusica().getValue() - 1;
                     if (indice == -1) indice = (int)(Math.random() * 4);
                     musicaPelea[indice].reproducirLoop();
                 } catch (InterruptedException | ExecutionException ex) {

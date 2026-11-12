@@ -46,7 +46,7 @@ public class PanelOpciones extends JPanel {
     //checkbox para mutear directamente
     private static JCheckBox ckbMutearMusica;
 
-    public PanelOpciones() {
+    PanelOpciones() {
         setLayout(new GridBagLayout());
 
         lblTitulo = new JLabel("CONFIGURACION", SwingConstants.CENTER);
@@ -146,9 +146,10 @@ public class PanelOpciones extends JPanel {
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 
+    public PanelOpciones getPanelOpciones() { return this; }
     public JButton getBtnVolver() { return btnVolver; }
     public void setTextoVolver(String texto) { btnVolver.setText(texto); }
-    public static JSlider getSldVolumenMusica() { return sldVolumenMusica; }
-    public static JSpinner getSpnSeleccionMusica() { return spnSeleccionMusica; }
-    public static JCheckBox getCkbMutearMusica() { return ckbMutearMusica; }
+    public JSlider getSldVolumenMusica() { return sldVolumenMusica; }
+    public JSpinner getSpnSeleccionMusica() { return spnSeleccionMusica; }
+    public JCheckBox getCkbMutearMusica() { return ckbMutearMusica; }
 }

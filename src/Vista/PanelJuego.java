@@ -25,8 +25,6 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
 
     private final Image imagenFondoJuego = new ImageIcon("assets/Backgrounds/City4.png").getImage();
 
-    private final JButton btnVolver;
-
     // Capas que van encima de los peleadores, en el orden en que se dibujan.
     // El panel no sabe que es cada una: solo les pide que se dibujen (polimorfismo)
     private final List<Dibujable> capas = List.of(
@@ -41,9 +39,6 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
         setLayout(null);
         setFocusable(true); // es importante para que el panel pueda recibir eventos de teclado
 
-        btnVolver = new JButton("Volver al Menu");
-        btnVolver.setBounds(10, 10, 150, 30);
-        //add(btnVolver);
     }
 
     // Carga los graficos (se puede llamar desde otro hilo: no toca componentes)
@@ -122,5 +117,4 @@ public class PanelJuego extends JPanel implements ObservadorJuego {
 
     public void setModeloJuego(Juego modeloJuego) { this.modeloJuego = modeloJuego; }
 
-    public JButton getBtnVolver() { return btnVolver; }
 }

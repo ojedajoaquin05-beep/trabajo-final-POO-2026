@@ -1,10 +1,8 @@
-package Modelo;
+package Vista;
 
 import java.io.File;
 import java.io.IOException;
 import javax.sound.sampled.*;
-
-import Vista.PanelOpciones;
 
 public class Musica {
 

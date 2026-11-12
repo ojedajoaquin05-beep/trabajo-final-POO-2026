@@ -1,7 +1,6 @@
 package Vista;
 
 import Modelo.Juego;
-import Modelo.Musica;
 import Modelo.ObservadorJuego;
 
 // Segundo observador. cuando termina el combate, corta la música de pelea y pone la del menu
